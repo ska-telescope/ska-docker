@@ -1,0 +1,34 @@
+#
+# Docker compose file that launches Jive, sending output to a remote X11
+# display.
+#
+# Defines:
+#   - jive: container running Jive
+#
+# Requires:
+#   - tango.yml
+#
+version: '2'
+
+services:
+  jive:
+    build:      
+      context: tango
+      dockerfile: Dockerfile.java
+    image: ska/tango-java:9.2.5a
+    container_name: jive
+    depends_on:
+      - databaseds
+    volumes:
+      - $HOME:/hosthome:ro
+    environment:
+      - XAUTHORITY=/hosthome/.Xauthority
+      - DISPLAY=${MY_IP}:0              
+      - TANGO_HOST=databaseds:10000 
+    entrypoint:
+      - /usr/local/bin/wait-for-it.sh
+      - databaseds:10000
+      - --timeout=30
+      - --strict
+      - --
+      - /usr/local/bin/jive
