@@ -4,30 +4,21 @@ This repository defines a set of Docker images and Docker compose files that
 are useful for TANGO control system development. 
 
 ## Building the Docker images
-It is recommended that you use the Docker compose files located in the root of
-this repository to create a set of tagged docker images. The images created
-by the Docker compose files comprise:
- 
+The Docker images created by this project comprise:
 
 Docker image           | Description
 -----------------------|------------
 ska/tango-dependencies | A base image containing TANGO's preferred version of ZeroMQ plus the preferred, patched version of OmniORB.
-ska/tangodb            | A MariaDB image with TANGO database schema defined. Data is stored separately in a volume 
-ska/tango              | Core C++ TANGO libraries and applications.
-ska/tango-java         | As per ska/tango, plus Java applications and bindings    
-ska/tango-python       | As per ska/tango, plus pytango Python bindings and itango for interactive TANGO sessions.
+ska/tango-db           | A MariaDB image with TANGO database schema defined. Data is stored separately in a volume 
+ska/tango-cpp          | Core C++ TANGO libraries and applications.
+ska/tango-java         | As per ska/tango-cpp, plus Java applications and bindings    
+ska/tango-python       | Extends ska/tango-cpp, adding pytango Python bindings and itango for interactive TANGO sessions.
 
 To build the images, from the root of this repository execute:
 
-    # build the TANGO dependency and core C++ images
-    docker-compose -f dependencies.yml -f tango.yml build
-    # build Docker images for Java and Python
-    docker-compose -f tango.yml -f tangotest.yml -f itango.yml build
+    cd docker
+    make build
     
-Alternatively, images can be created by following the standard Docker image
-build procedure using the Dockerfile definitions located in the `tango` directory.
-
-
 ## Launching a TANGO system
 The Docker compose files define a set of containers for a TANGO system. In 
 addition to the processes to be launched, the files define the connections and 

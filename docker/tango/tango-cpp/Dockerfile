@@ -1,4 +1,11 @@
-FROM ska/tango-dependencies:9.2.5a
+FROM ska/tango-dependencies:latest
+
+# supervisor is installed so that the TANGO Starter device can run, one 
+# Starter process per container  
+RUN runtimeDeps='supervisor' \
+    && DEBIAN_FRONTEND=noninteractive apt-get update \
+    && DEBIAN_FRONTEND=noninteractive apt-get -y install --no-install-recommends $runtimeDeps \
+    && rm -rf /var/lib/apt/lists/* 
 
 RUN TANGO_VERSION=9.2.5a \
     && TANGO_DOWNLOAD_URL=https://netcologne.dl.sourceforge.net/project/tango-cs/tango-$TANGO_VERSION.tar.gz \

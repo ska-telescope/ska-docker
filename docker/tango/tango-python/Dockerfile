@@ -1,4 +1,4 @@
-FROM ska/tango-base:9.2.5a
+FROM ska/tango-cpp:latest
 
 USER root
 
@@ -7,7 +7,7 @@ RUN runtimeDeps='ipython libboost-python1.62.0 python-concurrent.futures python-
     && apt-get -y install --no-install-recommends $runtimeDeps \
     && rm -rf /var/lib/apt/lists/* 
 
-RUN PYTANGO_TAG=v9.2.2 \
+RUN PYTANGO_TAG=v9.2.4 \
     && PYTANGO_URL=https://github.com/tango-cs/pytango.git \
     && buildDeps='build-essential ca-certificates git libboost-python-dev python-dev python-setuptools python3-dev python3-setuptools' \
     && DEBIAN_FRONTEND=noninteractive apt-get update \

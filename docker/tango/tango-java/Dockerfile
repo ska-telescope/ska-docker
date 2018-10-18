@@ -1,4 +1,4 @@
-FROM ska/tango-dependencies:9.2.5a
+FROM ska/tango-dependencies:latest
 
 RUN runtimeDeps='default-jre' \
     && DEBIAN_FRONTEND=noninteractive apt-get update \
