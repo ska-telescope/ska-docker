@@ -29,4 +29,4 @@ services:
       - $HOME:/hosthome:rw
     environment:
       - XAUTHORITY=/hosthome/.Xauthority
-      - DISPLAY=${MY_IP}:0              
+      - DISPLAY=${DISPLAY}

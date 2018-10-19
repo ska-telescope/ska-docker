@@ -23,7 +23,7 @@ services:
       - $HOME:/hosthome:ro
     environment:
       - XAUTHORITY=/hosthome/.Xauthority
-      - DISPLAY=${MY_IP}:0              
+      - DISPLAY=${DISPLAY}
       - TANGO_HOST=databaseds:10000 
     entrypoint:
       - /usr/local/bin/wait-for-it.sh
