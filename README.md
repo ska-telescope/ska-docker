@@ -67,9 +67,10 @@ make target or _down_ make target respectively. For instance,
 itango available, launch the itango service and attach the terminal to the 
 itango container. An example session follows:
 
-    # start a container running itango
-    make start itango
-    
+    # start the tangotest device, which we'll connect to using itango
+    make start tangotest 
+    # start the itango container
+    make start itango    
     # attach to the itango container
     docker attach itango
     In [1]: dev = DeviceProxy('sys/tg_test/1')
