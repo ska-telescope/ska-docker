@@ -12,19 +12,19 @@ version: '2'
 services:
   tangotest:
     build:
-      context: tango
-      dockerfile: Dockerfile.java
-    image: ska/tango-java:9.2.5a
+      context: ../docker/tango/tango-java
+    image: ska/tango-java:latest
     container_name: tangotest
     depends_on:
       - databaseds
     environment:
-      - TANGO_HOST=databaseds:10000 
+      - TANGO_HOST=databaseds:10000
     entrypoint:
       - /usr/local/bin/wait-for-it.sh
       - databaseds:10000
       - --timeout=30
       - --strict
       - --
-      - /usr/local/bin/TangoTest 
+      - /usr/local/bin/TangoTest
       - test
+

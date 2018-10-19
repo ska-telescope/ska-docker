@@ -15,9 +15,9 @@ version: '2'
 services:
   itango:
     build:      
-      context: tango
+      context: ../docker/tango/tango-python
       dockerfile: Dockerfile.python
-    image: ska/tango-python:9.2.5a
+    image: ska/tango-python:latest
     container_name: itango
     depends_on:
       - databaseds

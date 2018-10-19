@@ -13,9 +13,8 @@ version: '2'
 services:
   jive:
     build:      
-      context: tango
-      dockerfile: Dockerfile.java
-    image: ska/tango-java:9.2.5a
+      context: ../docker/tango/tango-java
+    image: ska/tango-java:latest
     container_name: jive
     depends_on:
       - databaseds
