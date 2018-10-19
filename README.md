@@ -31,10 +31,12 @@ tangodb         | MariaDB database holding TANGO database tables
 databaseds      | TANGO database device server
 tangotest       | TANGO test device
 jive            | Container running Jive application
+logviewer       | Container running TANGO log viewer
 pogo            | Pogo TANGO application
 astor           | Astor application
 starter-example | Example service running TANGO Starter device
 itango          | interactive itango session
+
 
 To start and stop a minimal TANGO system (database and databaseds server),
 execute:

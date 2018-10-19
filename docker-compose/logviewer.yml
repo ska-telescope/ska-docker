@@ -1,0 +1,33 @@
+#
+# Docker compose file that launches LogViewer, sending output to a remote X11
+# display.
+#
+# Defines:
+#   - logviewer: container running LogViewer
+#
+# Requires:
+#   - tango.yml
+#
+version: '2'
+
+services:
+  logviewer:
+    build:      
+      context: ../docker/tango/tango-java
+    image: ska/tango-java:latest
+    container_name: logviewer
+    depends_on:
+      - databaseds
+    volumes:
+      - $HOME:/hosthome:ro
+    environment:
+      - XAUTHORITY=/hosthome/.Xauthority
+      - DISPLAY=${DISPLAY}
+      - TANGO_HOST=databaseds:10000 
+    entrypoint:
+      - /usr/local/bin/wait-for-it.sh
+      - databaseds:10000
+      - --timeout=30
+      - --strict
+      - --
+      - /usr/local/bin/logviewer
