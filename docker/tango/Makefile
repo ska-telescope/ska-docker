@@ -1,6 +1,6 @@
-TRGTS = tango-dependencies tango-db tango-cpp tango-java tango-python
+TRGTS = tango-dependencies tango-db tango-cpp tango-java tango-python tango-starter tango-pogo
 
-.PHONY: all build tango-dependencies tango-db tango-cpp tango-java tango-python
+.PHONY: all build tango-dependencies tango-db tango-cpp tango-java tango-python tango-starter tango-starter tango-pogo
 
 all: build
 
@@ -25,4 +25,10 @@ tango-java: tango-dependencies
 
 tango-python: tango-dependencies
 	$(MAKE) -C tango-python
+
+tango-starter: tango-cpp
+	$(MAKE) -C tango-starter
+
+tango-pogo: tango-java
+	$(MAKE) -C tango-pogo
 

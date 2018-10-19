@@ -1,0 +1,32 @@
+#
+# Docker compose file that launches Pogo, sending the display to a remote X11
+# display. Pogo output can be persisted by writing to either:
+#   1. the /home/tango folder, which is a Docker volume persisted between
+#      container runs;
+#   2. the /hosthome folder, which is a r/w mount of your home folder.
+#
+# Defines:
+#   - pogo (service): service running Pogo
+#   - pogo (volume): persistent volume for writing Pogo outut
+#
+# Requires:
+#   - N/A
+#
+version: '2'
+
+# Create a volume so that Pogo preferences and Pogo output can be persisted
+volumes:
+  pogo: {}
+
+services:
+  pogo:
+    build:      
+      context: ../docker/tango/tango-pogo
+    image: ska/tango-pogo:latest
+    container_name: pogo
+    volumes:
+      - pogo:/home/tango
+      - $HOME:/hosthome:rw
+    environment:
+      - XAUTHORITY=/hosthome/.Xauthority
+      - DISPLAY=${MY_IP}:0              
