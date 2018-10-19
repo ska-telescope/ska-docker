@@ -19,7 +19,7 @@ ska/tango-starter      | Example image that demonstrates how to package the Star
 To build the images, from the root of this repository execute:
 
     cd docker
-    make 
+    make build
     
 ## Launching TANGO applications and services
 The docker-compose directory contains a set of files that can be used to run a
