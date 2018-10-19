@@ -37,6 +37,8 @@ RUN buildDeps='python-dev python-pip python-setuptools python3-dev python3-pip p
     && apt-get purge -y --auto-remove $buildDeps
 
 USER tango
-RUN mkdir ~/.ipython
+
+# create ipython profile to so that itango doesn't fail if ipython hasn't run yet
+RUN ipython profile create
 
 CMD ["itango"]
