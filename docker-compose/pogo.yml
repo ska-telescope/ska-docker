@@ -22,7 +22,7 @@ services:
   pogo:
     build:      
       context: ../docker/tango/tango-pogo
-    image: ska/tango-pogo:latest
+    image: ${DOCKER_REGISTRY_USER}/tango-pogo:latest
     container_name: pogo
     volumes:
       - pogo:/home/tango

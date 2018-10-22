@@ -14,9 +14,9 @@ volumes:
         
 services:
   tangodb:
-    build:      
+    build:
       context: ../docker/tango/tango-db
-    image: ska/tango-db:latest
+    image: ${DOCKER_REGISTRY_USER}/tango-db:latest
     container_name: tangodb
     environment:
       - MYSQL_ROOT_PASSWORD=secret
@@ -27,9 +27,9 @@ services:
       - tangodb:/var/lib/mysql
 
   databaseds:
-    build:      
+    build:
       context: ../docker/tango/tango-cpp
-    image: ska/tango-cpp:latest
+    image: ${DOCKER_REGISTRY_USER}/tango-cpp:latest
     container_name: databaseds
     hostname: databaseds
     depends_on:

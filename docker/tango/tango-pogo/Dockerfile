@@ -1,4 +1,5 @@
-FROM ska/tango-java:latest
+ARG DOCKER_REGISTRY_USER
+FROM ${DOCKER_REGISTRY_USER}/tango-java:latest
 
 USER root
 

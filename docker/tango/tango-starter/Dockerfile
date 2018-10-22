@@ -1,4 +1,5 @@
-FROM ska/tango-cpp:latest
+ARG DOCKER_REGISTRY_USER
+FROM ${DOCKER_REGISTRY_USER}/tango-cpp:latest
 
 USER root
 

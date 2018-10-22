@@ -22,8 +22,11 @@ endif
 MY_IP := $(shell ifconfig | sed -En 's/127.0.0.1//;s/.*inet (addr:)?(([0-9]*\.){3}[0-9]*).*/\2/p' | head -n1)
 DISPLAY = $(MY_IP):0
 
-.PHONY: up down minimal start stop status help
+.PHONY: up down minimal start stop status clean pull help
 .DEFAULT_GOAL := help
+
+pull: ## pull the images from the Docker hub
+	docker-compose $(COMPOSE_FILE_ARGS) pull
 
 up: minimal  ## start the base TANGO system and prepare all services
 	DISPLAY=$(DISPLAY) docker-compose $(COMPOSE_FILE_ARGS) up --no-start
@@ -31,7 +34,7 @@ up: minimal  ## start the base TANGO system and prepare all services
 down:  ## stop all services and tear down the system
 	DISPLAY=$(DISPLAY) docker-compose $(COMPOSE_FILE_ARGS) down
 
-minimal:  ## start the base TANGO system
+minimal: ## start the base TANGO system
 	docker-compose -f tango.yml up -d
 
 start: up ## start a service (usage: make start <servicename>)

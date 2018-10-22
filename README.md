@@ -6,21 +6,39 @@ are useful for TANGO control system development.
 ## Building the Docker images
 The following Docker images are built by this project:
 
-Docker image           | Description
------------------------|------------
-ska/tango-dependencies | A base image containing TANGO's preferred version of ZeroMQ plus the preferred, patched version of OmniORB.
-ska/tango-db           | A MariaDB image including TANGO database schema. Data is stored separately in a volume. 
-ska/tango-cpp          | Core C++ TANGO libraries and applications.
-ska/tango-java         | As per ska/tango-cpp, plus Java applications and bindings    
-ska/tango-python       | Extends ska/tango-cpp, adding PyTango Python bindings and itango for interactive TANGO sessions.
-ska/tango-pogo         | Image for running Pogo and displaying Pogo help. Pogo output can be persisted to a docker volume or to the host machine.
-ska/tango-starter      | Example image that demonstrates how to package the Starter device in an image.
+Docker image       | Description
+-------------------|------------
+tango-dependencies | A base image containing TANGO's preferred version of ZeroMQ plus the preferred, patched version of OmniORB.
+tango-db           | A MariaDB image including TANGO database schema. Data is stored separately in a volume. 
+tango-cpp          | Core C++ TANGO libraries and applications.
+tango-java         | As per ska/tango-cpp, plus Java applications and bindings    
+tango-python       | Extends ska/tango-cpp, adding PyTango Python bindings and itango for interactive TANGO sessions.
+tango-pogo         | Image for running Pogo and displaying Pogo help. Pogo output can be persisted to a docker volume or to the host machine.
+tango-starter      | Example image that demonstrates how to package the Starter device in an image.
 
-To build the images, from the root of this repository execute:
+To build and register the images locally, from the root of this repository
+execute:
 
     cd docker
+    # build and register TBC/tango-cpp, TBC/tango-jive, etc. locally
     make build
-    
+
+Optionally, you can register images to an alternative Docker registry account 
+by supplying the ``DOCKER_REGISTRY_HOST`` and ``DOCKER_REGISTRY_USER``
+Makefile variables, e.g.,
+
+    # build and register images as foo/tango-cpp, foo/tango-jive, etc.
+    make DOCKER_REGISTRY_USER=foo build
+
+Push the built images to a Docker registry using ``make push`` target. The 
+URL of the registry can be specified by providing the ``DOCKER_REGISTRY_HOST``
+Makefile argument. 
+
+    # push the images to the Docker registry, making them publicly 
+    # available as foo/tango-cpp, foo/tango-jive, etc.
+    make DOCKER_REGISTRY_USER=foo DOCKER_REGISTRY_HOST=docker.io push
+
+
 ## Launching TANGO applications and services
 The docker-compose directory contains a set of files that can be used to run a
 TANGO system in Docker containers. The following services are defined:
@@ -37,6 +55,18 @@ astor           | Astor application
 starter-example | Example service running TANGO Starter device
 itango          | interactive itango session
 
+To pull pre-built images from the Docker hub, execute:
+
+    cd docker-compose
+    # download official SKA images
+    make pull
+    
+Optional: the images can be pulled from an alternative account by supplying
+the DOCKER_REGISTRY_USER Makefile variable, e.g.,
+
+    cd docker-compose
+    # download foo/tango-cpp, foo/tango-jive, etc.
+    make DOCKER_REGISTRY_USER=foo pull
 
 To start and stop a minimal TANGO system (database and databaseds server),
 execute:

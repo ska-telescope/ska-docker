@@ -1,30 +1,35 @@
-TRGTS = tango-dependencies tango-db tango-cpp tango-java tango-python tango-starter tango-pogo
+DIRS = tango-dependencies tango-db tango-cpp tango-java tango-python tango-starter tango-pogo
+BUILDDIRS = $(DIRS:%=build-%)
+CHECKSTATUSDIRS = $(DIRS:%=checkstatus-%)
+SHOWVERDIRS = $(DIRS:%=showver-%)
+PUSHDIRS = $(DIRS:%=push-%)
 
-.PHONY: build tango-dependencies tango-db tango-cpp tango-java tango-python tango-starter tango-starter tango-pogo
 .DEFAULT_GOAL := help
 
-build: $(TRGTS)  ## build all images
+build: $(DIRS)  ## build all images
+$(DIRS): $(BUILDDIRS)
+$(BUILDDIRS):
+	$(MAKE) -C $(@:build-%=%) build
 
-tango-dependencies:  ## build base dependency image
-	$(MAKE) -C tango-dependencies
+check-status: $(CHECKSTATUSDIRS) ## check whether subdirectories have uncommitted changes
+$(CHECKSTATUSDIRS):
+	$(MAKE) -C $(@:checkstatus-%=%) check-status
 
-tango-db:  ## build ska/tango-db image
-	$(MAKE) -C tango-db
+showver: $(SHOWVERDIRS)  ## show image versions
+$(SHOWVERDIRS):
+	$(MAKE) -C $(@:showver-%=%) showver
 
-tango-cpp: tango-dependencies  ## build ska/tango-cpp image
-	$(MAKE) -C tango-cpp
-
-tango-java: tango-dependencies  ## build ska/tango-java image
-	$(MAKE) -C tango-java
-
-tango-python: tango-dependencies  ## build ska/tango-python image
-	$(MAKE) -C tango-python
-
-tango-starter: tango-cpp  ## build ska/tango-starter image
-	$(MAKE) -C tango-starter
-
-tango-pogo: tango-java  ## build ska/tango-pogo image
-	$(MAKE) -C tango-pogo
+push: $(PUSHDIRS)  ## push images to Docker hub
+$(PUSHDIRS):
+	$(MAKE) -C $(@:push-%=%) push
 
 help:  ## show this help.
 	@grep -E '^[a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) | sort | awk 'BEGIN {FS = ":.*?## "}; {printf "\033[36m%-30s\033[0m %s\n", $$1, $$2}'
+
+.PHONY: subdirs $(DIRS)
+.PHONY: subdirs $(BUILDDIRS)
+.PHONY: subdirs $(CHECKSTATUSDIRS)
+.PHONY: subdirs $(PUSHDIRS)
+.PHONY: subdirs $(SHOWVERDIRS)
+.PHONY: build check-status showver push help
+

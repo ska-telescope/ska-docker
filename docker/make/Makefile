@@ -1,7 +1,6 @@
 SELF_DIR := $(dir $(lastword $(MAKEFILE_LIST)))
 include $(SELF_DIR)/Makefile.mk
 
-REGISTRY_HOST=
-USERNAME=ska
-#NAME=
+DOCKER_REGISTRY_HOST=
+DOCKER_REGISTRY_USER=tbd
 

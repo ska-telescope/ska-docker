@@ -13,13 +13,12 @@
 #   See the License for the specific language governing permissions and
 #   limitations under the License.
 #
-REGISTRY_HOST=docker.io
-USERNAME=$(USER)
+DOCKER_REGISTRY_HOST=docker.io
+DOCKER_REGISTRY_USER=$(USER)
 NAME=$(shell basename $(CURDIR))
 
 RELEASE_SUPPORT := $(shell dirname $(abspath $(lastword $(MAKEFILE_LIST))))/.make-release-support
-#IMAGE=$(REGISTRY_HOST)/$(USERNAME)/$(NAME)
-IMAGE=$(USERNAME)/$(NAME)
+IMAGE=$(DOCKER_REGISTRY_USER)/$(NAME)
 
 VERSION=$(shell . $(RELEASE_SUPPORT) ; getVersion)
 TAG=$(shell . $(RELEASE_SUPPORT); getTag)
@@ -48,7 +47,7 @@ post-push:
 
 
 docker-build: .release
-	docker build $(DOCKER_BUILD_ARGS) -t $(IMAGE):$(VERSION) $(DOCKER_BUILD_CONTEXT) -f $(DOCKER_FILE_PATH)
+	docker build $(DOCKER_BUILD_ARGS) -t $(IMAGE):$(VERSION) $(DOCKER_BUILD_CONTEXT) -f $(DOCKER_FILE_PATH) --build-arg DOCKER_REGISTRY_USER=$(DOCKER_REGISTRY_USER)
 	@DOCKER_MAJOR=$(shell docker -v | sed -e 's/.*version //' -e 's/,.*//' | cut -d\. -f1) ; \
 	DOCKER_MINOR=$(shell docker -v | sed -e 's/.*version //' -e 's/,.*//' | cut -d\. -f2) ; \
 	if [ $$DOCKER_MAJOR -eq 1 ] && [ $$DOCKER_MINOR -lt 10 ] ; then \
@@ -80,14 +79,14 @@ snapshot: build push
 showver: .release
 	@. $(RELEASE_SUPPORT); getVersion
 
-tag-patch-release: VERSION := $(shell . $(RELEASE_SUPPORT); nextPatchLevel)
-tag-patch-release: .release tag
+bump-patch-release: VERSION := $(shell . $(RELEASE_SUPPORT); nextPatchLevel)
+bump-patch-release: .release tag
 
-tag-minor-release: VERSION := $(shell . $(RELEASE_SUPPORT); nextMinorLevel)
-tag-minor-release: .release tag
+bump-minor-release: VERSION := $(shell . $(RELEASE_SUPPORT); nextMinorLevel)
+bump-minor-release: .release tag
 
-tag-major-release: VERSION := $(shell . $(RELEASE_SUPPORT); nextMajorLevel)
-tag-major-release: .release tag
+bump-major-release: VERSION := $(shell . $(RELEASE_SUPPORT); nextMajorLevel)
+bump-major-release: .release tag
 
 patch-release: tag-patch-release release
 	@echo $(VERSION)
@@ -101,12 +100,12 @@ major-release: tag-major-release release
 
 tag: TAG=$(shell . $(RELEASE_SUPPORT); getTag $(VERSION))
 tag: check-status
-	@. $(RELEASE_SUPPORT) ; ! tagExists $(TAG) || (echo "ERROR: tag $(TAG) for version $(VERSION) already tagged in git" >&2 && exit 1) ;
+#	@. $(RELEASE_SUPPORT) ; ! tagExists $(TAG) || (echo "ERROR: tag $(TAG) for version $(VERSION) already tagged in git" >&2 && exit 1) ;
 	@. $(RELEASE_SUPPORT) ; setRelease $(VERSION)
-	git add .
-	git commit -m "bumped to version $(VERSION)" ;
-	git tag $(TAG) ;
-	@ if [ -n "$(shell git remote -v)" ] ; then git push --tags ; else echo 'no remote to push tags to' ; fi
+#	git add .
+#	git commit -m "bumped to version $(VERSION)" ;
+#	git tag $(TAG) ;
+#	@ if [ -n "$(shell git remote -v)" ] ; then git push --tags ; else echo 'no remote to push tags to' ; fi
 
 check-status:
 	@. $(RELEASE_SUPPORT) ; ! hasChanges || (echo "ERROR: there are still outstanding changes" >&2 && exit 1) ;

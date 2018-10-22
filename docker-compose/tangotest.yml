@@ -13,7 +13,7 @@ services:
   tangotest:
     build:
       context: ../docker/tango/tango-java
-    image: ska/tango-java:latest
+    image: ${DOCKER_REGISTRY_USER}/tango-java:latest
     container_name: tangotest
     depends_on:
       - databaseds
