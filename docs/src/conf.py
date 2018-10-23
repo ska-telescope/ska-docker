@@ -53,9 +53,9 @@ source_suffix = '.rst'
 master_doc = 'index'
 
 # General information about the project.
-project = 'Skeleton project'
-copyright = '2018, Marco Bartolini'
-author = 'Marco Bartolini'
+project = 'SKA Docker Images'
+copyright = '2018, Stewart Williams'
+author = 'Stewart Williams'
 
 # The version info for the project you're documenting, acts as replacement for
 # |version| and |release|, also used in various other places throughout the
@@ -100,13 +100,12 @@ html_theme = 'sphinx_rtd_theme'
 html_context = {
     'favicon': 'img/favicon.ico',
     'logo': 'img/logo.jpg',
-    'theme_logo_only' : True,
-    'display_github': True, # Integrate GitHub
-    'github_user': 'flyingfrog81', # Username
-    'github_repo': 'ska-skeleton', # Repo name
-    'github_version': 'master', # Version
-    'conf_py_path': '/docs/src/', # Path in the checkout to the docs root
-
+    'theme_logo_only': True,
+    'display_github': True,  # Integrate GitHub
+    'github_user': 'ska-telescope',  # Username
+    'github_repo': 'docker',  # Repo name
+    'github_version': 'master',  # Version
+    'conf_py_path': '/docs/src/',  # Path in the checkout to the docs root
 }
 
 # Add any paths that contain custom static files (such as style sheets) here,
@@ -171,7 +170,7 @@ latex_documents = [
 # (source start file, name, description, authors, manual section).
 man_pages = [
     (master_doc, '{{project-name}}', '{{project-name}} Documentation',
-     [{{author}}], 1)
+     ['{{author}}'], 1)
 ]
 
 
@@ -182,7 +181,7 @@ man_pages = [
 #  dir menu entry, description, category)
 texinfo_documents = [
     (master_doc, '{{project-name}}', '{{project-name}} Documentation',
-     {{author}}, '{{project-name}}', 'One line description of project.',
+     '{{author}}', '{{project-name}}', 'One line description of project.',
      'Miscellaneous'),
 ]
 
