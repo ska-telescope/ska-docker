@@ -6,9 +6,9 @@ image: docker:latest
 services:
   - docker:dind
 
-stages:
-  - build
-  - test
+#stages:
+#  - build
+#  - test
 
 before_script:
   - apk update
@@ -19,7 +19,7 @@ before_script:
 
   
 build-master:
-  stage: build
+  #stage: build
   tags:
     - ska
   script:
@@ -33,7 +33,7 @@ build-master:
     - master
 
 test-master:
-  stage: build
+  #stage: build
   tags:
     - ska
   script:
