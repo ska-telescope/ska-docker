@@ -1,0 +1,51 @@
+# GitLab CI in conjunction with GitLab Runner can use Docker Engine to test and build any application.
+# Docker, when used with GitLab CI, runs each job in a separate and isolated container using the predefined image that is set up in .gitlab-ci.yml.
+# In this case we use the latest python docker image to build and test this project.
+image: docker:latest
+
+services:
+  - docker:dind
+
+# During the development of software, there can be many stages until it's ready for public consumption. 
+# You sure want to first test your code and then deploy it in a testing or staging environment before you release it to the public. 
+# That way you can prevent bugs not only in your software, but in the deployment process as well. 
+# See also https://docs.gitlab.com/ee/ci/environments.html
+#stages:
+#  - build
+#  - test
+
+before_script:
+  - apk update
+  - apk add make bash git curl
+  - apk add --no-cache py-pip
+  - pip install docker-compose
+  - docker login -u "$CI_REGISTRY_USER" -p "$CI_REGISTRY_PASSWORD" $CI_REGISTRY
+
+  
+build-master:
+  #stage: build
+  tags:
+    - ska
+  script:
+    - ls -la
+    - cd docker
+    - echo DOCKER_REGISTRY_USER=$DOCKER_REGISTRY_USER
+    - echo DOCKER_REGISTRY_HOST=$DOCKER_REGISTRY_HOST
+    - make DOCKER_REGISTRY_USER=$DOCKER_REGISTRY_USER DOCKER_REGISTRY_HOST=$DOCKER_REGISTRY_HOST build
+    - make DOCKER_REGISTRY_USER=$DOCKER_REGISTRY_USER DOCKER_REGISTRY_HOST=$DOCKER_REGISTRY_HOST push
+    - echo DOCKER_REGISTRY_USER=$DOCKER_REGISTRY_USER
+    - echo DOCKER_REGISTRY_HOST=$DOCKER_REGISTRY_HOST
+  only:
+    - master
+
+test-master:
+  #stage: build
+  tags:
+    - ska
+  script:
+    - cd docker-compose
+    - make pull
+    - make up
+    - make start tangotest
+  only:
+    - master
