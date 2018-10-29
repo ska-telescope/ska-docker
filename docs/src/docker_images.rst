@@ -50,13 +50,25 @@ account by supplying the ``DOCKER_REGISTRY_HOST`` and
 Pushing the images to a Docker registry
 ---------------------------------------
 
-Push the built images to a Docker registry using ``make push`` target.
-The URL of the registry can be specified by providing the
-``DOCKER_REGISTRY_HOST`` Makefile argument.
+Push images to the default Docker registry located at https://docker.io by
+using the ``make push`` target.
 
 .. code-block:: console
 
    # push the images to the Docker registry, making them publicly
    # available as foo/tango-cpp, foo/tango-jive, etc.
-   make DOCKER_REGISTRY_USER=foo DOCKER_REGISTRY_HOST=docker.io push
+   make DOCKER_REGISTRY_USER=foo push
+
+Images can also be pushed to a custom registry by specifying a
+``DOCKER_REGISTRY_HOST`` Makefile argument during the ``make build``
+and ``make push`` steps, e.g.,
+
+.. code-block:: console
+
+   # build and tag the images to a custom registry located at
+   # http://test_registry:5000
+   make DOCKER_REGISTRY_USER=foo DOCKER_REGISTRY_HOST=my_registry.org:5000 build
+
+   # Now push the images to the remote custom registry
+   make DOCKER_REGISTRY_USER=foo DOCKER_REGISTRY_HOST=my.registry.org:5000 push
 
