@@ -15,9 +15,9 @@ services:
 #  - test
 
 before_script:
-  - apk update
-  - apk add make bash git curl
-  - apk add --no-cache py-pip
+  - apt-get update
+  - apt-get add make bash git curl
+  - apt-get add --no-cache py-pip
   - pip install docker-compose
   - docker login -u "$CI_REGISTRY_USER" -p "$CI_REGISTRY_PASSWORD" $CI_REGISTRY
   - docker pull $DOCKER_REGISTRY_HOST/$DOCKER_REGISTRY_USER/tango-dependencies
