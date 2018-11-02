@@ -1,10 +1,10 @@
 # GitLab CI in conjunction with GitLab Runner can use Docker Engine to test and build any application.
 # Docker, when used with GitLab CI, runs each job in a separate and isolated container using the predefined image that is set up in .gitlab-ci.yml.
 # In this case we use the latest python docker image to build and test this project.
-image: docker:latest
+#image: docker:latest
 
-services:
-  - docker:dind
+#services:
+#  - docker:dind
 
 # During the development of software, there can be many stages until it's ready for public consumption. 
 # You sure want to first test your code and then deploy it in a testing or staging environment before you release it to the public. 
@@ -15,8 +15,8 @@ services:
 #  - test
 
 before_script:
-  - apt-get update
-  - apt-get install make bash git curl
+#  - apt-get update
+#  - apt-get install make bash git curl
   - apt-get install --no-cache py-pip
   - pip install docker-compose
   - docker login -u "$CI_REGISTRY_USER" -p "$CI_REGISTRY_PASSWORD" $CI_REGISTRY
