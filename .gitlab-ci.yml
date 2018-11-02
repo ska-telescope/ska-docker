@@ -31,8 +31,6 @@ build_dependencies:
     - echo DOCKER_REGISTRY_USER=$DOCKER_REGISTRY_USER
     - echo DOCKER_REGISTRY_HOST=$DOCKER_REGISTRY_HOST 
   when: manual
-  only:
-    - master
     
 build_tango-db:
   tags:
@@ -43,8 +41,6 @@ build_tango-db:
     - make DOCKER_REGISTRY_USER=$DOCKER_REGISTRY_USER DOCKER_REGISTRY_HOST=$DOCKER_REGISTRY_HOST push
     - echo DOCKER_REGISTRY_USER=$DOCKER_REGISTRY_USER
     - echo DOCKER_REGISTRY_HOST=$DOCKER_REGISTRY_HOST 
-  only:
-    - master
     
 build_tango-cpp:
   tags:
@@ -55,8 +51,6 @@ build_tango-cpp:
     - make DOCKER_REGISTRY_USER=$DOCKER_REGISTRY_USER DOCKER_REGISTRY_HOST=$DOCKER_REGISTRY_HOST push
     - echo DOCKER_REGISTRY_USER=$DOCKER_REGISTRY_USER
     - echo DOCKER_REGISTRY_HOST=$DOCKER_REGISTRY_HOST 
-  only:
-    - master
     
 build_tango-java:
   tags:
@@ -67,8 +61,6 @@ build_tango-java:
     - make DOCKER_REGISTRY_USER=$DOCKER_REGISTRY_USER DOCKER_REGISTRY_HOST=$DOCKER_REGISTRY_HOST push
     - echo DOCKER_REGISTRY_USER=$DOCKER_REGISTRY_USER
     - echo DOCKER_REGISTRY_HOST=$DOCKER_REGISTRY_HOST 
-  only:
-    - master
 
 build_tango-pogo:
   tags:
@@ -79,8 +71,6 @@ build_tango-pogo:
     - make DOCKER_REGISTRY_USER=$DOCKER_REGISTRY_USER DOCKER_REGISTRY_HOST=$DOCKER_REGISTRY_HOST push
     - echo DOCKER_REGISTRY_USER=$DOCKER_REGISTRY_USER
     - echo DOCKER_REGISTRY_HOST=$DOCKER_REGISTRY_HOST 
-  only:
-    - master
 
 build_tango-python:
   tags:
@@ -91,8 +81,6 @@ build_tango-python:
     - make DOCKER_REGISTRY_USER=$DOCKER_REGISTRY_USER DOCKER_REGISTRY_HOST=$DOCKER_REGISTRY_HOST push
     - echo DOCKER_REGISTRY_USER=$DOCKER_REGISTRY_USER
     - echo DOCKER_REGISTRY_HOST=$DOCKER_REGISTRY_HOST 
-  only:
-    - master
 
 build_tango-starter:
   tags:
@@ -103,8 +91,6 @@ build_tango-starter:
     - make DOCKER_REGISTRY_USER=$DOCKER_REGISTRY_USER DOCKER_REGISTRY_HOST=$DOCKER_REGISTRY_HOST push
     - echo DOCKER_REGISTRY_USER=$DOCKER_REGISTRY_USER
     - echo DOCKER_REGISTRY_HOST=$DOCKER_REGISTRY_HOST 
-  only:
-    - master
     
 build-master:
   #stage: build
@@ -118,8 +104,6 @@ build-master:
     - echo DOCKER_REGISTRY_USER=$DOCKER_REGISTRY_USER
     - echo DOCKER_REGISTRY_HOST=$DOCKER_REGISTRY_HOST
   when: manual
-  only:
-    - master
 
 test-master:
   #stage: build
@@ -131,5 +115,3 @@ test-master:
     - make up
     - make start tangotest
   when: manual
-  only:
-    - master
