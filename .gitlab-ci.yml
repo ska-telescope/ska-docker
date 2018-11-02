@@ -21,7 +21,91 @@ before_script:
   - pip install docker-compose
   - docker login -u "$CI_REGISTRY_USER" -p "$CI_REGISTRY_PASSWORD" $CI_REGISTRY
 
-  
+build_dependencies:
+  tags:
+    - ska  
+  script: 
+    - cd docker/tango/tango-dependencies
+    - make DOCKER_REGISTRY_USER=$DOCKER_REGISTRY_USER DOCKER_REGISTRY_HOST=$DOCKER_REGISTRY_HOST build
+    - make DOCKER_REGISTRY_USER=$DOCKER_REGISTRY_USER DOCKER_REGISTRY_HOST=$DOCKER_REGISTRY_HOST push
+    - echo DOCKER_REGISTRY_USER=$DOCKER_REGISTRY_USER
+    - echo DOCKER_REGISTRY_HOST=$DOCKER_REGISTRY_HOST 
+  when: manual
+  only:
+    - master
+    
+build_tango-db:
+  tags:
+    - ska  
+  script: 
+    - cd docker/tango/tango-db
+    - make DOCKER_REGISTRY_USER=$DOCKER_REGISTRY_USER DOCKER_REGISTRY_HOST=$DOCKER_REGISTRY_HOST build
+    - make DOCKER_REGISTRY_USER=$DOCKER_REGISTRY_USER DOCKER_REGISTRY_HOST=$DOCKER_REGISTRY_HOST push
+    - echo DOCKER_REGISTRY_USER=$DOCKER_REGISTRY_USER
+    - echo DOCKER_REGISTRY_HOST=$DOCKER_REGISTRY_HOST 
+  only:
+    - master
+    
+build_tango-cpp:
+  tags:
+    - ska  
+  script: 
+    - cd docker/tango/tango-cpp
+    - make DOCKER_REGISTRY_USER=$DOCKER_REGISTRY_USER DOCKER_REGISTRY_HOST=$DOCKER_REGISTRY_HOST build
+    - make DOCKER_REGISTRY_USER=$DOCKER_REGISTRY_USER DOCKER_REGISTRY_HOST=$DOCKER_REGISTRY_HOST push
+    - echo DOCKER_REGISTRY_USER=$DOCKER_REGISTRY_USER
+    - echo DOCKER_REGISTRY_HOST=$DOCKER_REGISTRY_HOST 
+  only:
+    - master
+    
+build_tango-java:
+  tags:
+    - ska  
+  script: 
+    - cd docker/tango/tango-java
+    - make DOCKER_REGISTRY_USER=$DOCKER_REGISTRY_USER DOCKER_REGISTRY_HOST=$DOCKER_REGISTRY_HOST build
+    - make DOCKER_REGISTRY_USER=$DOCKER_REGISTRY_USER DOCKER_REGISTRY_HOST=$DOCKER_REGISTRY_HOST push
+    - echo DOCKER_REGISTRY_USER=$DOCKER_REGISTRY_USER
+    - echo DOCKER_REGISTRY_HOST=$DOCKER_REGISTRY_HOST 
+  only:
+    - master
+
+build_tango-pogo:
+  tags:
+    - ska  
+  script: 
+    - cd docker/tango/tango-java
+    - make DOCKER_REGISTRY_USER=$DOCKER_REGISTRY_USER DOCKER_REGISTRY_HOST=$DOCKER_REGISTRY_HOST build
+    - make DOCKER_REGISTRY_USER=$DOCKER_REGISTRY_USER DOCKER_REGISTRY_HOST=$DOCKER_REGISTRY_HOST push
+    - echo DOCKER_REGISTRY_USER=$DOCKER_REGISTRY_USER
+    - echo DOCKER_REGISTRY_HOST=$DOCKER_REGISTRY_HOST 
+  only:
+    - master
+
+build_tango-python:
+  tags:
+    - ska  
+  script: 
+    - cd docker/tango/tango-java
+    - make DOCKER_REGISTRY_USER=$DOCKER_REGISTRY_USER DOCKER_REGISTRY_HOST=$DOCKER_REGISTRY_HOST build
+    - make DOCKER_REGISTRY_USER=$DOCKER_REGISTRY_USER DOCKER_REGISTRY_HOST=$DOCKER_REGISTRY_HOST push
+    - echo DOCKER_REGISTRY_USER=$DOCKER_REGISTRY_USER
+    - echo DOCKER_REGISTRY_HOST=$DOCKER_REGISTRY_HOST 
+  only:
+    - master
+
+build_tango-starter:
+  tags:
+    - ska  
+  script: 
+    - cd docker/tango/tango-java
+    - make DOCKER_REGISTRY_USER=$DOCKER_REGISTRY_USER DOCKER_REGISTRY_HOST=$DOCKER_REGISTRY_HOST build
+    - make DOCKER_REGISTRY_USER=$DOCKER_REGISTRY_USER DOCKER_REGISTRY_HOST=$DOCKER_REGISTRY_HOST push
+    - echo DOCKER_REGISTRY_USER=$DOCKER_REGISTRY_USER
+    - echo DOCKER_REGISTRY_HOST=$DOCKER_REGISTRY_HOST 
+  only:
+    - master
+    
 build-master:
   #stage: build
   tags:
@@ -29,12 +113,11 @@ build-master:
   script:
     - ls -la
     - cd docker
-    - echo DOCKER_REGISTRY_USER=$DOCKER_REGISTRY_USER
-    - echo DOCKER_REGISTRY_HOST=$DOCKER_REGISTRY_HOST
     - make DOCKER_REGISTRY_USER=$DOCKER_REGISTRY_USER DOCKER_REGISTRY_HOST=$DOCKER_REGISTRY_HOST build
     - make DOCKER_REGISTRY_USER=$DOCKER_REGISTRY_USER DOCKER_REGISTRY_HOST=$DOCKER_REGISTRY_HOST push
     - echo DOCKER_REGISTRY_USER=$DOCKER_REGISTRY_USER
     - echo DOCKER_REGISTRY_HOST=$DOCKER_REGISTRY_HOST
+  when: manual
   only:
     - master
 
@@ -47,5 +130,6 @@ test-master:
     - make pull
     - make up
     - make start tangotest
+  when: manual
   only:
     - master

@@ -13,12 +13,12 @@
 #   See the License for the specific language governing permissions and
 #   limitations under the License.
 #
-DOCKER_REGISTRY_HOST=docker.io
+DOCKER_REGISTRY_HOST=$(DOCKER_REGISTRY_HOST)
 DOCKER_REGISTRY_USER=$(USER)
 NAME=$(shell basename $(CURDIR))
 
 RELEASE_SUPPORT := $(shell dirname $(abspath $(lastword $(MAKEFILE_LIST))))/.make-release-support
-IMAGE=$(DOCKER_REGISTRY_USER)/$(NAME)
+IMAGE=$(DOCKER_REGISTRY_HOST)/$(DOCKER_REGISTRY_USER)/$(NAME)
 
 VERSION=$(shell . $(RELEASE_SUPPORT) ; getVersion)
 TAG=$(shell . $(RELEASE_SUPPORT); getTag)
