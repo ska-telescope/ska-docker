@@ -23,85 +23,73 @@ before_script:
   - docker pull $DOCKER_REGISTRY_HOST/$DOCKER_REGISTRY_USER/tango-dependencies
 
 build_dependencies:
+  stage: build
   tags:
     - ska  
   script: 
     - cd docker/tango/tango-dependencies
     - make DOCKER_REGISTRY_USER=$DOCKER_REGISTRY_USER DOCKER_REGISTRY_HOST=$DOCKER_REGISTRY_HOST build
     - make DOCKER_REGISTRY_USER=$DOCKER_REGISTRY_USER DOCKER_REGISTRY_HOST=$DOCKER_REGISTRY_HOST push
-    - echo DOCKER_REGISTRY_USER=$DOCKER_REGISTRY_USER
-    - echo DOCKER_REGISTRY_HOST=$DOCKER_REGISTRY_HOST 
   when: manual
     
 build_tango-db:
+  stage: build
   tags:
     - ska  
   script: 
     - cd docker/tango/tango-db
     - make DOCKER_REGISTRY_USER=$DOCKER_REGISTRY_USER DOCKER_REGISTRY_HOST=$DOCKER_REGISTRY_HOST build
     - make DOCKER_REGISTRY_USER=$DOCKER_REGISTRY_USER DOCKER_REGISTRY_HOST=$DOCKER_REGISTRY_HOST push
-    - echo DOCKER_REGISTRY_USER=$DOCKER_REGISTRY_USER
-    - echo DOCKER_REGISTRY_HOST=$DOCKER_REGISTRY_HOST 
   
 build_tango-cpp:
+  stage: build
   tags:
     - ska  
   script: 
     - cd docker/tango/tango-cpp
     - make DOCKER_REGISTRY_USER=$DOCKER_REGISTRY_USER DOCKER_REGISTRY_HOST=$DOCKER_REGISTRY_HOST build
     - make DOCKER_REGISTRY_USER=$DOCKER_REGISTRY_USER DOCKER_REGISTRY_HOST=$DOCKER_REGISTRY_HOST push
-    - echo DOCKER_REGISTRY_USER=$DOCKER_REGISTRY_USER
-    - echo DOCKER_REGISTRY_HOST=$DOCKER_REGISTRY_HOST 
-
-
-    
+ 
 build_tango-java:
+  stage: build
   tags:
     - ska  
   script: 
     - cd docker/tango/tango-java
     - make DOCKER_REGISTRY_USER=$DOCKER_REGISTRY_USER DOCKER_REGISTRY_HOST=$DOCKER_REGISTRY_HOST build
     - make DOCKER_REGISTRY_USER=$DOCKER_REGISTRY_USER DOCKER_REGISTRY_HOST=$DOCKER_REGISTRY_HOST push
-    - echo DOCKER_REGISTRY_USER=$DOCKER_REGISTRY_USER
-    - echo DOCKER_REGISTRY_HOST=$DOCKER_REGISTRY_HOST 
-  when: manual
-
-build_tango-pogo:
-  tags:
-    - ska  
-  script: 
-    - cd docker/tango/tango-java
-    - make DOCKER_REGISTRY_USER=$DOCKER_REGISTRY_USER DOCKER_REGISTRY_HOST=$DOCKER_REGISTRY_HOST build
-    - make DOCKER_REGISTRY_USER=$DOCKER_REGISTRY_USER DOCKER_REGISTRY_HOST=$DOCKER_REGISTRY_HOST push
-    - echo DOCKER_REGISTRY_USER=$DOCKER_REGISTRY_USER
-    - echo DOCKER_REGISTRY_HOST=$DOCKER_REGISTRY_HOST 
-  when: manual
 
 build_tango-python:
+  stage: build
   tags:
     - ska  
   script: 
     - cd docker/tango/tango-java
     - make DOCKER_REGISTRY_USER=$DOCKER_REGISTRY_USER DOCKER_REGISTRY_HOST=$DOCKER_REGISTRY_HOST build
     - make DOCKER_REGISTRY_USER=$DOCKER_REGISTRY_USER DOCKER_REGISTRY_HOST=$DOCKER_REGISTRY_HOST push
-    - echo DOCKER_REGISTRY_USER=$DOCKER_REGISTRY_USER
-    - echo DOCKER_REGISTRY_HOST=$DOCKER_REGISTRY_HOST 
+    
+build_tango-pogo:
+  stage: build
+  tags:
+    - ska  
+  script: 
+    - cd docker/tango/tango-java
+    - make DOCKER_REGISTRY_USER=$DOCKER_REGISTRY_USER DOCKER_REGISTRY_HOST=$DOCKER_REGISTRY_HOST build
+    - make DOCKER_REGISTRY_USER=$DOCKER_REGISTRY_USER DOCKER_REGISTRY_HOST=$DOCKER_REGISTRY_HOST push
   when: manual
 
 build_tango-starter:
+  stage: build
   tags:
     - ska  
   script: 
     - cd docker/tango/tango-java
     - make DOCKER_REGISTRY_USER=$DOCKER_REGISTRY_USER DOCKER_REGISTRY_HOST=$DOCKER_REGISTRY_HOST build
     - make DOCKER_REGISTRY_USER=$DOCKER_REGISTRY_USER DOCKER_REGISTRY_HOST=$DOCKER_REGISTRY_HOST push
-    - echo DOCKER_REGISTRY_USER=$DOCKER_REGISTRY_USER
-    - echo DOCKER_REGISTRY_HOST=$DOCKER_REGISTRY_HOST 
   when: manual
 
-
 build-master:
-  #stage: build
+  stage: build
   tags:
     - ska
   script:
@@ -109,12 +97,21 @@ build-master:
     - cd docker
     - make DOCKER_REGISTRY_USER=$DOCKER_REGISTRY_USER DOCKER_REGISTRY_HOST=$DOCKER_REGISTRY_HOST build
     - make DOCKER_REGISTRY_USER=$DOCKER_REGISTRY_USER DOCKER_REGISTRY_HOST=$DOCKER_REGISTRY_HOST push
-    - echo DOCKER_REGISTRY_USER=$DOCKER_REGISTRY_USER
-    - echo DOCKER_REGISTRY_HOST=$DOCKER_REGISTRY_HOST
+  when: manual
+  
+test-framework:
+  stage: test
+  tags:
+    - ska
+  script:
+    - cd docker-compose
+    - make pull
+    - make up
+    - make start tangotest
   when: manual
 
 test-master:
-  #stage: build
+  stage: test
   tags:
     - ska
   script:
