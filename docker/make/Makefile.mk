@@ -17,7 +17,7 @@ DOCKER_REGISTRY_HOST=$(DOCKER_REGISTRY_HOST)
 DOCKER_REGISTRY_USER=$(USER)
 NAME=$(shell basename $(CURDIR))
 
-if [ -z "$var" ]
+if [ -z "$DOCKER_REGISTRY_HOST" ]
 then
 	DOCKER_REGISTRY_HOST=docker.io
 
