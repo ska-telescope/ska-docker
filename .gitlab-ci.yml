@@ -105,9 +105,8 @@ test-framework:
     - ska
   script:
     - cd docker-compose
-    - make pull
-    - make up
-    - make start tangotest
+    - docker-compose -f tango.yml -f tangotest.yml pull
+    - docker-compose -f tango.yml -f tangotest.yml up
   when: manual
 
 test-master:
