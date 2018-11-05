@@ -64,7 +64,7 @@ build_tango-python:
   tags:
     - ska  
   script: 
-    - cd docker/tango/tango-java
+    - cd docker/tango/tango-python
     - make DOCKER_REGISTRY_USER=$DOCKER_REGISTRY_USER DOCKER_REGISTRY_HOST=$DOCKER_REGISTRY_HOST build
     - make DOCKER_REGISTRY_USER=$DOCKER_REGISTRY_USER DOCKER_REGISTRY_HOST=$DOCKER_REGISTRY_HOST push
     
@@ -73,7 +73,7 @@ build_tango-pogo:
   tags:
     - ska  
   script: 
-    - cd docker/tango/tango-java
+    - cd docker/tango/tango-pogo
     - make DOCKER_REGISTRY_USER=$DOCKER_REGISTRY_USER DOCKER_REGISTRY_HOST=$DOCKER_REGISTRY_HOST build
     - make DOCKER_REGISTRY_USER=$DOCKER_REGISTRY_USER DOCKER_REGISTRY_HOST=$DOCKER_REGISTRY_HOST push
   when: manual
@@ -83,7 +83,7 @@ build_tango-starter:
   tags:
     - ska  
   script: 
-    - cd docker/tango/tango-java
+    - cd docker/tango/tango-starter
     - make DOCKER_REGISTRY_USER=$DOCKER_REGISTRY_USER DOCKER_REGISTRY_HOST=$DOCKER_REGISTRY_HOST build
     - make DOCKER_REGISTRY_USER=$DOCKER_REGISTRY_USER DOCKER_REGISTRY_HOST=$DOCKER_REGISTRY_HOST push
   when: manual
