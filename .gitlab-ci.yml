@@ -106,7 +106,7 @@ test-framework:
   script:
     - cd docker-compose
     - docker-compose -f tango.yml -f tangotest.yml pull
-    - docker-compose -f tango.yml -f tangotest.yml up
+    - docker-compose -f tango.yml -f tangotest.yml -d up
   when: manual
 
 test-master:
