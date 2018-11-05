@@ -1,5 +1,5 @@
 ARG DOCKER_REGISTRY_USER
-FROM ${DOCKER_REGISTRY_USER}/tango-dependencies:latest
+FROM ${DOCKER_REGISTRY_USER}/${DOCKER_REGISTRY_USER}/tango-dependencies:latest
 
 RUN TANGO_VERSION=9.2.5a \
     && TANGO_DOWNLOAD_URL=https://netcologne.dl.sourceforge.net/project/tango-cs/tango-$TANGO_VERSION.tar.gz \
