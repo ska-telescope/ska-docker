@@ -1,10 +1,10 @@
 # GitLab CI in conjunction with GitLab Runner can use Docker Engine to test and build any application.
 # Docker, when used with GitLab CI, runs each job in a separate and isolated container using the predefined image that is set up in .gitlab-ci.yml.
 # In this case we use the latest python docker image to build and test this project.
-image: docker:latest
+#image: docker:latest
 
-services:
-  - docker:dind
+#services:
+#  - docker:dind
 
 # During the development of software, there can be many stages until it's ready for public consumption. 
 # You sure want to first test your code and then deploy it in a testing or staging environment before you release it to the public. 
@@ -15,31 +15,103 @@ services:
 #  - test
 
 before_script:
-  - apk update
-  - apk add make bash git curl
-  - apk add --no-cache py-pip
+#  - apt-get update
+#  - apt-get install make bash git curl
+  - apt-get install -y python-pip
+  - export LC_ALL=C
   - pip install docker-compose
   - docker login -u "$CI_REGISTRY_USER" -p "$CI_REGISTRY_PASSWORD" $CI_REGISTRY
+  - docker pull $DOCKER_REGISTRY_HOST/$DOCKER_REGISTRY_USER/tango-dependencies
 
+build_dependencies:
+  stage: build
+  tags:
+    - ska  
+  script: 
+    - cd docker/tango/tango-dependencies
+    - make DOCKER_REGISTRY_USER=$DOCKER_REGISTRY_USER DOCKER_REGISTRY_HOST=$DOCKER_REGISTRY_HOST build
+    - make DOCKER_REGISTRY_USER=$DOCKER_REGISTRY_USER DOCKER_REGISTRY_HOST=$DOCKER_REGISTRY_HOST push
+  when: manual
+    
+build_tango-db:
+  stage: build
+  tags:
+    - ska  
+  script: 
+    - cd docker/tango/tango-db
+    - make DOCKER_REGISTRY_USER=$DOCKER_REGISTRY_USER DOCKER_REGISTRY_HOST=$DOCKER_REGISTRY_HOST build
+    - make DOCKER_REGISTRY_USER=$DOCKER_REGISTRY_USER DOCKER_REGISTRY_HOST=$DOCKER_REGISTRY_HOST push
   
+build_tango-cpp:
+  stage: build
+  tags:
+    - ska  
+  script: 
+    - cd docker/tango/tango-cpp
+    - make DOCKER_REGISTRY_USER=$DOCKER_REGISTRY_USER DOCKER_REGISTRY_HOST=$DOCKER_REGISTRY_HOST build
+    - make DOCKER_REGISTRY_USER=$DOCKER_REGISTRY_USER DOCKER_REGISTRY_HOST=$DOCKER_REGISTRY_HOST push
+ 
+build_tango-java:
+  stage: build
+  tags:
+    - ska  
+  script: 
+    - cd docker/tango/tango-java
+    - make DOCKER_REGISTRY_USER=$DOCKER_REGISTRY_USER DOCKER_REGISTRY_HOST=$DOCKER_REGISTRY_HOST build
+    - make DOCKER_REGISTRY_USER=$DOCKER_REGISTRY_USER DOCKER_REGISTRY_HOST=$DOCKER_REGISTRY_HOST push
+
+build_tango-python:
+  stage: build
+  tags:
+    - ska  
+  script: 
+    - cd docker/tango/tango-python
+    - make DOCKER_REGISTRY_USER=$DOCKER_REGISTRY_USER DOCKER_REGISTRY_HOST=$DOCKER_REGISTRY_HOST build
+    - make DOCKER_REGISTRY_USER=$DOCKER_REGISTRY_USER DOCKER_REGISTRY_HOST=$DOCKER_REGISTRY_HOST push
+    
+build_tango-pogo:
+  stage: build
+  tags:
+    - ska  
+  script: 
+    - cd docker/tango/tango-pogo
+    - make DOCKER_REGISTRY_USER=$DOCKER_REGISTRY_USER DOCKER_REGISTRY_HOST=$DOCKER_REGISTRY_HOST build
+    - make DOCKER_REGISTRY_USER=$DOCKER_REGISTRY_USER DOCKER_REGISTRY_HOST=$DOCKER_REGISTRY_HOST push
+  when: manual
+
+build_tango-starter:
+  stage: build
+  tags:
+    - ska  
+  script: 
+    - cd docker/tango/tango-starter
+    - make DOCKER_REGISTRY_USER=$DOCKER_REGISTRY_USER DOCKER_REGISTRY_HOST=$DOCKER_REGISTRY_HOST build
+    - make DOCKER_REGISTRY_USER=$DOCKER_REGISTRY_USER DOCKER_REGISTRY_HOST=$DOCKER_REGISTRY_HOST push
+  when: manual
+
 build-master:
-  #stage: build
+  stage: build
   tags:
     - ska
   script:
     - ls -la
     - cd docker
-    - echo DOCKER_REGISTRY_USER=$DOCKER_REGISTRY_USER
-    - echo DOCKER_REGISTRY_HOST=$DOCKER_REGISTRY_HOST
     - make DOCKER_REGISTRY_USER=$DOCKER_REGISTRY_USER DOCKER_REGISTRY_HOST=$DOCKER_REGISTRY_HOST build
     - make DOCKER_REGISTRY_USER=$DOCKER_REGISTRY_USER DOCKER_REGISTRY_HOST=$DOCKER_REGISTRY_HOST push
-    - echo DOCKER_REGISTRY_USER=$DOCKER_REGISTRY_USER
-    - echo DOCKER_REGISTRY_HOST=$DOCKER_REGISTRY_HOST
-  only:
-    - master
+  when: manual
+  
+test-framework:
+  stage: test
+  tags:
+    - ska
+  script:
+    - cd docker-compose
+    - docker-compose -f tango.yml -f tangotest.yml pull
+    - docker-compose -f tango.yml -f tangotest.yml up -d 
+  when: manual
 
 test-master:
-  #stage: build
+  stage: test
   tags:
     - ska
   script:
@@ -47,5 +119,4 @@ test-master:
     - make pull
     - make up
     - make start tangotest
-  only:
-    - master
+  when: manual
