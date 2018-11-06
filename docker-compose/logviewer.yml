@@ -14,7 +14,7 @@ services:
   logviewer:
     build:      
       context: ../docker/tango/tango-java
-    image: ${DOCKER_REGISTRY_USER}/tango-java:latest
+    image: ${DOCKER_REGISTRY_HOST}/${DOCKER_REGISTRY_USER}/tango-java:latest
     container_name: logviewer
     depends_on:
       - databaseds

@@ -16,6 +16,15 @@
 NAME=$(shell basename $(CURDIR))
 
 RELEASE_SUPPORT := $(shell dirname $(abspath $(lastword $(MAKEFILE_LIST))))/.make-release-support
+
+ifeq ($(strip $(DOCKER_REGISTRY_HOST)),)
+  DOCKER_REGISTRY_HOST = docker.io
+endif
+
+ifeq ($(strip $(DOCKER_REGISTRY_USER)),)
+  DOCKER_REGISTRY_USER = ska-telescope
+endif
+
 IMAGE=$(DOCKER_REGISTRY_HOST)/$(DOCKER_REGISTRY_USER)/$(NAME)
 
 VERSION=$(shell . $(RELEASE_SUPPORT) ; getVersion)
@@ -33,19 +42,14 @@ build: pre-build docker-build post-build
 
 pre-build:
 
-
 post-build:
-
 
 pre-push:
 
-
 post-push:
 
-
-
 docker-build: .release
-	docker build $(DOCKER_BUILD_ARGS) -t $(IMAGE):$(VERSION) $(DOCKER_BUILD_CONTEXT) -f $(DOCKER_FILE_PATH) --build-arg DOCKER_REGISTRY_HOST=$(DOCKER_REGISTRY_HOST) DOCKER_REGISTRY_USER=$(DOCKER_REGISTRY_USER)
+	docker build $(DOCKER_BUILD_ARGS) -t $(IMAGE):$(VERSION) $(DOCKER_BUILD_CONTEXT) -f $(DOCKER_FILE_PATH) --build-arg DOCKER_REGISTRY_HOST=$(DOCKER_REGISTRY_HOST) --build-arg DOCKER_REGISTRY_USER=$(DOCKER_REGISTRY_USER)
 	@DOCKER_MAJOR=$(shell docker -v | sed -e 's/.*version //' -e 's/,.*//' | cut -d\. -f1) ; \
 	DOCKER_MINOR=$(shell docker -v | sed -e 's/.*version //' -e 's/,.*//' | cut -d\. -f2) ; \
 	if [ $$DOCKER_MAJOR -eq 1 ] && [ $$DOCKER_MINOR -lt 10 ] ; then \
@@ -62,9 +66,7 @@ docker-build: .release
 	@echo INFO: .release created
 	@cat .release
 
-
 release: check-status check-release build push
-
 
 push: pre-push do-push post-push
 
@@ -94,7 +96,6 @@ minor-release: tag-minor-release release
 
 major-release: tag-major-release release
 	@echo $(VERSION)
-
 
 tag: TAG=$(shell . $(RELEASE_SUPPORT); getTag $(VERSION))
 tag: check-status

@@ -1,5 +1,6 @@
 ARG DOCKER_REGISTRY_USER
-FROM ${DOCKER_REGISTRY_USER}/tango-dependencies:latest
+ARG DOCKER_REGISTRY_HOST
+FROM ${DOCKER_REGISTRY_HOST}/${DOCKER_REGISTRY_USER}/tango-dependencies:latest
 
 RUN runtimeDeps='default-jre' \
     && DEBIAN_FRONTEND=noninteractive apt-get update \
