@@ -1,0 +1,37 @@
+#
+# Docker compose file that launches Astor, sending the display to a remote X11
+# display.
+#
+# Defines:
+#   - astor: service that runs Astor in a container
+#   - container1: example container running Starter device
+#
+# Requires:
+#   - tango.yml
+#
+version: '2'
+
+services:
+  rest:
+    build:
+      context: ../docker/tango/tango-rest
+    image: ${DOCKER_REGISTRY_HOST}/${DOCKER_REGISTRY_USER}/tango-rest:latest
+    container_name: tango-rest
+    # set the hostname, otherwise duplicate device registrations result every
+    # time the hostname changes as the container is restarted.
+    hostname: tango-rest
+    depends_on:
+    - databaseds
+    environment:
+    - TANGO_HOST=databaseds:10000
+    ports:
+    - 8080:8080
+    entrypoint:
+    - /usr/local/bin/wait-for-it.sh
+    - databaseds:10000
+    - --timeout=30
+    - --strict
+    - --
+    - /usr/bin/supervisord
+    - --configuration
+    - /etc/supervisor/supervisord.conf

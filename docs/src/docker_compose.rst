@@ -26,6 +26,9 @@ defined:
 +-----------------+------------------------------------------------+
 | itango          | interactive itango session                     |
 +-----------------+------------------------------------------------+
+| rest            | REST proxy to the TANGO system running in the  |
+|                 | containers                                     |
++-----------------+------------------------------------------------+
 
 To pull pre-built images from the Docker hub, execute:
 
@@ -35,14 +38,16 @@ To pull pre-built images from the Docker hub, execute:
    # download official SKA images
    make pull
 
-Optional: the images can be pulled from an alternative account by
-supplying the DOCKER_REGISTRY_USER Makefile variable, e.g.,
+Optional: the images can be pulled from an alternative registry and/or
+account by supplying the DOCKER_REGISTRY_HOST and DOCKER_REGISTRY_USER
+Makefile variables respectively, e.g.,
 
 .. code-block:: console
 
    cd docker-compose
-   # download foo/tango-cpp, foo/tango-jive, etc.
-   make DOCKER_REGISTRY_USER=foo pull
+   # download foo/tango-cpp, foo/tango-jive, etc. from a registry at
+   # localhost:5000
+   make DOCKER_REGISTRY_HOST=localhost:5000 DOCKER_REGISTRY_USER=foo pull
 
 To start and stop a minimal TANGO system (database and databaseds
 server), execute:
