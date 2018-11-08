@@ -10,9 +10,9 @@
 # You sure want to first test your code and then deploy it in a testing or staging environment before you release it to the public. 
 # That way you can prevent bugs not only in your software, but in the deployment process as well. 
 # See also https://docs.gitlab.com/ee/ci/environments.html
-#stages:
-#  - build
-#  - test
+stages:
+  - build
+  - test
 
 before_script:
 #  - apt-get update
@@ -80,7 +80,7 @@ build_tango-pogo:
   when: manual
 
 build_tango-starter:
-  stage: build
+#  stage: build
   tags:
     - ska  
   script: 
@@ -89,7 +89,7 @@ build_tango-starter:
     - make DOCKER_REGISTRY_USER=$DOCKER_REGISTRY_USER DOCKER_REGISTRY_HOST=$DOCKER_REGISTRY_HOST push
   when: manual
 
-build-master:
+build-all:
   stage: build
   tags:
     - ska
@@ -110,15 +110,4 @@ test-framework:
     - docker-compose -f tango.yml -f tangotest.yml up -d 
     - docker cp SimpleTest.py tangotest:SimpleTest.py
     - docker exec tangotest python /SimpleTest.py
-  when: manual
-
-test-master:
-  stage: test
-  tags:
-    - ska
-  script:
-    - cd docker-compose
-    - make pull
-    - make up
-    - make start tangotest
   when: manual
