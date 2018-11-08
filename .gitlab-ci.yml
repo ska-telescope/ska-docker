@@ -109,7 +109,7 @@ test-framework:
     - docker-compose -f tango.yml -f tangotest.yml pull
     - docker-compose -f tango.yml -f tangotest.yml up -d 
     - docker cp SimpleTest.py tangotest:SimpleTest.py
-    - docker exec tangotest python SimpleTest.py
+    - docker exec tangotest python /SimpleTest.py
   when: manual
 
 test-master:
