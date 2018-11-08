@@ -113,5 +113,4 @@ test-framework:
     - docker cp SimpleTest.py tangotest:/home/tango/SimpleTest.py
     - docker cp SimplePyTest.py tangotest:/home/tango/SimplePyTest.py
     - docker exec tangotest python3 /home/tango/SimpleTest.py
-    - docker exec tangotest pytest
-  when: manual
+    - docker exec tangotest pytest -q /home/tango/SimplePyTest.py
