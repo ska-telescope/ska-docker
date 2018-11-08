@@ -110,6 +110,6 @@ test-framework:
     - cd docker-compose
     - docker-compose -f tango.yml -f tangotest.yml pull
     - docker-compose -f tango.yml -f tangotest.yml up -d 
-    #- docker cp SimpleTest.py tangotest:SimpleTest.py
-    #- docker exec tangotest python3 /SimpleTest.py
+    - docker cp SimpleTest.py tangotest:SimpleTest.py
+    - docker exec tangotest python3 /SimpleTest.py
   when: manual
