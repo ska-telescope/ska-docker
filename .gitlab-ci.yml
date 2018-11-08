@@ -17,9 +17,10 @@ stages:
 before_script:
 #  - apt-get update
 #  - apt-get install make bash git curl
-  - apt-get install -y python-pip
+  #- apt-get install -y python-pip
   - export LC_ALL=C
-  - pip install docker-compose
+  #- pip install docker-compose
+  - pip install pytest
   - docker login -u "$CI_REGISTRY_USER" -p "$CI_REGISTRY_PASSWORD" $CI_REGISTRY
   - docker pull $DOCKER_REGISTRY_HOST/$DOCKER_REGISTRY_USER/tango-dependencies
 
@@ -80,7 +81,7 @@ build_tango-pogo:
   when: manual
 
 build_tango-starter:
-#  stage: build
+  stage: build
   tags:
     - ska  
   script: 
