@@ -14,11 +14,12 @@ stages:
   - build
   - test
 
+#with shell executor, there is no need to install things. 
 before_script:
   #- apt-get update
   #- apt-get install make bash git curl
   #- apt-get install -y python-pip
-  - export LC_ALL=C
+  #- export LC_ALL=C
   #- pip install docker-compose
   #- pip install pytest
   - docker login -u "$CI_REGISTRY_USER" -p "$CI_REGISTRY_PASSWORD" $CI_REGISTRY
@@ -109,6 +110,6 @@ test-framework:
     - cd docker-compose
     - docker-compose -f tango.yml -f tangotest.yml pull
     - docker-compose -f tango.yml -f tangotest.yml up -d 
-    - docker cp SimpleTest.py tangotest:SimpleTest.py
-    - docker exec tangotest python /SimpleTest.py
+    #- docker cp SimpleTest.py tangotest:SimpleTest.py
+    #- docker exec tangotest python3 /SimpleTest.py
   when: manual
