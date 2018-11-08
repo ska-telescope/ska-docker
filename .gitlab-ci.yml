@@ -15,19 +15,19 @@ stages:
   - test
 
 before_script:
-#  - apt-get update
-#  - apt-get install make bash git curl
+  #- apt-get update
+  #- apt-get install make bash git curl
   #- apt-get install -y python-pip
   - export LC_ALL=C
   #- pip install docker-compose
-  - pip install pytest
+  #- pip install pytest
   - docker login -u "$CI_REGISTRY_USER" -p "$CI_REGISTRY_PASSWORD" $CI_REGISTRY
   - docker pull $DOCKER_REGISTRY_HOST/$DOCKER_REGISTRY_USER/tango-dependencies
 
 build_dependencies:
   stage: build
   tags:
-    - ska  
+    - shell  
   script: 
     - cd docker/tango/tango-dependencies
     - make DOCKER_REGISTRY_USER=$DOCKER_REGISTRY_USER DOCKER_REGISTRY_HOST=$DOCKER_REGISTRY_HOST build
@@ -37,7 +37,7 @@ build_dependencies:
 build_tango-db:
   stage: build
   tags:
-    - ska  
+    - shell  
   script: 
     - cd docker/tango/tango-db
     - make DOCKER_REGISTRY_USER=$DOCKER_REGISTRY_USER DOCKER_REGISTRY_HOST=$DOCKER_REGISTRY_HOST build
@@ -46,7 +46,7 @@ build_tango-db:
 build_tango-cpp:
   stage: build
   tags:
-    - ska  
+    - shell  
   script: 
     - cd docker/tango/tango-cpp
     - make DOCKER_REGISTRY_USER=$DOCKER_REGISTRY_USER DOCKER_REGISTRY_HOST=$DOCKER_REGISTRY_HOST build
@@ -55,7 +55,7 @@ build_tango-cpp:
 build_tango-java:
   stage: build
   tags:
-    - ska  
+    - shell  
   script: 
     - cd docker/tango/tango-java
     - make DOCKER_REGISTRY_USER=$DOCKER_REGISTRY_USER DOCKER_REGISTRY_HOST=$DOCKER_REGISTRY_HOST build
@@ -64,7 +64,7 @@ build_tango-java:
 build_tango-python:
   stage: build
   tags:
-    - ska  
+    - shell  
   script: 
     - cd docker/tango/tango-python
     - make DOCKER_REGISTRY_USER=$DOCKER_REGISTRY_USER DOCKER_REGISTRY_HOST=$DOCKER_REGISTRY_HOST build
@@ -73,7 +73,7 @@ build_tango-python:
 build_tango-pogo:
   stage: build
   tags:
-    - ska  
+    - shell  
   script: 
     - cd docker/tango/tango-pogo
     - make DOCKER_REGISTRY_USER=$DOCKER_REGISTRY_USER DOCKER_REGISTRY_HOST=$DOCKER_REGISTRY_HOST build
@@ -83,7 +83,7 @@ build_tango-pogo:
 build_tango-starter:
   stage: build
   tags:
-    - ska  
+    - shell  
   script: 
     - cd docker/tango/tango-starter
     - make DOCKER_REGISTRY_USER=$DOCKER_REGISTRY_USER DOCKER_REGISTRY_HOST=$DOCKER_REGISTRY_HOST build
@@ -93,7 +93,7 @@ build_tango-starter:
 build-all:
   stage: build
   tags:
-    - ska
+    - shell
   script:
     - ls -la
     - cd docker
@@ -104,7 +104,7 @@ build-all:
 test-framework:
   stage: test
   tags:
-    - ska
+    - shell
   script:
     - cd docker-compose
     - docker-compose -f tango.yml -f tangotest.yml pull
