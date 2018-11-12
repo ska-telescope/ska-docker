@@ -10,23 +10,25 @@
 # You sure want to first test your code and then deploy it in a testing or staging environment before you release it to the public. 
 # That way you can prevent bugs not only in your software, but in the deployment process as well. 
 # See also https://docs.gitlab.com/ee/ci/environments.html
-#stages:
-#  - build
-#  - test
+stages:
+  - build
+  - test
 
+#with shell executor, there is no need to install things. 
 before_script:
-#  - apt-get update
-#  - apt-get install make bash git curl
-  - apt-get install -y python-pip
-  - export LC_ALL=C
-  - pip install docker-compose
+  #- apt-get update
+  #- apt-get install make bash git curl
+  #- apt-get install -y python-pip
+  #- export LC_ALL=C
+  #- pip install docker-compose
+  #- pip install pytest
   - docker login -u "$CI_REGISTRY_USER" -p "$CI_REGISTRY_PASSWORD" $CI_REGISTRY
   - docker pull $DOCKER_REGISTRY_HOST/$DOCKER_REGISTRY_USER/tango-dependencies
 
 build_dependencies:
   stage: build
   tags:
-    - ska  
+    - shell  
   script: 
     - cd docker/tango/tango-dependencies
     - make DOCKER_REGISTRY_USER=$DOCKER_REGISTRY_USER DOCKER_REGISTRY_HOST=$DOCKER_REGISTRY_HOST build
@@ -36,7 +38,7 @@ build_dependencies:
 build_tango-db:
   stage: build
   tags:
-    - ska  
+    - shell  
   script: 
     - cd docker/tango/tango-db
     - make DOCKER_REGISTRY_USER=$DOCKER_REGISTRY_USER DOCKER_REGISTRY_HOST=$DOCKER_REGISTRY_HOST build
@@ -45,7 +47,7 @@ build_tango-db:
 build_tango-cpp:
   stage: build
   tags:
-    - ska  
+    - shell  
   script: 
     - cd docker/tango/tango-cpp
     - make DOCKER_REGISTRY_USER=$DOCKER_REGISTRY_USER DOCKER_REGISTRY_HOST=$DOCKER_REGISTRY_HOST build
@@ -54,7 +56,7 @@ build_tango-cpp:
 build_tango-java:
   stage: build
   tags:
-    - ska  
+    - shell  
   script: 
     - cd docker/tango/tango-java
     - make DOCKER_REGISTRY_USER=$DOCKER_REGISTRY_USER DOCKER_REGISTRY_HOST=$DOCKER_REGISTRY_HOST build
@@ -63,7 +65,7 @@ build_tango-java:
 build_tango-python:
   stage: build
   tags:
-    - ska  
+    - shell  
   script: 
     - cd docker/tango/tango-python
     - make DOCKER_REGISTRY_USER=$DOCKER_REGISTRY_USER DOCKER_REGISTRY_HOST=$DOCKER_REGISTRY_HOST build
@@ -72,7 +74,7 @@ build_tango-python:
 build_tango-pogo:
   stage: build
   tags:
-    - ska  
+    - shell  
   script: 
     - cd docker/tango/tango-pogo
     - make DOCKER_REGISTRY_USER=$DOCKER_REGISTRY_USER DOCKER_REGISTRY_HOST=$DOCKER_REGISTRY_HOST build
@@ -82,17 +84,17 @@ build_tango-pogo:
 build_tango-starter:
   stage: build
   tags:
-    - ska  
+    - shell  
   script: 
     - cd docker/tango/tango-starter
     - make DOCKER_REGISTRY_USER=$DOCKER_REGISTRY_USER DOCKER_REGISTRY_HOST=$DOCKER_REGISTRY_HOST build
     - make DOCKER_REGISTRY_USER=$DOCKER_REGISTRY_USER DOCKER_REGISTRY_HOST=$DOCKER_REGISTRY_HOST push
   when: manual
 
-build-master:
+build-all:
   stage: build
   tags:
-    - ska
+    - shell
   script:
     - ls -la
     - cd docker
@@ -103,20 +105,12 @@ build-master:
 test-framework:
   stage: test
   tags:
-    - ska
+    - shell
   script:
     - cd docker-compose
     - docker-compose -f tango.yml -f tangotest.yml pull
     - docker-compose -f tango.yml -f tangotest.yml up -d 
-  when: manual
-
-test-master:
-  stage: test
-  tags:
-    - ska
-  script:
-    - cd docker-compose
-    - make pull
-    - make up
-    - make start tangotest
-  when: manual
+    - docker cp SimpleTest.py tangotest:/home/tango/SimpleTest.py
+    - docker cp SimplePyTest.py tangotest:/home/tango/SimplePyTest.py
+    - docker exec tangotest python3 /home/tango/SimpleTest.py
+    - docker exec tangotest pytest -q /home/tango/SimplePyTest.py
