@@ -36,6 +36,7 @@ RUN buildDeps='python-dev python-pip python-setuptools python3-dev python3-pip p
     && rm -rf /var/lib/apt/lists/* \
     && pip install itango \
     && pip3 install itango \
+	&& pip3 install pytest \
     && apt-get purge -y --auto-remove $buildDeps
 
 USER tango
