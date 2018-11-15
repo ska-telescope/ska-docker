@@ -151,6 +151,8 @@ test-framework-make:
     - mkdir .public
     - cp result.txt .public/result.txt
     - mv .public public
+    - ls -la
+    - more result.txt
   artifacts:
     paths:
     - public
