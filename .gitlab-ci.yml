@@ -148,8 +148,9 @@ test-framework-make:
     - docker exec tangotest pytest -q /home/tango/SimplePyTest.py >> result.txt
     - curl --user tango-cs:tango http://127.0.0.1:8080/tango/rest/rc4/hosts/databaseds/10000/devices/sys/tg_test/1/attributes/boolean_scalar/value >>  result.txt
     - ls -la
+    - cd ..
     - mkdir .public
-    - cp result.txt .public/result.txt
+    - cp docker-compose/result.txt .public/result.txt
     - mv .public public
     - ls -la
     - more result.txt
