@@ -71,6 +71,15 @@ build_tango-python:
     - make DOCKER_REGISTRY_USER=$DOCKER_REGISTRY_USER DOCKER_REGISTRY_HOST=$DOCKER_REGISTRY_HOST build
     - make DOCKER_REGISTRY_USER=$DOCKER_REGISTRY_USER DOCKER_REGISTRY_HOST=$DOCKER_REGISTRY_HOST push
     
+build_tango-rest:
+  stage: build
+  tags:
+    - shell  
+  script: 
+    - cd docker/tango/tango-rest
+    - make DOCKER_REGISTRY_USER=$DOCKER_REGISTRY_USER DOCKER_REGISTRY_HOST=$DOCKER_REGISTRY_HOST build
+    - make DOCKER_REGISTRY_USER=$DOCKER_REGISTRY_USER DOCKER_REGISTRY_HOST=$DOCKER_REGISTRY_HOST push
+    
 build_tango-pogo:
   stage: build
   tags:
@@ -108,9 +117,26 @@ test-framework:
     - shell
   script:
     - cd docker-compose
-    - docker-compose -f tango.yml -f tangotest.yml pull
-    - docker-compose -f tango.yml -f tangotest.yml up -d 
+    - docker-compose -f tango.yml -f tangotest.yml rest.yml pull
+    - docker-compose -f tango.yml -f tangotest.yml rest.yml up -d 
     - docker cp SimpleTest.py tangotest:/home/tango/SimpleTest.py
     - docker cp SimplePyTest.py tangotest:/home/tango/SimplePyTest.py
     - docker exec tangotest python3 /home/tango/SimpleTest.py
     - docker exec tangotest pytest -q /home/tango/SimplePyTest.py
+    - curl --user tango-cs:tango http://localhost:8080/mtango/rest/device/sys/tg_test/1/long_scalar
+    
+test-framework-make:
+  stage: test
+  tags:
+    - shell
+  script:
+    - cd docker-compose
+    - make pull
+    - make up 
+    - make start tangotest
+    - make start rest
+    - docker cp SimpleTest.py tangotest:/home/tango/SimpleTest.py
+    - docker cp SimplePyTest.py tangotest:/home/tango/SimplePyTest.py
+    - docker exec tangotest python3 /home/tango/SimpleTest.py
+    - docker exec tangotest pytest -q /home/tango/SimplePyTest.py
+    - curl --user tango-cs:tango http://localhost:8080/mtango/rest/device/sys/tg_test/1/long_scalar
