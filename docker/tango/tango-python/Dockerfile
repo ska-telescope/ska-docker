@@ -4,29 +4,22 @@ FROM ${DOCKER_REGISTRY_HOST}/${DOCKER_REGISTRY_USER}/tango-cpp:latest
 
 USER root
 
+# strictly speaking, python3-dev, python3-pip, make, and sudo are not real
+# runtime dependencies for PyTango. They are installed so that images
+# extending this one can install their own dependencies and run tests.
 RUN runtimeDeps='\
     ipython \
     libboost-python1.62.0 \
     make \
-    python-concurrent.futures \
-    python-dev \
-    python-gevent \
-    python-numpy \
-    python-pip \
-    python-pkgconfig \
-    python-pkg-resources \
-    python-setuptools \
-    python-six \
-    python-zmq \
     python3 \
     python3-dev \
     python3-gevent \
     python3-numpy \
+    python3-pip \
     python3-pkgconfig \
     python3-pkg-resources \
     python3-setuptools \
     python3-six \
-    python3-pip \
     sudo' \
     && DEBIAN_FRONTEND=noninteractive apt-get update \
     && apt-get -y install --no-install-recommends $runtimeDeps \
@@ -43,18 +36,11 @@ RUN PYTANGO_TAG=v9.2.4 \
     && git clone $PYTANGO_URL \
     && cd pytango \
     && git checkout tags/$PYTANGO_TAG \
-    && python setup.py build \
-    && python setup.py install \
-    && python3 setup.py clean \
     && python3 setup.py build \
     && python3 setup.py install \
     && cd .. \
     && apt-get purge -y --auto-remove $buildDeps \
     && rm -r /usr/src/pytango
-
-# itango is a separate project from Pytango v9.2.0 on
-RUN pip install itango \
-    && pip3 install itango
 
 # add sudo so that the tango user can add test dpkgs
 RUN echo "tango ALL=(root) NOPASSWD:ALL" > /etc/sudoers.d/tango \
@@ -62,7 +48,4 @@ RUN echo "tango ALL=(root) NOPASSWD:ALL" > /etc/sudoers.d/tango \
 
 USER tango
 
-# create ipython profile to so that itango doesn't fail if ipython hasn't run yet
-RUN ipython profile create
-
-CMD ["itango"]
+CMD ["python3"]
