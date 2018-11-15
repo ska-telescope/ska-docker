@@ -155,7 +155,6 @@ test-framework-make:
     - mkdir .public
     - cp docker-compose/result.txt .public/result.txt
     - mv .public public
-    - test failure!
   artifacts:
     paths:
     - public
