@@ -15,8 +15,8 @@ version: '2'
 services:
   itango:
     build:      
-      context: ../docker/tango/tango-python
-    image: ${DOCKER_REGISTRY_HOST}/${DOCKER_REGISTRY_USER}/tango-python:latest
+      context: ../docker/tango/tango-itango
+    image: ${DOCKER_REGISTRY_HOST}/${DOCKER_REGISTRY_USER}/tango-itango:latest
     container_name: itango
     depends_on:
       - databaseds
@@ -30,4 +30,4 @@ services:
       - --timeout=30
       - --strict
       - --
-      - /usr/local/bin/itango
+      - /usr/local/bin/itango3

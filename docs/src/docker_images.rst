@@ -20,10 +20,13 @@ The following Docker images are built by this project:
 |                    | host machine.                                         |
 +--------------------+-------------------------------------------------------+
 | tango-java         | As per ska/tango-cpp, plus Java applications and      |
-|                    | bindings                                              |
+|                    | bindings.                                             |
 +--------------------+-------------------------------------------------------+
-| tango-python       | Extends ska/tango-cpp, adding PyTango Python bindings |
-|                    | and itango for interactive TANGO sessions.            |
+| tango-python       | Extends ska/tango-cpp, adding PyTango Python          |
+|                    | bindings.                                             |
++--------------------+-------------------------------------------------------+
+| tango-itango       | itango, a Python shell for interactive TANGO          |
+|                    | sessions.                                             |
 +--------------------+-------------------------------------------------------+
 | tango-starter      | Example image that demonstrates how to package the    |
 |                    | Starter device in an image.                           |
