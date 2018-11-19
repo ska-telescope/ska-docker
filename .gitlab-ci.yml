@@ -3,9 +3,13 @@
 # In this case we use the latest python docker image to build and test this project.
 image: ubuntu:latest
 
+variables:
+  DOCKER_DRIVER: overlay
+
+
 services:
   - docker:dind
-
+  
 # During the development of software, there can be many stages until it's ready for public consumption. 
 # You sure want to first test your code and then deploy it in a testing or staging environment before you release it to the public. 
 # That way you can prevent bugs not only in your software, but in the deployment process as well. 
