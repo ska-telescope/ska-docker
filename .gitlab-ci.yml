@@ -48,6 +48,8 @@ test-framework-make:
   tags:
     - docker
     - engageska
+  services:
+  - $DOCKER_REGISTRY_HOST/$DOCKER_REGISTRY_USER/tango-rest:latest
   script:
     - cd docker-compose
     - make pull
@@ -77,6 +79,8 @@ test-framework-nomake:
   tags:
     - docker
     - engageska
+  services:
+  - $DOCKER_REGISTRY_HOST/$DOCKER_REGISTRY_USER/tango-rest:latest
   script:
     - cd docker-compose
     - docker-compose -f tango.yml -f tangotest.yml -f rest.yml pull
