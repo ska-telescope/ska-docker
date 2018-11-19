@@ -16,12 +16,18 @@ stages:
 
 #with shell executor, there is no need to install things. 
 before_script:
-  #- apt-get update
-  #- apt-get install make bash git curl
-  #- apt-get install -y python-pip
-  #- export LC_ALL=C
-  #- pip install docker-compose
-  #- pip install pytest
+  - apt-get update
+  - apt-get install make bash git curl
+  - apt-get install -y python-pip
+  - apt-get install apt-transport-https ca-certificates curl software-properties-common
+  - curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo apt-key add -
+  - apt-key fingerprint 0EBFCD88
+  - add-apt-repository "deb [arch=amd64] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable"
+  - apt-get update
+  - apt-get install docker-ce
+  - export LC_ALL=C
+  - pip install docker-compose
+  - pip install pytest
   - docker login -u "$CI_REGISTRY_USER" -p "$CI_REGISTRY_PASSWORD" $CI_REGISTRY
   - docker pull $DOCKER_REGISTRY_HOST/$DOCKER_REGISTRY_USER/tango-dependencies
 
