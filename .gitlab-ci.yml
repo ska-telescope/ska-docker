@@ -43,6 +43,35 @@ build_tango-db:
     - make DOCKER_REGISTRY_USER=$DOCKER_REGISTRY_USER DOCKER_REGISTRY_HOST=$DOCKER_REGISTRY_HOST build
     - make DOCKER_REGISTRY_USER=$DOCKER_REGISTRY_USER DOCKER_REGISTRY_HOST=$DOCKER_REGISTRY_HOST push
   
+test-framework-make:
+  stage: test
+  tags:
+    - docker
+    - engageska
+  script:
+    - cd docker-compose
+    - make pull
+    - make up 
+    - make start tangotest
+    - make start rest
+    - echo "******** Test Result ********" > result.txt
+    - docker cp SimpleTest.py tangotest:/home/tango/SimpleTest.py 
+    - docker cp SimplePyTest.py tangotest:/home/tango/SimplePyTest.py 
+    - echo "docker exec tangotest python3 /home/tango/SimpleTest.py" >> result.txt
+    - docker exec tangotest python3 /home/tango/SimpleTest.py >> result.txt
+    - echo "docker exec tangotest pytest -q /home/tango/SimplePyTest.py" >> result.txt
+    - docker exec tangotest pytest -q /home/tango/SimplePyTest.py >> result.txt
+    - echo "curl --user tango-cs:tango http://127.0.0.1:8080/tango/rest/rc4/hosts/databaseds/10000/devices/sys/tg_test/1/attributes/boolean_scalar/value" >> result.txt
+    - curl --user tango-cs:tango http://127.0.0.1:8080/tango/rest/rc4/hosts/databaseds/10000/devices/sys/tg_test/1/attributes/boolean_scalar/value >>  result.txt
+    - more result.txt
+    - cd ..
+    - mkdir .public
+    - cp docker-compose/result.txt .public/result.txt
+    - mv .public public
+  artifacts:
+    paths:
+    - public  
+
 test-framework-nomake:
   stage: test
   tags:
