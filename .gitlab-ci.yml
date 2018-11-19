@@ -16,7 +16,9 @@ services:
 # See also https://docs.gitlab.com/ee/ci/environments.html
 stages:
   - build
+  - start-containers
   - test
+  - stop-containers
 
 #with shell executor, there is no need to install things. 
 before_script:
@@ -43,19 +45,44 @@ build_tango-db:
     - make DOCKER_REGISTRY_USER=$DOCKER_REGISTRY_USER DOCKER_REGISTRY_HOST=$DOCKER_REGISTRY_HOST build
     - make DOCKER_REGISTRY_USER=$DOCKER_REGISTRY_USER DOCKER_REGISTRY_HOST=$DOCKER_REGISTRY_HOST push
   
-test-framework-make:
-  stage: test
+start-framework:
+  stage: start-containers
   tags:
     - docker
     - engageska
-  services:
-  - $DOCKER_REGISTRY_HOST/$DOCKER_REGISTRY_USER/tango-rest:latest
   script:
     - cd docker-compose
     - make pull
     - make up 
     - make start tangotest
     - make start rest
+  artifacts:
+    paths:
+    - public 
+    
+stop-framework:
+  stage: stop-containers
+  tags:
+    - docker
+    - engageska
+  script:
+    - cd docker-compose
+    - make stop tangotest
+    - make stop rest
+    - make down
+  artifacts:
+    paths:
+    - public 
+  
+test-framework-tangotest:
+  stage: test
+  tags:
+    - docker
+    - engageska
+  services:
+    - $DOCKER_REGISTRY_HOST/$DOCKER_REGISTRY_USER/tango-rest:latest
+  script:
+    - cd docker-compose
     - echo "******** Test Result ********" > result.txt
     - docker cp SimpleTest.py tangotest:/home/tango/SimpleTest.py 
     - docker cp SimplePyTest.py tangotest:/home/tango/SimplePyTest.py 
@@ -73,8 +100,8 @@ test-framework-make:
   artifacts:
     paths:
     - public  
-
-test-framework-nomake:
+  
+test-framework-tangorest:
   stage: test
   tags:
     - docker
@@ -82,12 +109,15 @@ test-framework-nomake:
   services:
   - $DOCKER_REGISTRY_HOST/$DOCKER_REGISTRY_USER/tango-rest:latest
   script:
-    - cd docker-compose
-    - docker-compose -f tango.yml -f tangotest.yml -f rest.yml pull
-    - docker-compose -f tango.yml -f tangotest.yml -f rest.yml up -d 
-    - docker cp SimpleTest.py tangotest:/home/tango/SimpleTest.py
-    - docker cp SimplePyTest.py tangotest:/home/tango/SimplePyTest.py
-    - docker exec tangotest python3 /home/tango/SimpleTest.py
-    - docker exec tangotest pytest -q /home/tango/SimplePyTest.py
-    - curl --user tango-cs:tango http://127.0.0.1:8080/tango/rest/rc4/hosts/databaseds/10000/devices/sys/tg_test/1/attributes/boolean_scalar/value
+    - echo "******** Test Result ********" > result.txt
+    - echo "curl --user tango-cs:tango http://127.0.0.1:8080/tango/rest/rc4/hosts/databaseds/10000/devices/sys/tg_test/1/attributes/boolean_scalar/value" >> result.txt
+    - curl --user tango-cs:tango http://127.0.0.1:8080/tango/rest/rc4/hosts/databaseds/10000/devices/sys/tg_test/1/attributes/boolean_scalar/value >>  result.txt
+    - more result.txt
+    - cd ..
+    - mkdir .public
+    - cp ./result.txt .public/result.txt
+    - mv .public public
+  artifacts:
+    paths:
+    - public 
   
