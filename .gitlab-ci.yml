@@ -136,9 +136,6 @@ start-framework:
     - make up 
     - make start tangotest
     - make start rest
-  artifacts:
-    paths:
-    - public 
     
 stop-framework:
   stage: stop-containers
@@ -150,9 +147,6 @@ stop-framework:
     - make stop tangotest
     - make stop rest
     - make down
-  artifacts:
-    paths:
-    - public 
   
 test-framework-tangotest:
   stage: test
@@ -187,7 +181,6 @@ test-framework-tangorest:
     - echo "docker exec tango-rest curl --user tango-cs:tango http://127.0.0.1:8080/tango/rest/rc4/hosts/databaseds/10000/devices/sys/tg_test/1/attributes/boolean_scalar/value" >> result.txt
     - docker exec tango-rest curl --user tango-cs:tango http://127.0.0.1:8080/tango/rest/rc4/hosts/databaseds/10000/devices/sys/tg_test/1/attributes/boolean_scalar/value >>  result.txt
     - more result.txt
-    - cd ..
     - mkdir .public
     - cp result.txt .public/result.txt
     - mv .public public
