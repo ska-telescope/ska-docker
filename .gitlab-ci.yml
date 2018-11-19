@@ -33,6 +33,7 @@ build_tango-db:
   stage: build
   tags:
     - docker
+    - engageska
   script: 
     - cd docker/tango/tango-db
     - make DOCKER_REGISTRY_USER=$DOCKER_REGISTRY_USER DOCKER_REGISTRY_HOST=$DOCKER_REGISTRY_HOST build
@@ -42,6 +43,7 @@ test-framework-nomake:
   stage: test
   tags:
     - docker
+    - engageska
   script:
     - cd docker-compose
     - docker-compose -f tango.yml -f tangotest.yml -f rest.yml pull
