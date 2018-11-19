@@ -17,8 +17,7 @@ RUN MTANGOREST_VERSION=rc4-2.10 \
     && rm -rf /var/lib/apt/lists/* \
     && mkdir /usr/local/lib/tango \
     && cd /usr/local/lib/tango \
-    && curl -fsSL "$MTANGOREST_DOWNLOAD_URL" -o mtangorest.jar \
-#    && apt-get purge -y --auto-remove $buildDeps
+    && curl -fsSL "$MTANGOREST_DOWNLOAD_URL" -o mtangorest.jar 
 
 COPY tango_register_device.sh /usr/local/bin/
 RUN chmod 755 /usr/local/bin/tango_register_device.sh

@@ -15,7 +15,9 @@ services:
 # That way you can prevent bugs not only in your software, but in the deployment process as well. 
 # See also https://docs.gitlab.com/ee/ci/environments.html
 stages:
-  - build
+  - build_1
+  - build_2
+  - build_3
   - start-containers
   - test
   - stop-containers
@@ -36,7 +38,7 @@ before_script:
   - docker pull $DOCKER_REGISTRY_HOST/$DOCKER_REGISTRY_USER/tango-dependencies
 
 build_dependencies:
-  stage: build
+  stage: build_1
   tags:
     - engageska  
   script: 
@@ -44,9 +46,36 @@ build_dependencies:
     - make DOCKER_REGISTRY_USER=$DOCKER_REGISTRY_USER DOCKER_REGISTRY_HOST=$DOCKER_REGISTRY_HOST build
     - make DOCKER_REGISTRY_USER=$DOCKER_REGISTRY_USER DOCKER_REGISTRY_HOST=$DOCKER_REGISTRY_HOST push
   when: manual
-    
+  
+build_tango-cpp:
+  stage: build_2
+  tags:
+    - engageska  
+  script: 
+    - cd docker/tango/tango-cpp
+    - make DOCKER_REGISTRY_USER=$DOCKER_REGISTRY_USER DOCKER_REGISTRY_HOST=$DOCKER_REGISTRY_HOST build
+    - make DOCKER_REGISTRY_USER=$DOCKER_REGISTRY_USER DOCKER_REGISTRY_HOST=$DOCKER_REGISTRY_HOST push
+ 
+build_tango-java:
+  stage: build_2
+  tags:
+    - engageska 
+  script: 
+    - cd docker/tango/tango-java
+    - make DOCKER_REGISTRY_USER=$DOCKER_REGISTRY_USER DOCKER_REGISTRY_HOST=$DOCKER_REGISTRY_HOST build
+    - make DOCKER_REGISTRY_USER=$DOCKER_REGISTRY_USER DOCKER_REGISTRY_HOST=$DOCKER_REGISTRY_HOST push
+
+build_tango-python:
+  stage: build_3
+  tags:
+    - engageska 
+  script: 
+    - cd docker/tango/tango-python
+    - make DOCKER_REGISTRY_USER=$DOCKER_REGISTRY_USER DOCKER_REGISTRY_HOST=$DOCKER_REGISTRY_HOST build
+    - make DOCKER_REGISTRY_USER=$DOCKER_REGISTRY_USER DOCKER_REGISTRY_HOST=$DOCKER_REGISTRY_HOST push
+
 build_tango-db:
-  stage: build
+  stage: build_1
   tags:
     - engageska 
   script: 
@@ -54,49 +83,18 @@ build_tango-db:
     - make DOCKER_REGISTRY_USER=$DOCKER_REGISTRY_USER DOCKER_REGISTRY_HOST=$DOCKER_REGISTRY_HOST build
     - make DOCKER_REGISTRY_USER=$DOCKER_REGISTRY_USER DOCKER_REGISTRY_HOST=$DOCKER_REGISTRY_HOST push
   when: manual
-  
-build_tango-cpp:
-  stage: build
-  tags:
-    - engageska  
-  script: 
-    - cd docker/tango/tango-cpp
-    - make DOCKER_REGISTRY_USER=$DOCKER_REGISTRY_USER DOCKER_REGISTRY_HOST=$DOCKER_REGISTRY_HOST build
-    - make DOCKER_REGISTRY_USER=$DOCKER_REGISTRY_USER DOCKER_REGISTRY_HOST=$DOCKER_REGISTRY_HOST push
-  when: manual
- 
-build_tango-java:
-  stage: build
-  tags:
-    - engageska 
-  script: 
-    - cd docker/tango/tango-java
-    - make DOCKER_REGISTRY_USER=$DOCKER_REGISTRY_USER DOCKER_REGISTRY_HOST=$DOCKER_REGISTRY_HOST build
-    - make DOCKER_REGISTRY_USER=$DOCKER_REGISTRY_USER DOCKER_REGISTRY_HOST=$DOCKER_REGISTRY_HOST push
-  when: manual
-
-build_tango-python:
-  stage: build
-  tags:
-    - engageska 
-  script: 
-    - cd docker/tango/tango-python
-    - make DOCKER_REGISTRY_USER=$DOCKER_REGISTRY_USER DOCKER_REGISTRY_HOST=$DOCKER_REGISTRY_HOST build
-    - make DOCKER_REGISTRY_USER=$DOCKER_REGISTRY_USER DOCKER_REGISTRY_HOST=$DOCKER_REGISTRY_HOST push
-  when: manual
     
 build_tango-rest:
-  stage: build
+  stage: build_3
   tags:
     - engageska
   script: 
     - cd docker/tango/tango-rest
     - make DOCKER_REGISTRY_USER=$DOCKER_REGISTRY_USER DOCKER_REGISTRY_HOST=$DOCKER_REGISTRY_HOST build
     - make DOCKER_REGISTRY_USER=$DOCKER_REGISTRY_USER DOCKER_REGISTRY_HOST=$DOCKER_REGISTRY_HOST push
-  when: manual
     
 build_tango-pogo:
-  stage: build
+  stage: build_3
   tags:
     - engageska
   script: 
@@ -106,7 +104,7 @@ build_tango-pogo:
   when: manual
 
 build_tango-starter:
-  stage: build
+  stage: build_3
   tags:
     - engageska 
   script: 
