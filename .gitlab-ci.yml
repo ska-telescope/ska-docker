@@ -32,17 +32,16 @@ before_script:
 build_tango-db:
   stage: build
   tags:
-    - docker-machine
+    - docker
   script: 
     - cd docker/tango/tango-db
     - make DOCKER_REGISTRY_USER=$DOCKER_REGISTRY_USER DOCKER_REGISTRY_HOST=$DOCKER_REGISTRY_HOST build
-#    - make DOCKER_REGISTRY_USER=$DOCKER_REGISTRY_USER DOCKER_REGISTRY_HOST=$DOCKER_REGISTRY_HOST push
-#  when: manual
+    - make DOCKER_REGISTRY_USER=$DOCKER_REGISTRY_USER DOCKER_REGISTRY_HOST=$DOCKER_REGISTRY_HOST push
   
 test-framework-nomake:
   stage: test
-#  tags:
-#    - shell
+  tags:
+    - docker
   script:
     - cd docker-compose
     - docker-compose -f tango.yml -f tangotest.yml -f rest.yml pull
@@ -52,5 +51,4 @@ test-framework-nomake:
     - docker exec tangotest python3 /home/tango/SimpleTest.py
     - docker exec tangotest pytest -q /home/tango/SimplePyTest.py
     - curl --user tango-cs:tango http://127.0.0.1:8080/tango/rest/rc4/hosts/databaseds/10000/devices/sys/tg_test/1/attributes/boolean_scalar/value
-  when: manual
   
