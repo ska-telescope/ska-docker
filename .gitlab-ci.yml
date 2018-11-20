@@ -13,7 +13,7 @@ stages:
   - build_1
   - build_2
   - build_3
-  - start-containers
+  - pull-up-containers
   - test
   - stop-containers
 
@@ -109,15 +109,14 @@ build_tango-starter:
   when: manual
 
 start-framework:
-  stage: start-containers
+  stage: pull-up-containers
   tags:
     - engageska
   script:
     - cd docker-compose
     - make pull
     - make up 
-    - make start tangotest
-    - make start rest
+
     
 stop-framework:
   stage: stop-containers
@@ -135,6 +134,8 @@ test-framework-tangotest:
     - engageska
   script:
     - cd docker-compose
+    - make start tangotest
+    - make start rest
     - echo "******** Test Result ********" > result.txt
     - docker cp SimpleTest.py tangotest:/home/tango/SimpleTest.py 
     - docker cp SimplePyTest.py tangotest:/home/tango/SimplePyTest.py 
@@ -156,6 +157,8 @@ test-framework-tangorest:
   tags:
     - engageska
   script:
+    - make start tangotest
+    - make start rest
     - echo "******** Test Result ********" > result.txt
     - echo "docker exec tango-rest curl --user tango-cs:tango http://127.0.0.1:8080/tango/rest/rc4/hosts/databaseds/10000/devices/sys/tg_test/1/attributes/boolean_scalar/value" >> result.txt
     - docker exec tango-rest curl --user tango-cs:tango http://127.0.0.1:8080/tango/rest/rc4/hosts/databaseds/10000/devices/sys/tg_test/1/attributes/boolean_scalar/value >>  result.txt
