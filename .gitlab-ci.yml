@@ -156,6 +156,7 @@ test-framework-tangorest:
   tags:
     - engageska
   script:
+    - make up
     - make start tangotest
     - make start rest
     - echo "******** Test Result ********" > result.txt
