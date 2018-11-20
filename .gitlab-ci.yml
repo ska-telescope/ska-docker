@@ -166,7 +166,7 @@ test-framework-tangorest:
     - more result.txt
     - cd ..
     - mkdir .public
-    - cp result.txt .public/result.txt
+    - cp docker-compose/result.txt .public/result.txt
     - mv .public public
   artifacts:
     paths:
