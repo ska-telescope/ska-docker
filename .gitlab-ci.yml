@@ -3,10 +3,6 @@
 # In this case we use the latest python docker image to build and test this project.
 image: registry.gitlab.com/ska-telescope/ska-docker/tango-builder:latest
 
-variables:
-  DOCKER_DRIVER: overlay
-
-
 services:
   - docker:dind
   
@@ -48,6 +44,28 @@ build_dependencies:
     - make DOCKER_REGISTRY_USER=$DOCKER_REGISTRY_USER DOCKER_REGISTRY_HOST=$DOCKER_REGISTRY_HOST push
   when: manual
   
+build_tango-db:
+  stage: build_1
+  tags:
+    - engageska
+    - docker-machine    
+  script: 
+    - cd docker/tango/tango-db
+    - make DOCKER_REGISTRY_USER=$DOCKER_REGISTRY_USER DOCKER_REGISTRY_HOST=$DOCKER_REGISTRY_HOST build
+    - make DOCKER_REGISTRY_USER=$DOCKER_REGISTRY_USER DOCKER_REGISTRY_HOST=$DOCKER_REGISTRY_HOST push
+  when: manual
+
+build_tango-builder:
+  stage: build_1
+  tags:
+    - engageska
+    - docker-machine    
+  script: 
+    - cd docker/tango/tango-builder
+    - make DOCKER_REGISTRY_USER=$DOCKER_REGISTRY_USER DOCKER_REGISTRY_HOST=$DOCKER_REGISTRY_HOST build
+    - make DOCKER_REGISTRY_USER=$DOCKER_REGISTRY_USER DOCKER_REGISTRY_HOST=$DOCKER_REGISTRY_HOST push
+  when: manual
+  
 build_tango-cpp:
   stage: build_2
   tags:
@@ -77,17 +95,6 @@ build_tango-python:
     - docker-machine
   script: 
     - cd docker/tango/tango-python
-    - make DOCKER_REGISTRY_USER=$DOCKER_REGISTRY_USER DOCKER_REGISTRY_HOST=$DOCKER_REGISTRY_HOST build
-    - make DOCKER_REGISTRY_USER=$DOCKER_REGISTRY_USER DOCKER_REGISTRY_HOST=$DOCKER_REGISTRY_HOST push
-  when: manual
-  
-build_tango-db:
-  stage: build_1
-  tags:
-    - engageska
-    - docker-machine    
-  script: 
-    - cd docker/tango/tango-db
     - make DOCKER_REGISTRY_USER=$DOCKER_REGISTRY_USER DOCKER_REGISTRY_HOST=$DOCKER_REGISTRY_HOST build
     - make DOCKER_REGISTRY_USER=$DOCKER_REGISTRY_USER DOCKER_REGISTRY_HOST=$DOCKER_REGISTRY_HOST push
   when: manual
