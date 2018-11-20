@@ -20,7 +20,7 @@ build_dependencies:
   stage: build_1
   tags:
     - engageska
-    - shell
+    - docker-machine
   script: 
     - cd docker/tango/tango-dependencies
     - make DOCKER_REGISTRY_USER=$DOCKER_REGISTRY_USER DOCKER_REGISTRY_HOST=$DOCKER_REGISTRY_HOST build
@@ -31,6 +31,7 @@ build_tango-db:
   stage: build_1
   tags:
     - engageska
+    - docker-machine
   script: 
     - cd docker/tango/tango-db
     - make DOCKER_REGISTRY_USER=$DOCKER_REGISTRY_USER DOCKER_REGISTRY_HOST=$DOCKER_REGISTRY_HOST build
@@ -41,6 +42,7 @@ build_tango-builder:
   stage: build_1
   tags:
     - engageska
+    - docker-machine
   script: 
     - cd docker/tango/tango-builder
     - make DOCKER_REGISTRY_USER=$DOCKER_REGISTRY_USER DOCKER_REGISTRY_HOST=$DOCKER_REGISTRY_HOST build
@@ -51,6 +53,7 @@ build_tango-cpp:
   stage: build_2
   tags:
     - engageska
+    - docker-machine
   script: 
     - cd docker/tango/tango-cpp
     - make DOCKER_REGISTRY_USER=$DOCKER_REGISTRY_USER DOCKER_REGISTRY_HOST=$DOCKER_REGISTRY_HOST build
@@ -61,6 +64,7 @@ build_tango-java:
   stage: build_2
   tags:
     - engageska
+    - docker-machine
   script: 
     - cd docker/tango/tango-java
     - make DOCKER_REGISTRY_USER=$DOCKER_REGISTRY_USER DOCKER_REGISTRY_HOST=$DOCKER_REGISTRY_HOST build
@@ -71,6 +75,7 @@ build_tango-python:
   stage: build_3
   tags:
     - engageska
+    - docker-machine
   script: 
     - cd docker/tango/tango-python
     - make DOCKER_REGISTRY_USER=$DOCKER_REGISTRY_USER DOCKER_REGISTRY_HOST=$DOCKER_REGISTRY_HOST build
@@ -81,6 +86,7 @@ build_tango-rest:
   stage: build_3
   tags:
     - engageska
+    - docker-machine
   script: 
     - cd docker/tango/tango-rest
     - make DOCKER_REGISTRY_USER=$DOCKER_REGISTRY_USER DOCKER_REGISTRY_HOST=$DOCKER_REGISTRY_HOST build
@@ -91,6 +97,7 @@ build_tango-pogo:
   stage: build_3
   tags:
     - engageska
+    - docker-machine
   script: 
     - cd docker/tango/tango-pogo
     - make DOCKER_REGISTRY_USER=$DOCKER_REGISTRY_USER DOCKER_REGISTRY_HOST=$DOCKER_REGISTRY_HOST build
@@ -101,6 +108,7 @@ build_tango-starter:
   stage: build_3
   tags:
     - engageska
+    - docker-machine
   script: 
     - cd docker/tango/tango-starter
     - make DOCKER_REGISTRY_USER=$DOCKER_REGISTRY_USER DOCKER_REGISTRY_HOST=$DOCKER_REGISTRY_HOST build
@@ -111,6 +119,7 @@ test-framework:
   stage: test
   tags:
     - engageska
+    - docker-machine
   script:
     - cd docker-compose
     - make pull
@@ -139,6 +148,7 @@ stop-framework:
   stage: stop
   tags:
     - engageska
+    - docker-machine
   script:
     - cd docker-compose
     - make stop tangotest
