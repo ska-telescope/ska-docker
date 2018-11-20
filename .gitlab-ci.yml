@@ -15,6 +15,9 @@ stages:
   - build_3
   - test
   - stop
+  
+before_script:
+  - docker login -u "$CI_REGISTRY_USER" -p "$CI_REGISTRY_PASSWORD" $CI_REGISTRY
 
 build_dependencies:
   stage: build_1
