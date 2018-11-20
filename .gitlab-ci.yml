@@ -1,80 +1,113 @@
 # GitLab CI in conjunction with GitLab Runner can use Docker Engine to test and build any application.
 # Docker, when used with GitLab CI, runs each job in a separate and isolated container using the predefined image that is set up in .gitlab-ci.yml.
 # In this case we use the latest python docker image to build and test this project.
-#image: docker:latest
+image: ubuntu:latest
 
-#services:
-#  - docker:dind
+variables:
+  DOCKER_DRIVER: overlay
 
+
+services:
+  - docker:dind
+  
 # During the development of software, there can be many stages until it's ready for public consumption. 
 # You sure want to first test your code and then deploy it in a testing or staging environment before you release it to the public. 
 # That way you can prevent bugs not only in your software, but in the deployment process as well. 
 # See also https://docs.gitlab.com/ee/ci/environments.html
 stages:
-  - build
+  - build_1
+  - build_2
+  - build_3
+  - start-containers
   - test
+  - stop-containers
 
-#with shell executor, there is no need to install things. 
+#with shell machine, there is no need to install things. 
 before_script:
-  #- apt-get update
-  #- apt-get install make bash git curl
-  #- apt-get install -y python-pip
-  #- export LC_ALL=C
-  #- pip install docker-compose
-  #- pip install pytest
+  - apt-get update
+  - apt-get install -y make bash git curl python-pip apt-transport-https ca-certificates curl software-properties-common
+  - curl -fsSL https://download.docker.com/linux/ubuntu/gpg | apt-key add -
+  - apt-key fingerprint 0EBFCD88
+  - add-apt-repository "deb [arch=amd64] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable"
+  - apt-get update
+  - apt-get install -y docker-ce
+  - export LC_ALL=C
+  - pip install docker-compose
+  - pip install pytest
   - docker login -u "$CI_REGISTRY_USER" -p "$CI_REGISTRY_PASSWORD" $CI_REGISTRY
   - docker pull $DOCKER_REGISTRY_HOST/$DOCKER_REGISTRY_USER/tango-dependencies
 
 build_dependencies:
-  stage: build
+  stage: build_1
   tags:
-    - shell  
+    - engageska
+    - docker-machine
   script: 
     - cd docker/tango/tango-dependencies
     - make DOCKER_REGISTRY_USER=$DOCKER_REGISTRY_USER DOCKER_REGISTRY_HOST=$DOCKER_REGISTRY_HOST build
     - make DOCKER_REGISTRY_USER=$DOCKER_REGISTRY_USER DOCKER_REGISTRY_HOST=$DOCKER_REGISTRY_HOST push
   when: manual
-    
-build_tango-db:
-  stage: build
-  tags:
-    - shell  
-  script: 
-    - cd docker/tango/tango-db
-    - make DOCKER_REGISTRY_USER=$DOCKER_REGISTRY_USER DOCKER_REGISTRY_HOST=$DOCKER_REGISTRY_HOST build
-    - make DOCKER_REGISTRY_USER=$DOCKER_REGISTRY_USER DOCKER_REGISTRY_HOST=$DOCKER_REGISTRY_HOST push
   
 build_tango-cpp:
-  stage: build
+  stage: build_2
   tags:
-    - shell  
+    - engageska 
+    - docker-machine    
   script: 
     - cd docker/tango/tango-cpp
     - make DOCKER_REGISTRY_USER=$DOCKER_REGISTRY_USER DOCKER_REGISTRY_HOST=$DOCKER_REGISTRY_HOST build
     - make DOCKER_REGISTRY_USER=$DOCKER_REGISTRY_USER DOCKER_REGISTRY_HOST=$DOCKER_REGISTRY_HOST push
- 
+  when: manual
+  
 build_tango-java:
-  stage: build
+  stage: build_2
   tags:
-    - shell  
+    - engageska 
+    - docker-machine
   script: 
     - cd docker/tango/tango-java
     - make DOCKER_REGISTRY_USER=$DOCKER_REGISTRY_USER DOCKER_REGISTRY_HOST=$DOCKER_REGISTRY_HOST build
     - make DOCKER_REGISTRY_USER=$DOCKER_REGISTRY_USER DOCKER_REGISTRY_HOST=$DOCKER_REGISTRY_HOST push
-
+  when: manual
+  
 build_tango-python:
-  stage: build
+  stage: build_3
   tags:
-    - shell  
+    - engageska 
+    - docker-machine
   script: 
     - cd docker/tango/tango-python
     - make DOCKER_REGISTRY_USER=$DOCKER_REGISTRY_USER DOCKER_REGISTRY_HOST=$DOCKER_REGISTRY_HOST build
     - make DOCKER_REGISTRY_USER=$DOCKER_REGISTRY_USER DOCKER_REGISTRY_HOST=$DOCKER_REGISTRY_HOST push
-    
-build_tango-pogo:
-  stage: build
+  when: manual
+  
+build_tango-db:
+  stage: build_1
   tags:
-    - shell  
+    - engageska
+    - docker-machine    
+  script: 
+    - cd docker/tango/tango-db
+    - make DOCKER_REGISTRY_USER=$DOCKER_REGISTRY_USER DOCKER_REGISTRY_HOST=$DOCKER_REGISTRY_HOST build
+    - make DOCKER_REGISTRY_USER=$DOCKER_REGISTRY_USER DOCKER_REGISTRY_HOST=$DOCKER_REGISTRY_HOST push
+  when: manual
+    
+build_tango-rest:
+  stage: build_3
+  tags:
+    - engageska
+    - docker-machine
+  script: 
+    - cd docker/tango/tango-rest
+    - make DOCKER_REGISTRY_USER=$DOCKER_REGISTRY_USER DOCKER_REGISTRY_HOST=$DOCKER_REGISTRY_HOST build
+    - make DOCKER_REGISTRY_USER=$DOCKER_REGISTRY_USER DOCKER_REGISTRY_HOST=$DOCKER_REGISTRY_HOST push
+  when: manual
+  
+build_tango-pogo:
+  stage: build_3
+  tags:
+    - engageska
+    - docker-machine
   script: 
     - cd docker/tango/tango-pogo
     - make DOCKER_REGISTRY_USER=$DOCKER_REGISTRY_USER DOCKER_REGISTRY_HOST=$DOCKER_REGISTRY_HOST build
@@ -82,35 +115,76 @@ build_tango-pogo:
   when: manual
 
 build_tango-starter:
-  stage: build
+  stage: build_3
   tags:
-    - shell  
+    - engageska 
+    - docker-machine
   script: 
     - cd docker/tango/tango-starter
     - make DOCKER_REGISTRY_USER=$DOCKER_REGISTRY_USER DOCKER_REGISTRY_HOST=$DOCKER_REGISTRY_HOST build
     - make DOCKER_REGISTRY_USER=$DOCKER_REGISTRY_USER DOCKER_REGISTRY_HOST=$DOCKER_REGISTRY_HOST push
   when: manual
 
-build-all:
-  stage: build
+start-framework:
+  stage: start-containers
   tags:
-    - shell
-  script:
-    - ls -la
-    - cd docker
-    - make DOCKER_REGISTRY_USER=$DOCKER_REGISTRY_USER DOCKER_REGISTRY_HOST=$DOCKER_REGISTRY_HOST build
-    - make DOCKER_REGISTRY_USER=$DOCKER_REGISTRY_USER DOCKER_REGISTRY_HOST=$DOCKER_REGISTRY_HOST push
-  when: manual
-  
-test-framework:
-  stage: test
-  tags:
-    - shell
+    - engageska
+    - docker-machine
   script:
     - cd docker-compose
-    - docker-compose -f tango.yml -f tangotest.yml pull
-    - docker-compose -f tango.yml -f tangotest.yml up -d 
-    - docker cp SimpleTest.py tangotest:/home/tango/SimpleTest.py
-    - docker cp SimplePyTest.py tangotest:/home/tango/SimplePyTest.py
-    - docker exec tangotest python3 /home/tango/SimpleTest.py
-    - docker exec tangotest pytest -q /home/tango/SimplePyTest.py
+    - make pull
+    - make up 
+    - make start tangotest
+    - make start rest
+    
+stop-framework:
+  stage: stop-containers
+  tags:
+    - engageska
+    - docker-machine
+  script:
+    - cd docker-compose
+    - make stop tangotest
+    - make stop rest
+    - make down
+  
+test-framework-tangotest:
+  stage: test
+  tags:
+    - engageska
+    - docker-machine
+  script:
+    - cd docker-compose
+    - echo "******** Test Result ********" > result.txt
+    - docker cp SimpleTest.py tangotest:/home/tango/SimpleTest.py 
+    - docker cp SimplePyTest.py tangotest:/home/tango/SimplePyTest.py 
+    - echo "docker exec tangotest python3 /home/tango/SimpleTest.py" >> result.txt
+    - docker exec tangotest python3 /home/tango/SimpleTest.py >> result.txt
+    - echo "docker exec tangotest pytest -q /home/tango/SimplePyTest.py" >> result.txt
+    - docker exec tangotest pytest -q /home/tango/SimplePyTest.py >> result.txt
+    - more result.txt
+    - cd ..
+    - mkdir .public
+    - cp docker-compose/result.txt .public/result.txt
+    - mv .public public
+  artifacts:
+    paths:
+    - public  
+  
+test-framework-tangorest:
+  stage: test
+  tags:
+    - engageska
+    - docker-machine
+  script:
+    - echo "******** Test Result ********" > result.txt
+    - echo "docker exec tango-rest curl --user tango-cs:tango http://127.0.0.1:8080/tango/rest/rc4/hosts/databaseds/10000/devices/sys/tg_test/1/attributes/boolean_scalar/value" >> result.txt
+    - docker exec tango-rest curl --user tango-cs:tango http://127.0.0.1:8080/tango/rest/rc4/hosts/databaseds/10000/devices/sys/tg_test/1/attributes/boolean_scalar/value >>  result.txt
+    - more result.txt
+    - mkdir .public
+    - cp result.txt .public/result.txt
+    - mv .public public
+  artifacts:
+    paths:
+    - public 
+  
