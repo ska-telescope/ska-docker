@@ -1,7 +1,7 @@
 # GitLab CI in conjunction with GitLab Runner can use Docker Engine to test and build any application.
 # Docker, when used with GitLab CI, runs each job in a separate and isolated container using the predefined image that is set up in .gitlab-ci.yml.
 # In this case we use the latest python docker image to build and test this project.
-image: ubuntu:latest
+image: registry.gitlab.com/ska-telescope/ska-docker/tango-builder:latest
 
 variables:
   DOCKER_DRIVER: overlay
@@ -22,20 +22,20 @@ stages:
   - test
   - stop-containers
 
-#with shell machine, there is no need to install things. 
-before_script:
-  - apt-get update
-  - apt-get install -y make bash git curl python-pip apt-transport-https ca-certificates curl software-properties-common
-  - curl -fsSL https://download.docker.com/linux/ubuntu/gpg | apt-key add -
-  - apt-key fingerprint 0EBFCD88
-  - add-apt-repository "deb [arch=amd64] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable"
-  - apt-get update
-  - apt-get install -y docker-ce
-  - export LC_ALL=C
-  - pip install docker-compose
-  - pip install pytest
-  - docker login -u "$CI_REGISTRY_USER" -p "$CI_REGISTRY_PASSWORD" $CI_REGISTRY
-  - docker pull $DOCKER_REGISTRY_HOST/$DOCKER_REGISTRY_USER/tango-dependencies
+# #with shell machine, there is no need to install things. 
+# before_script:
+  # - apt-get update
+  # - apt-get install -y make bash git curl python-pip apt-transport-https ca-certificates curl software-properties-common
+  # - curl -fsSL https://download.docker.com/linux/ubuntu/gpg | apt-key add -
+  # - apt-key fingerprint 0EBFCD88
+  # - add-apt-repository "deb [arch=amd64] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable"
+  # - apt-get update
+  # - apt-get install -y docker-ce
+  # - export LC_ALL=C
+  # - pip install docker-compose
+  # - pip install pytest
+  # - docker login -u "$CI_REGISTRY_USER" -p "$CI_REGISTRY_PASSWORD" $CI_REGISTRY
+  # - docker pull $DOCKER_REGISTRY_HOST/$DOCKER_REGISTRY_USER/tango-dependencies
 
 build_dependencies:
   stage: build_1
