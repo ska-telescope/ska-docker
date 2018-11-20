@@ -13,7 +13,7 @@ stages:
   - build_1
   - build_2
   - build_3
-  - pull-up-containers
+  - pull-containers
   - test
   - stop-containers
 
@@ -109,15 +109,13 @@ build_tango-starter:
   when: manual
 
 start-framework:
-  stage: pull-up-containers
+  stage: pull-containers
   tags:
     - engageska
   script:
     - cd docker-compose
     - make pull
-    - make up 
-
-    
+   
 stop-framework:
   stage: stop-containers
   tags:
@@ -134,6 +132,7 @@ test-framework-tangotest:
     - engageska
   script:
     - cd docker-compose
+    - make up 
     - make start tangotest
     - make start rest
     - echo "******** Test Result ********" > result.txt
