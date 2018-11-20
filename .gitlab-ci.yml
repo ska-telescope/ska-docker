@@ -1,6 +1,5 @@
 # GitLab CI in conjunction with GitLab Runner can use Docker Engine to test and build any application.
 # Docker, when used with GitLab CI, runs each job in a separate and isolated container using the predefined image that is set up in .gitlab-ci.yml.
-# In this case we use the latest python docker image to build and test this project.
 image: registry.gitlab.com/ska-telescope/ska-docker/tango-builder:latest
 
 services:
@@ -18,21 +17,6 @@ stages:
   - test
   - stop-containers
 
-# #with shell machine, there is no need to install things. 
-# before_script:
-  # - apt-get update
-  # - apt-get install -y make bash git curl python-pip apt-transport-https ca-certificates curl software-properties-common
-  # - curl -fsSL https://download.docker.com/linux/ubuntu/gpg | apt-key add -
-  # - apt-key fingerprint 0EBFCD88
-  # - add-apt-repository "deb [arch=amd64] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable"
-  # - apt-get update
-  # - apt-get install -y docker-ce
-  # - export LC_ALL=C
-  # - pip install docker-compose
-  # - pip install pytest
-  # - docker login -u "$CI_REGISTRY_USER" -p "$CI_REGISTRY_PASSWORD" $CI_REGISTRY
-  # - docker pull $DOCKER_REGISTRY_HOST/$DOCKER_REGISTRY_USER/tango-dependencies
-
 build_dependencies:
   stage: build_1
   tags:
@@ -48,7 +32,6 @@ build_tango-db:
   stage: build_1
   tags:
     - engageska
-    - shell    
   script: 
     - cd docker/tango/tango-db
     - make DOCKER_REGISTRY_USER=$DOCKER_REGISTRY_USER DOCKER_REGISTRY_HOST=$DOCKER_REGISTRY_HOST build
@@ -59,7 +42,6 @@ build_tango-builder:
   stage: build_1
   tags:
     - engageska
-    - shell    
   script: 
     - cd docker/tango/tango-builder
     - make DOCKER_REGISTRY_USER=$DOCKER_REGISTRY_USER DOCKER_REGISTRY_HOST=$DOCKER_REGISTRY_HOST build
@@ -69,8 +51,7 @@ build_tango-builder:
 build_tango-cpp:
   stage: build_2
   tags:
-    - engageska 
-    - shell    
+    - engageska
   script: 
     - cd docker/tango/tango-cpp
     - make DOCKER_REGISTRY_USER=$DOCKER_REGISTRY_USER DOCKER_REGISTRY_HOST=$DOCKER_REGISTRY_HOST build
@@ -80,8 +61,7 @@ build_tango-cpp:
 build_tango-java:
   stage: build_2
   tags:
-    - engageska 
-    - shell
+    - engageska
   script: 
     - cd docker/tango/tango-java
     - make DOCKER_REGISTRY_USER=$DOCKER_REGISTRY_USER DOCKER_REGISTRY_HOST=$DOCKER_REGISTRY_HOST build
@@ -91,8 +71,7 @@ build_tango-java:
 build_tango-python:
   stage: build_3
   tags:
-    - engageska 
-    - shell
+    - engageska
   script: 
     - cd docker/tango/tango-python
     - make DOCKER_REGISTRY_USER=$DOCKER_REGISTRY_USER DOCKER_REGISTRY_HOST=$DOCKER_REGISTRY_HOST build
@@ -103,7 +82,6 @@ build_tango-rest:
   stage: build_3
   tags:
     - engageska
-    - shell
   script: 
     - cd docker/tango/tango-rest
     - make DOCKER_REGISTRY_USER=$DOCKER_REGISTRY_USER DOCKER_REGISTRY_HOST=$DOCKER_REGISTRY_HOST build
@@ -114,7 +92,6 @@ build_tango-pogo:
   stage: build_3
   tags:
     - engageska
-    - shell
   script: 
     - cd docker/tango/tango-pogo
     - make DOCKER_REGISTRY_USER=$DOCKER_REGISTRY_USER DOCKER_REGISTRY_HOST=$DOCKER_REGISTRY_HOST build
@@ -124,8 +101,7 @@ build_tango-pogo:
 build_tango-starter:
   stage: build_3
   tags:
-    - engageska 
-    - shell
+    - engageska
   script: 
     - cd docker/tango/tango-starter
     - make DOCKER_REGISTRY_USER=$DOCKER_REGISTRY_USER DOCKER_REGISTRY_HOST=$DOCKER_REGISTRY_HOST build
@@ -136,7 +112,6 @@ start-framework:
   stage: start-containers
   tags:
     - engageska
-    - shell
   script:
     - cd docker-compose
     - make pull
@@ -148,7 +123,6 @@ stop-framework:
   stage: stop-containers
   tags:
     - engageska
-    - shell
   script:
     - cd docker-compose
     - make stop tangotest
@@ -159,7 +133,6 @@ test-framework-tangotest:
   stage: test
   tags:
     - engageska
-    - shell
   script:
     - cd docker-compose
     - echo "******** Test Result ********" > result.txt
@@ -182,7 +155,6 @@ test-framework-tangorest:
   stage: test
   tags:
     - engageska
-    - shell
   script:
     - echo "******** Test Result ********" > result.txt
     - echo "docker exec tango-rest curl --user tango-cs:tango http://127.0.0.1:8080/tango/rest/rc4/hosts/databaseds/10000/devices/sys/tg_test/1/attributes/boolean_scalar/value" >> result.txt
