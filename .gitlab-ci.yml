@@ -13,6 +13,7 @@ stages:
   - build_1
   - build_2
   - build_3
+  - build_4
   - test
 
 before_script:
@@ -74,7 +75,7 @@ build_tango-java:
   when: manual
   
 build_tango-python:
-  stage: build_2
+  stage: build_3
   tags:
     - shell
   script:
@@ -95,7 +96,7 @@ build_tango-rest:
   when: manual
 
 build_tango-itango:
-  stage: build_3
+  stage: build_4
   tags:
   - engageska
   - docker-machine
