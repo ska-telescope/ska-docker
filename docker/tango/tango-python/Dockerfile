@@ -19,8 +19,7 @@ RUN runtimeDeps='\
     python3-pkgconfig \
     python3-pkg-resources \
     python3-setuptools \
-    python3-six \
-    sudo' \
+    python3-six ' \
     && DEBIAN_FRONTEND=noninteractive apt-get update \
     && apt-get -y install --no-install-recommends $runtimeDeps \
     && rm -rf /var/lib/apt/lists/* 
@@ -41,10 +40,6 @@ RUN PYTANGO_TAG=v9.2.4 \
     && cd .. \
     && apt-get purge -y --auto-remove $buildDeps \
     && rm -r /usr/src/pytango
-
-# add sudo so that the tango user can add test dpkgs
-RUN echo "tango ALL=(root) NOPASSWD:ALL" > /etc/sudoers.d/tango \
-    && chmod 0440 /etc/sudoers.d/tango
 
 USER tango
 

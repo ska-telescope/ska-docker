@@ -40,3 +40,18 @@ RUN OMNIORB_DOWNLOAD_URL=https://svwh.dl.sourceforge.net/project/omniorb/omniORB
     && rm -r /usr/src/omniorb
 
 COPY wait-for-it.sh /usr/local/bin/wait-for-it.sh
+
+RUN useradd --create-home --home-dir /home/tango tango \
+    && chown -R tango:tango /home/tango
+
+# add sudo so that the tango user can add test dpkgs
+RUN runtimeDeps='sudo' \
+    && DEBIAN_FRONTEND=noninteractive apt-get update \
+    && DEBIAN_FRONTEND=noninteractive apt-get -y install --no-install-recommends $runtimeDeps \
+    && rm -rf /var/lib/apt/lists/*
+
+RUN echo "tango ALL=(root) NOPASSWD:ALL" > /etc/sudoers.d/tango \
+    && chmod 0440 /etc/sudoers.d/tango
+
+USER tango
+

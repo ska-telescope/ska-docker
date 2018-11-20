@@ -2,6 +2,8 @@ ARG DOCKER_REGISTRY_USER
 ARG DOCKER_REGISTRY_HOST
 FROM ${DOCKER_REGISTRY_HOST}/${DOCKER_REGISTRY_USER}/tango-dependencies:latest
 
+USER root
+
 RUN runtimeDeps='default-jre' \
     && DEBIAN_FRONTEND=noninteractive apt-get update \
     && DEBIAN_FRONTEND=noninteractive apt-get -y install --no-install-recommends $runtimeDeps \
@@ -24,9 +26,4 @@ RUN TANGO_VERSION=9.2.5a \
     && apt-get purge -y --auto-remove $buildDeps \
     && rm -r /usr/src/tango
 
-ENV HOME /home/tango
-RUN useradd --create-home --home-dir $HOME tango \
-    && chown -R tango:tango $HOME
-
-WORKDIR $HOME
-USER tango    
+USER tango

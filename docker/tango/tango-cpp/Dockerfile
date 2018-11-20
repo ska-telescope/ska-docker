@@ -2,6 +2,8 @@ ARG DOCKER_REGISTRY_USER
 ARG DOCKER_REGISTRY_HOST
 FROM ${DOCKER_REGISTRY_HOST}/${DOCKER_REGISTRY_USER}/tango-dependencies:latest
 
+USER root
+
 RUN TANGO_VERSION=9.2.5a \
     && TANGO_DOWNLOAD_URL=https://netcologne.dl.sourceforge.net/project/tango-cs/tango-$TANGO_VERSION.tar.gz \
     && buildDeps='build-essential ca-certificates curl file libmariadbclient-dev libmariadbclient-dev-compat pkg-config python' \
@@ -19,9 +21,4 @@ RUN TANGO_VERSION=9.2.5a \
     && apt-get purge -y --auto-remove $buildDeps \
     && rm -r /usr/src/tango
 
-ENV HOME /home/tango
-RUN useradd --create-home --home-dir $HOME tango \
-    && chown -R tango:tango $HOME
-
-WORKDIR $HOME
 USER tango
