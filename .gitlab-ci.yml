@@ -229,3 +229,21 @@ test-framework-tango-rest:
       - docker/tango/tango-dependencies/**/*
       - docker/tango/tango-cpp/**/*
       - docker/tango/tango-rest/**/*
+
+test-framework-ska-python:
+  stage: test
+  tags:
+  - engageska
+  - docker-machine
+  script:
+  - mkdir .public
+  - make DOCKER_REGISTRY_USER=$DOCKER_REGISTRY_USER DOCKER_REGISTRY_HOST=$DOCKER_REGISTRY_HOST -C docker/tango/ska-python test > .public/result.txt
+  - mv .public public
+  artifacts:
+    paths:
+    - public
+  only:
+    changes:
+    - docker/tango/tango-dependencies/**/*
+    - docker/tango/tango-cpp/**/*
+    - docker/tango/ska-python/**/*

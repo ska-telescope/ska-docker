@@ -11,10 +11,12 @@ USER root
 # Permanently install Python and PyTango runtime dependencies:
 #
 # * libboost-python1.62.0 is required by PyTango;
+# * make is required to manage execution of the tests inside the container
 # * python3 is required as this image is intended for running Python Tango
 #   devices.
 #
 RUN runtimeDeps='libboost-python1.62.0 \
+                 make \
                  python3' \
     && DEBIAN_FRONTEND=noninteractive apt-get update \
     && apt-get -y install --no-install-recommends $runtimeDeps \
@@ -58,13 +60,15 @@ COPY Pipfile.lock Pipfile.lock
 # * VIRTUAL_ENV: for completeness. This environment variable would have been
 #   set by 'source /venv/bin/activate'
 # * PIPENV_VERBOSITY: hides warning about pipenv running inside a virtualenv.
+# * PIPENV_NOSPIN: disables animated spinner for cleaner CI logs
 #
 ENV LC_ALL=C.UTF-8 \
     LANG=C.UTF-8 \
     PIPENV_TIMEOUT=900 \
     PATH=/venv/bin:$PATH \
     VIRTUAL_ENV=/venv \
-    PIPENV_VERBOSITY=-1
+    PIPENV_VERBOSITY=-1 \
+    PIPENV_NOSPIN=1
 
 # Install build dependencies temporarily:
 #
