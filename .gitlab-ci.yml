@@ -28,7 +28,9 @@ build_dependencies:
     - cd docker/tango/tango-dependencies
     - make DOCKER_REGISTRY_USER=$DOCKER_REGISTRY_USER DOCKER_REGISTRY_HOST=$DOCKER_REGISTRY_HOST build
     - make DOCKER_REGISTRY_USER=$DOCKER_REGISTRY_USER DOCKER_REGISTRY_HOST=$DOCKER_REGISTRY_HOST push
-  when: manual
+  only:
+    changes:
+      - docker/tango/tango-dependencies/**/*
 
 build_tango-db:
   stage: build_1
@@ -39,7 +41,8 @@ build_tango-db:
   - cd docker/tango/tango-db
   - make DOCKER_REGISTRY_USER=$DOCKER_REGISTRY_USER DOCKER_REGISTRY_HOST=$DOCKER_REGISTRY_HOST build
   - make DOCKER_REGISTRY_USER=$DOCKER_REGISTRY_USER DOCKER_REGISTRY_HOST=$DOCKER_REGISTRY_HOST push
-  when: manual
+  changes:
+    - docker/tango/tango-db/**/*
 
 build_tango-builder:
   stage: build_1
@@ -50,7 +53,8 @@ build_tango-builder:
     - cd docker/tango/tango-builder
     - make DOCKER_REGISTRY_USER=$DOCKER_REGISTRY_USER DOCKER_REGISTRY_HOST=$DOCKER_REGISTRY_HOST build
     - make DOCKER_REGISTRY_USER=$DOCKER_REGISTRY_USER DOCKER_REGISTRY_HOST=$DOCKER_REGISTRY_HOST push
-  when: manual
+  changes:
+    - docker/tango/tango-builder/**/*
 
 build_tango-cpp:
   stage: build_2
@@ -61,8 +65,10 @@ build_tango-cpp:
     - cd docker/tango/tango-cpp
     - make DOCKER_REGISTRY_USER=$DOCKER_REGISTRY_USER DOCKER_REGISTRY_HOST=$DOCKER_REGISTRY_HOST build
     - make DOCKER_REGISTRY_USER=$DOCKER_REGISTRY_USER DOCKER_REGISTRY_HOST=$DOCKER_REGISTRY_HOST push
-  when: manual
-  
+  changes:
+    - docker/tango/tango-dependencies/**/*
+    - docker/tango/tango-cpp/**/*
+
 build_tango-java:
   stage: build_2
   tags:
@@ -72,8 +78,10 @@ build_tango-java:
     - cd docker/tango/tango-java
     - make DOCKER_REGISTRY_USER=$DOCKER_REGISTRY_USER DOCKER_REGISTRY_HOST=$DOCKER_REGISTRY_HOST build
     - make DOCKER_REGISTRY_USER=$DOCKER_REGISTRY_USER DOCKER_REGISTRY_HOST=$DOCKER_REGISTRY_HOST push
-  when: manual
-  
+  changes:
+    - docker/tango/tango-dependencies/**/*
+    - docker/tango/tango-java/**/*
+
 build_tango-python:
   stage: build_3
   tags:
@@ -82,8 +90,11 @@ build_tango-python:
     - cd docker/tango/tango-python
     - make DOCKER_REGISTRY_USER=$DOCKER_REGISTRY_USER DOCKER_REGISTRY_HOST=$DOCKER_REGISTRY_HOST build
     - make DOCKER_REGISTRY_USER=$DOCKER_REGISTRY_USER DOCKER_REGISTRY_HOST=$DOCKER_REGISTRY_HOST push
-  when: manual
-  
+  changes:
+    - docker/tango/tango-dependencies/**/*
+    - docker/tango/tango-cpp/**/*
+    - docker/tango/tango-python/**/*
+
 build_tango-rest:
   stage: build_3
   tags:
@@ -93,7 +104,10 @@ build_tango-rest:
     - cd docker/tango/tango-rest
     - make DOCKER_REGISTRY_USER=$DOCKER_REGISTRY_USER DOCKER_REGISTRY_HOST=$DOCKER_REGISTRY_HOST build
     - make DOCKER_REGISTRY_USER=$DOCKER_REGISTRY_USER DOCKER_REGISTRY_HOST=$DOCKER_REGISTRY_HOST push
-  when: manual
+  changes:
+    - docker/tango/tango-dependencies/**/*
+    - docker/tango/tango-cpp/**/*
+    - docker/tango/tango-rest/**/*
 
 build_tango-itango:
   stage: build_4
@@ -104,7 +118,11 @@ build_tango-itango:
   - cd docker/tango/tango-itango
   - make DOCKER_REGISTRY_USER=$DOCKER_REGISTRY_USER DOCKER_REGISTRY_HOST=$DOCKER_REGISTRY_HOST build
   - make DOCKER_REGISTRY_USER=$DOCKER_REGISTRY_USER DOCKER_REGISTRY_HOST=$DOCKER_REGISTRY_HOST push
-  when: manual
+  changes:
+    - docker/tango/tango-dependencies/**/*
+    - docker/tango/tango-cpp/**/*
+    - docker/tango/tango-python/**/*
+    - docker/tango/tango-itango/**/*
 
 build_tango-pogo:
   stage: build_3
@@ -115,7 +133,10 @@ build_tango-pogo:
     - cd docker/tango/tango-pogo
     - make DOCKER_REGISTRY_USER=$DOCKER_REGISTRY_USER DOCKER_REGISTRY_HOST=$DOCKER_REGISTRY_HOST build
     - make DOCKER_REGISTRY_USER=$DOCKER_REGISTRY_USER DOCKER_REGISTRY_HOST=$DOCKER_REGISTRY_HOST push
-  when: manual
+  changes:
+    - docker/tango/tango-dependencies/**/*
+    - docker/tango/tango-java/**/*
+    - docker/tango/tango-pogo/**/*
 
 build_tango-starter:
   stage: build_3
@@ -126,7 +147,10 @@ build_tango-starter:
     - cd docker/tango/tango-starter
     - make DOCKER_REGISTRY_USER=$DOCKER_REGISTRY_USER DOCKER_REGISTRY_HOST=$DOCKER_REGISTRY_HOST build
     - make DOCKER_REGISTRY_USER=$DOCKER_REGISTRY_USER DOCKER_REGISTRY_HOST=$DOCKER_REGISTRY_HOST push
-  when: manual
+  changes:
+    - docker/tango/tango-dependencies/**/*
+    - docker/tango/tango-cpp/**/*
+    - docker/tango/tango-starter/**/*
 
 test-framework-tango-python:
   stage: test
@@ -140,6 +164,10 @@ test-framework-tango-python:
   artifacts:
     paths:
     - public
+  changes:
+    - docker/tango/tango-dependencies/**/*
+    - docker/tango/tango-cpp/**/*
+    - docker/tango/tango-python/**/*
 
 test-framework-tango-itango:
   stage: test
@@ -153,6 +181,11 @@ test-framework-tango-itango:
   artifacts:
     paths:
     - public
+  changes:
+    - docker/tango/tango-dependencies/**/*
+    - docker/tango/tango-cpp/**/*
+    - docker/tango/tango-python/**/*
+    - docker/tango/tango-itango/**/*
 
 test-framework-tango-rest:
   stage: test
@@ -161,9 +194,12 @@ test-framework-tango-rest:
     - docker-machine
   script:
     - mkdir .public
-    - make DOCKER_REGISTRY_USER=$DOCKER_REGISTRY_USER DOCKER_REGISTRY_HOST=$DOCKER_REGISTRY_HOST -C docker/tango/tango-test test > .public/result.txt
+    - make DOCKER_REGISTRY_USER=$DOCKER_REGISTRY_USER DOCKER_REGISTRY_HOST=$DOCKER_REGISTRY_HOST -C docker/tango/tango-rest test > .public/result.txt
     - mv .public public
   artifacts:
     paths:
     - public 
-  
+  changes:
+    - docker/tango/tango-dependencies/**/*
+    - docker/tango/tango-cpp/**/*
+    - docker/tango/tango-rest/**/*
