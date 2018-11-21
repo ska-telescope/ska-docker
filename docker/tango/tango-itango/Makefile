@@ -9,17 +9,13 @@ DOCKER_RUN_ARGS =
 # defines the image to test
 IMAGE_TO_TEST = $(DOCKER_REGISTRY_HOST)/$(DOCKER_REGISTRY_USER)/tango-itango:latest
 
-# path to the docker-compose files
-DOCKER_COMPOSE_DIR = ../../../docker-compose
-
 # docker-compose commmand for a composition of services for the tango database,
 # databaseds device, and tangotest devices
 DOCKER_COMPOSE_COMMAND = PWD=$(CURDIR) \
 						 DOCKER_REGISTRY_HOST=$(DOCKER_REGISTRY_HOST) \
 						 DOCKER_REGISTRY_USER=$(DOCKER_REGISTRY_USER) \
 						 docker-compose \
-						 -f $(DOCKER_COMPOSE_DIR)/tango.yml \
-						 -f $(DOCKER_COMPOSE_DIR)/tangotest.yml
+						 -f docker-compose.yml
 
 # defines a function to copy the ./test directory into the container and
 # then runs the requested make target in the container. The container is:
