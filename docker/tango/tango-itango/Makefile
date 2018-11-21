@@ -40,7 +40,7 @@ make = tar -c test/ | \
 all: test
 
 test: DOCKER_RUN_ARGS = --volumes-from=$(BUILD)
-test: /bin/test
+test:
 	$(INIT_CACHE)
 	$(DOCKER_COMPOSE_COMMAND) up -d
 	$(call make,test); \
