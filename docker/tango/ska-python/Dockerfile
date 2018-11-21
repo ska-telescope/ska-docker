@@ -101,8 +101,8 @@ RUN buildDeps='build-essential \
 
 USER tango
 
-ONBUILD COPY Pipfile Pipfile
-ONBUILD COPY Pipfile.lock Pipfile.lock
+ONBUILD COPY --chown=tango:tango Pipfile Pipfile
+ONBUILD COPY --chown=tango:tango Pipfile.lock Pipfile.lock
 
 ONBUILD RUN buildDeps='build-essential \
                        libboost-python-dev \
@@ -110,8 +110,10 @@ ONBUILD RUN buildDeps='build-essential \
     && sudo DEBIAN_FRONTEND=noninteractive apt-get update \
     && sudo apt-get -y install --no-install-recommends $buildDeps \
     && pipenv install --dev \
+    && cp Pipfile.lock /venv/Pipfile.lock \
     && rm -fr ~/.local ~/.cache \
     && sudo apt-get purge -y --auto-remove $buildDeps \
     && sudo rm -rf /var/lib/apt/lists/*
 
-ONBUILD COPY . /app
+ONBUILD COPY --chown=tango:tango . /app
+ONBUILD RUN mv /venv/Pipfile.lock /app/Pipfile.lock
