@@ -86,6 +86,20 @@ build_tango-java:
       - docker/tango/tango-dependencies/**/*
       - docker/tango/tango-java/**/*
 
+build_ska-python:
+  stage: build_3
+  tags:
+  - shell
+  script:
+  - cd docker/tango/ska-python
+  - make DOCKER_REGISTRY_USER=$DOCKER_REGISTRY_USER DOCKER_REGISTRY_HOST=$DOCKER_REGISTRY_HOST build
+  - make DOCKER_REGISTRY_USER=$DOCKER_REGISTRY_USER DOCKER_REGISTRY_HOST=$DOCKER_REGISTRY_HOST push
+  only:
+    changes:
+    - docker/tango/tango-dependencies/**/*
+    - docker/tango/tango-cpp/**/*
+    - docker/tango/ska-python/**/*
+
 build_tango-python:
   stage: build_3
   tags:
