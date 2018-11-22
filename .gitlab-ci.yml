@@ -19,6 +19,13 @@ stages:
 before_script:
   - docker login -u "$CI_REGISTRY_USER" -p "$CI_REGISTRY_PASSWORD" $CI_REGISTRY
 
+check_disk_space:
+  tags:
+    - engageska
+    - docker-machine
+  script: 
+    - df
+  
 build_dependencies:
   stage: build_1
   tags:
