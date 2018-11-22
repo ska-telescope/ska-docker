@@ -17,9 +17,6 @@ stages:
 - build_4
 - test
 
-before_script:
-- docker login -u "$CI_REGISTRY_USER" -p "$CI_REGISTRY_PASSWORD" $CI_REGISTRY
-
 build_tango-builder:
   stage: build_0
   tags:
