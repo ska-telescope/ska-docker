@@ -170,7 +170,7 @@ build_tango-starter:
 test-framework-tango-python:
   stage: test
   tags:
-  - shell
+  - docker-executor
   script:
   - mkdir .public
   - make DOCKER_REGISTRY_USER=$DOCKER_REGISTRY_USER DOCKER_REGISTRY_HOST=$DOCKER_REGISTRY_HOST -C docker/tango/tango-python test > .public/result.txt
@@ -187,7 +187,7 @@ test-framework-tango-python:
 test-framework-tango-itango:
   stage: test
   tags:
-  - shell
+  - docker-executor
   script:
   - mkdir .public
   - make DOCKER_REGISTRY_USER=$DOCKER_REGISTRY_USER DOCKER_REGISTRY_HOST=$DOCKER_REGISTRY_HOST -C docker/tango/tango-itango test > .public/result.txt
@@ -205,7 +205,7 @@ test-framework-tango-itango:
 test-framework-tango-rest:
   stage: test
   tags:
-  - shell
+  - docker-executor
   script:
   - mkdir .public
   - make DOCKER_REGISTRY_USER=$DOCKER_REGISTRY_USER DOCKER_REGISTRY_HOST=$DOCKER_REGISTRY_HOST -C docker/tango/tango-rest test > .public/result.txt
@@ -222,7 +222,7 @@ test-framework-tango-rest:
 test-framework-ska-python:
   stage: test
   tags:
-  - shell
+  - docker-executor
   script:
   - mkdir .public
   - make DOCKER_REGISTRY_USER=$DOCKER_REGISTRY_USER DOCKER_REGISTRY_HOST=$DOCKER_REGISTRY_HOST -C docker/tango/ska-python test > .public/result.txt
