@@ -26,7 +26,7 @@ DOCKER_COMPOSE_COMMAND = PWD=$(CURDIR) \
 #      and test output can be written in the container and subsequently copied
 #      to the host
 make = tar -c test/ | \
-	   docker run -i --rm --network=docker-compose_default \
+	   docker run -i --rm --network=$(notdir $(CURDIR))_default \
 	   -v $(CACHE_VOLUME):/home/tango/.cache \
 	   -v /build -w /build $(DOCKER_RUN_ARGS) $(IMAGE_TO_TEST) \
 	   bash -c "sudo chown tango /build /home/tango/.cache && \

@@ -9,18 +9,13 @@ DOCKER_RUN_ARGS =
 # defines the image to test
 IMAGE_TO_TEST = $(DOCKER_REGISTRY_HOST)/$(DOCKER_REGISTRY_USER)/tango-rest:latest
 
-# path to the docker-compose files
-DOCKER_COMPOSE_DIR = ../../../docker-compose
-
 # docker-compose commmand for a composition of services for the tango database,
 # databaseds device, and tangotest devices
 DOCKER_COMPOSE_COMMAND = PWD=$(CURDIR) \
 						 DOCKER_REGISTRY_HOST=$(DOCKER_REGISTRY_HOST) \
 						 DOCKER_REGISTRY_USER=$(DOCKER_REGISTRY_USER) \
 						 docker-compose \
-						 -f $(DOCKER_COMPOSE_DIR)/tango.yml \
-						 -f $(DOCKER_COMPOSE_DIR)/tangotest.yml \
-						 -f $(DOCKER_COMPOSE_DIR)/rest.yml
+						 -f docker-compose.yml
 
 # defines a function to copy the ./test directory into the container and
 # then runs the requested make target in the container. The container is:
@@ -31,7 +26,7 @@ DOCKER_COMPOSE_COMMAND = PWD=$(CURDIR) \
 #      and test output can be written in the container and subsequently copied
 #      to the host
 make = tar -c test/ | \
-	   docker run -i --rm --network=docker-compose_default \
+	   docker run -i --rm --network=$(notdir $(CURDIR))_default \
 	   -v $(CACHE_VOLUME):/home/tango/.cache \
 	   -v /build -w /build $(DOCKER_RUN_ARGS) $(IMAGE_TO_TEST) \
 	   bash -c "sudo chown tango /build /home/tango/.cache && \
