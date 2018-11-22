@@ -39,7 +39,10 @@ RUN OMNIORB_DOWNLOAD_URL=https://svwh.dl.sourceforge.net/project/omniorb/omniORB
     && apt-get purge -y --auto-remove $buildDeps \
     && rm -r /usr/src/omniorb
 
+# Copy across files that are used to help orchestrate container compositions
+# and test execution sequences
 COPY wait-for-it.sh /usr/local/bin/wait-for-it.sh
+COPY retry.sh /usr/local/bin/retry
 
 RUN useradd --create-home --home-dir /home/tango tango \
     && chown -R tango:tango /home/tango
