@@ -20,7 +20,7 @@ stages:
 build_tango-builder:
   stage: build_0
   tags:
-  - $CI_TAG
+  - docker-executor
   script:
   - cd docker/tango/tango-builder
   - make DOCKER_BUILD_ARGS="--no-cache" DOCKER_REGISTRY_USER=$DOCKER_REGISTRY_USER DOCKER_REGISTRY_HOST=$DOCKER_REGISTRY_HOST build
@@ -32,7 +32,7 @@ build_tango-builder:
 build_dependencies:
   stage: build_1
   tags:
-  - $CI_TAG
+  - docker-executor
   script:
   - cd docker/tango/tango-dependencies
   - make DOCKER_BUILD_ARGS="--no-cache" DOCKER_REGISTRY_USER=$DOCKER_REGISTRY_USER DOCKER_REGISTRY_HOST=$DOCKER_REGISTRY_HOST build
@@ -44,7 +44,7 @@ build_dependencies:
 build_tango-db:
   stage: build_1
   tags:
-  - $CI_TAG
+  - docker-executor
   script:
   - cd docker/tango/tango-db
   - make DOCKER_BUILD_ARGS="--no-cache" DOCKER_REGISTRY_USER=$DOCKER_REGISTRY_USER DOCKER_REGISTRY_HOST=$DOCKER_REGISTRY_HOST build
@@ -56,7 +56,7 @@ build_tango-db:
 build_tango-cpp:
   stage: build_2
   tags:
-  - $CI_TAG
+  - docker-executor
   script:
   - cd docker/tango/tango-cpp
   - make DOCKER_BUILD_ARGS="--no-cache" DOCKER_REGISTRY_USER=$DOCKER_REGISTRY_USER DOCKER_REGISTRY_HOST=$DOCKER_REGISTRY_HOST build
@@ -69,7 +69,7 @@ build_tango-cpp:
 build_tango-java:
   stage: build_2
   tags:
-  - $CI_TAG
+  - docker-executor
   script:
   - cd docker/tango/tango-java
   - make DOCKER_BUILD_ARGS="--no-cache" DOCKER_REGISTRY_USER=$DOCKER_REGISTRY_USER DOCKER_REGISTRY_HOST=$DOCKER_REGISTRY_HOST build
@@ -82,7 +82,7 @@ build_tango-java:
 build_ska-python:
   stage: build_3
   tags:
-  - $CI_TAG
+  - docker-executor
   script:
   - cd docker/tango/ska-python
   - make DOCKER_BUILD_ARGS="--no-cache" DOCKER_REGISTRY_USER=$DOCKER_REGISTRY_USER DOCKER_REGISTRY_HOST=$DOCKER_REGISTRY_HOST build
@@ -96,7 +96,7 @@ build_ska-python:
 build_tango-python:
   stage: build_3
   tags:
-  - $CI_TAG
+  - docker-executor
   script:
   - cd docker/tango/tango-python
   - make DOCKER_BUILD_ARGS="--no-cache" DOCKER_REGISTRY_USER=$DOCKER_REGISTRY_USER DOCKER_REGISTRY_HOST=$DOCKER_REGISTRY_HOST build
@@ -110,7 +110,7 @@ build_tango-python:
 build_tango-rest:
   stage: build_3
   tags:
-  - $CI_TAG
+  - docker-executor
   script:
   - cd docker/tango/tango-rest
   - make DOCKER_BUILD_ARGS="--no-cache" DOCKER_REGISTRY_USER=$DOCKER_REGISTRY_USER DOCKER_REGISTRY_HOST=$DOCKER_REGISTRY_HOST build
@@ -124,7 +124,7 @@ build_tango-rest:
 build_tango-itango:
   stage: build_4
   tags:
-  - $CI_TAG
+  - docker-executor
   script:
   - cd docker/tango/tango-itango
   - make DOCKER_BUILD_ARGS="--no-cache" DOCKER_REGISTRY_USER=$DOCKER_REGISTRY_USER DOCKER_REGISTRY_HOST=$DOCKER_REGISTRY_HOST build
@@ -139,7 +139,7 @@ build_tango-itango:
 build_tango-pogo:
   stage: build_3
   tags:
-  - $CI_TAG
+  - docker-executor
   script:
   - cd docker/tango/tango-pogo
   - make DOCKER_BUILD_ARGS="--no-cache" DOCKER_REGISTRY_USER=$DOCKER_REGISTRY_USER DOCKER_REGISTRY_HOST=$DOCKER_REGISTRY_HOST build
@@ -153,7 +153,7 @@ build_tango-pogo:
 build_tango-starter:
   stage: build_3
   tags:
-  - $CI_TAG
+  - docker-executor
   script:
   - cd docker/tango/tango-starter
   - make DOCKER_BUILD_ARGS="--no-cache" DOCKER_REGISTRY_USER=$DOCKER_REGISTRY_USER DOCKER_REGISTRY_HOST=$DOCKER_REGISTRY_HOST build
@@ -167,7 +167,7 @@ build_tango-starter:
 test-framework-tango-python:
   stage: test
   tags:
-  - $CI_TAG
+  - docker-executor
   script:
   - mkdir .public
   - make DOCKER_REGISTRY_USER=$DOCKER_REGISTRY_USER DOCKER_REGISTRY_HOST=$DOCKER_REGISTRY_HOST -C docker/tango/tango-python test > .public/result.txt
@@ -184,7 +184,7 @@ test-framework-tango-python:
 test-framework-tango-itango:
   stage: test
   tags:
-  - $CI_TAG
+  - docker-executor
   script:
   - mkdir .public
   - make DOCKER_REGISTRY_USER=$DOCKER_REGISTRY_USER DOCKER_REGISTRY_HOST=$DOCKER_REGISTRY_HOST -C docker/tango/tango-itango test > .public/result.txt
@@ -217,7 +217,7 @@ test-framework-tango-rest:
 test-framework-ska-python:
   stage: test
   tags:
-  - $CI_TAG
+  - docker-executor
   script:
   - mkdir .public
   - make DOCKER_REGISTRY_USER=$DOCKER_REGISTRY_USER DOCKER_REGISTRY_HOST=$DOCKER_REGISTRY_HOST -C docker/tango/ska-python test > .public/result.txt
