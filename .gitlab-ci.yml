@@ -17,6 +17,7 @@ stages:
 - build_4
 - test
 
+# https://docs.gitlab.com/ee/ci/docker/using_docker_build.html#authenticating-to-the-container-registry
 before_script:
   - docker login -u gitlab-ci-token -p $CI_JOB_TOKEN $CI_REGISTRY
 
