@@ -13,7 +13,6 @@ version: '2'
 services:
   tangodb:
     image: ${DOCKER_REGISTRY_HOST}/${DOCKER_REGISTRY_USER}/tango-db:latest
-    container_name: tangodb
     environment:
     - MYSQL_ROOT_PASSWORD=secret
     - MYSQL_DATABASE=tango
@@ -22,8 +21,6 @@ services:
 
   databaseds:
     image: ${DOCKER_REGISTRY_HOST}/${DOCKER_REGISTRY_USER}/tango-cpp:latest
-    container_name: databaseds
-    hostname: databaseds
     depends_on:
     - tangodb
     environment:
@@ -45,7 +42,6 @@ services:
 
   tangotest:
     image: ${DOCKER_REGISTRY_HOST}/${DOCKER_REGISTRY_USER}/tango-java:latest
-    container_name: tangotest
     depends_on:
     - databaseds
     environment:
@@ -61,12 +57,8 @@ services:
 
   rest:
     image: ${DOCKER_REGISTRY_HOST}/${DOCKER_REGISTRY_USER}/tango-rest:latest
-    container_name: tango-rest
-    # set the hostname, otherwise duplicate device registrations result every
-    # time the hostname changes as the container is restarted.
-    hostname: tango-rest
     depends_on:
-    - databaseds
+    - tangotest
     environment:
     - TANGO_HOST=databaseds:10000
     ports:
