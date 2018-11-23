@@ -175,11 +175,11 @@ test-framework-tango-python:
   artifacts:
     paths:
     - public
-  only:
-    changes:
-    - docker/tango/tango-dependencies/**/*
-    - docker/tango/tango-cpp/**/*
-    - docker/tango/tango-python/**/*
+  # only:
+    # changes:
+    # - docker/tango/tango-dependencies/**/*
+    # - docker/tango/tango-cpp/**/*
+    # - docker/tango/tango-python/**/*
 
 test-framework-tango-itango:
   stage: test
@@ -192,19 +192,21 @@ test-framework-tango-itango:
   artifacts:
     paths:
     - public
-  only:
-    changes:
-    - docker/tango/tango-dependencies/**/*
-    - docker/tango/tango-cpp/**/*
-    - docker/tango/tango-python/**/*
-    - docker/tango/tango-itango/**/*
+  # only:
+    # changes:
+    # - docker/tango/tango-dependencies/**/*
+    # - docker/tango/tango-cpp/**/*
+    # - docker/tango/tango-python/**/*
+    # - docker/tango/tango-itango/**/*
 
 test-framework-tango-rest:
   stage: test
   tags:
   - docker-executor
   script:
-  - make DOCKER_REGISTRY_USER=$DOCKER_REGISTRY_USER DOCKER_REGISTRY_HOST=$DOCKER_REGISTRY_HOST -C docker/tango/tango-rest test > public/result.txt
+  - mkdir .public
+  - make DOCKER_REGISTRY_USER=$DOCKER_REGISTRY_USER DOCKER_REGISTRY_HOST=$DOCKER_REGISTRY_HOST -C docker/tango/tango-rest test > .public/result.txt
+  - mv .public public
   artifacts:
     paths:
     - public
@@ -225,8 +227,8 @@ test-framework-ska-python:
   artifacts:
     paths:
     - public
-  only:
-    changes:
-    - docker/tango/tango-dependencies/**/*
-    - docker/tango/tango-cpp/**/*
-    - docker/tango/ska-python/**/*
+  # only:
+    # changes:
+    # - docker/tango/tango-dependencies/**/*
+    # - docker/tango/tango-cpp/**/*
+    # - docker/tango/ska-python/**/*
