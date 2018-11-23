@@ -22,6 +22,7 @@ before_script:
   - docker login -u gitlab-ci-token -p $CI_JOB_TOKEN $CI_REGISTRY
 
 build_tango-builder:
+  retry: 2
   stage: build_0
   tags:
   - docker-executor
@@ -34,6 +35,7 @@ build_tango-builder:
     - docker/tango/tango-builder/**/*
 
 build_dependencies:
+  retry: 2
   stage: build_1
   tags:
   - docker-executor
@@ -46,6 +48,7 @@ build_dependencies:
     - docker/tango/tango-dependencies/**/*
 
 build_tango-db:
+  retry: 2
   stage: build_1
   tags:
   - docker-executor
@@ -58,6 +61,7 @@ build_tango-db:
     - docker/tango/tango-db/**/*
 
 build_tango-cpp:
+  retry: 2
   stage: build_2
   tags:
   - docker-executor
@@ -71,6 +75,7 @@ build_tango-cpp:
     - docker/tango/tango-cpp/**/*
 
 build_tango-java:
+  retry: 2
   stage: build_2
   tags:
   - docker-executor
@@ -84,6 +89,7 @@ build_tango-java:
     - docker/tango/tango-java/**/*
 
 build_ska-python:
+  retry: 2
   stage: build_3
   tags:
   - docker-executor
@@ -98,6 +104,7 @@ build_ska-python:
     - docker/tango/ska-python/**/*
 
 build_tango-python:
+  retry: 2
   stage: build_3
   tags:
   - docker-executor
@@ -112,6 +119,7 @@ build_tango-python:
     - docker/tango/tango-python/**/*
 
 build_tango-rest:
+  retry: 2
   stage: build_3
   tags:
   - docker-executor
@@ -126,6 +134,7 @@ build_tango-rest:
     - docker/tango/tango-rest/**/*
 
 build_tango-itango:
+  retry: 2
   stage: build_4
   tags:
   - docker-executor
@@ -141,6 +150,7 @@ build_tango-itango:
     - docker/tango/tango-itango/**/*
 
 build_tango-pogo:
+  retry: 2
   stage: build_3
   tags:
   - docker-executor
@@ -155,6 +165,7 @@ build_tango-pogo:
     - docker/tango/tango-pogo/**/*
 
 build_tango-starter:
+  retry: 2
   stage: build_3
   tags:
   - docker-executor
@@ -169,6 +180,7 @@ build_tango-starter:
     - docker/tango/tango-starter/**/*
 
 test-framework-tango-python:
+  retry: 2
   stage: test
   tags:
   - docker-executor
@@ -186,6 +198,7 @@ test-framework-tango-python:
     # - docker/tango/tango-python/**/*
 
 test-framework-tango-itango:
+  retry: 2
   stage: test
   tags:
   - docker-executor
@@ -204,6 +217,7 @@ test-framework-tango-itango:
     # - docker/tango/tango-itango/**/*
 
 test-framework-tango-rest:
+  retry: 2
   stage: test
   tags:
   - docker-executor
@@ -221,6 +235,7 @@ test-framework-tango-rest:
     # - docker/tango/tango-rest/**/*
 
 test-framework-ska-python:
+  retry: 2
   stage: test
   tags:
   - docker-executor
