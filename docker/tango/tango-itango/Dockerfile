@@ -1,11 +1,6 @@
 ARG DOCKER_REGISTRY_USER
 ARG DOCKER_REGISTRY_HOST
-FROM ${DOCKER_REGISTRY_HOST}/${DOCKER_REGISTRY_USER}/tango-python:latest
-
-USER root
-
-# itango is a separate project from Pytango v9.2.0 on
-RUN pip3 install itango
+FROM ${DOCKER_REGISTRY_HOST}/${DOCKER_REGISTRY_USER}/ska-python:latest
 
 USER tango
 

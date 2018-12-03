@@ -42,7 +42,7 @@ if {$force_conservative} {
 # -Don
 
 set timeout 2
-spawn /usr/local/bin/itango3 --no-color-info --simple-prompt --no-banner
+spawn /venv/bin/itango3 --no-color-info --simple-prompt --no-banner
 match_max 100000
 
 expect {
