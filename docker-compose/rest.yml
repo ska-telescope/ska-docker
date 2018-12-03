@@ -13,8 +13,6 @@ version: '2'
 
 services:
   rest:
-    build:
-      context: ../docker/tango/tango-rest
     image: ${DOCKER_REGISTRY_HOST}/${DOCKER_REGISTRY_USER}/tango-rest:latest
     container_name: tango-rest
     # set the hostname, otherwise duplicate device registrations result every

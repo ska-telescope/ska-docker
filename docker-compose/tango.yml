@@ -14,8 +14,6 @@ volumes:
         
 services:
   tangodb:
-    build:
-      context: ../docker/tango/tango-db
     image: ${DOCKER_REGISTRY_HOST}/${DOCKER_REGISTRY_USER}/tango-db:latest
     container_name: tangodb
     environment:
@@ -27,8 +25,6 @@ services:
       - tangodb:/var/lib/mysql
 
   databaseds:
-    build:
-      context: ../docker/tango/tango-cpp
     image: ${DOCKER_REGISTRY_HOST}/${DOCKER_REGISTRY_USER}/tango-cpp:latest
     container_name: databaseds
     hostname: databaseds

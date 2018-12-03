@@ -13,8 +13,6 @@ version: '2'
 
 services:
   astor:
-    build:
-      context: ../docker/tango/tango-java
     image: ${DOCKER_REGISTRY_HOST}/${DOCKER_REGISTRY_USER}/tango-java:latest
     container_name: astor
     depends_on:
@@ -34,8 +32,6 @@ services:
       - /usr/local/bin/astor
 
   starter-example:
-    build:
-      context: ../docker/tango/tango-starter
     image: ${DOCKER_REGISTRY_HOST}/${DOCKER_REGISTRY_USER}/tango-starter:latest
     container_name: starter-example
     # set the hostname, otherwise duplicate device registrations result every

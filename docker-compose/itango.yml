@@ -14,8 +14,6 @@ version: '2'
 
 services:
   itango:
-    build:      
-      context: ../docker/tango/tango-itango
     image: ${DOCKER_REGISTRY_HOST}/${DOCKER_REGISTRY_USER}/tango-itango:latest
     container_name: itango
     depends_on:
