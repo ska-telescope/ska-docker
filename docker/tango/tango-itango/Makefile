@@ -35,6 +35,9 @@ make = tar -c test/ | \
 
 all: test
 
+pull:  ## download the application image
+	docker pull $(IMAGE_TO_TEST)
+
 test: DOCKER_RUN_ARGS = --volumes-from=$(BUILD)
 test:
 	$(INIT_CACHE)

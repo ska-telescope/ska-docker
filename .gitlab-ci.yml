@@ -204,6 +204,7 @@ test-framework-tango-itango:
   - docker-executor
   script:
   - mkdir .public
+  - make DOCKER_REGISTRY_USER=$DOCKER_REGISTRY_USER DOCKER_REGISTRY_HOST=$DOCKER_REGISTRY_HOST -C docker/tango/tango-itango pull > .public/pull.txt
   - make DOCKER_REGISTRY_USER=$DOCKER_REGISTRY_USER DOCKER_REGISTRY_HOST=$DOCKER_REGISTRY_HOST -C docker/tango/tango-itango test > .public/result.txt
   - mv .public public
   artifacts:
