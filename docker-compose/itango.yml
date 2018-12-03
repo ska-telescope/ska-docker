@@ -28,4 +28,4 @@ services:
       - --timeout=30
       - --strict
       - --
-      - /usr/local/bin/itango3
+      - /venv/bin/itango3
