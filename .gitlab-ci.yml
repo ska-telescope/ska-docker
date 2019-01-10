@@ -103,7 +103,7 @@ build_ska-python-buildenv:
       - docker/tango/tango-dependencies/**/*
       - docker/tango/tango-cpp/**/*
       - docker/tango/ska-python-buildenv/**/*
-      -
+
 build_ska-python-runtime:
   retry: 2
   stage: build_4
@@ -117,6 +117,7 @@ build_ska-python-runtime:
     changes:
     - docker/tango/tango-dependencies/**/*
     - docker/tango/tango-cpp/**/*
+    - docker/tango/ska-python-buildenv/**/*
     - docker/tango/ska-python-runtime/**/*
 
 build_tango-rest:
@@ -147,7 +148,8 @@ build_tango-itango:
     changes:
     - docker/tango/tango-dependencies/**/*
     - docker/tango/tango-cpp/**/*
-    - docker/tango/tango-python/**/*
+    - docker/tango/ska-python-buildenv/**/*
+    - docker/tango/ska-python-runtime/**/*
     - docker/tango/tango-itango/**/*
 
 build_tango-pogo:
