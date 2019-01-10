@@ -45,6 +45,9 @@ test:
 	  $(DOCKER_COMPOSE_COMMAND) down; \
 	  exit $$status
 
+piplock: build  ## overwrite Pipfile.lock with the image version
+	docker run $(IMAGE_TO_TEST) cat /app/Pipfile.lock > $(CURDIR)/Pipfile.lock
+
 # insert the line below after 'status=$$?;' to copy output from the test run
 # inside the container into ./build on the host.
 #	  docker cp $(BUILD):/build .; \
