@@ -1,9 +1,18 @@
-FROM debian:stretch
+#
+# This Dockerfile compiles Tango dependencies (ZeroMQ and OmniORB) in an
+# intermediate image, then creates a release image containing the compiled
+# binaries.
+#
+FROM debian:stretch-slim as buildenv
 
-RUN runtimeDeps='libmariadbclient18 doxygen' \
-    && DEBIAN_FRONTEND=noninteractive apt-get update \
-    && DEBIAN_FRONTEND=noninteractive apt-get -y install --no-install-recommends $runtimeDeps \
-    && rm -rf /var/lib/apt/lists/* 
+# Copy across files that are used to help orchestrate container compositions
+# and test execution sequences
+COPY wait-for-it.sh /usr/local/bin/wait-for-it.sh
+COPY retry.sh /usr/local/bin/retry
+
+RUN DOCKERHOST=`awk '/^[a-z]+[0-9]+\t00000000/ { printf("%d.%d.%d.%d", "0x" substr($3, 7, 2), "0x" substr($3, 5, 2), "0x" substr($3, 3, 2), "0x" substr($3, 1, 2)) }' < /proc/net/route` \
+    && /usr/local/bin/wait-for-it.sh --host=$DOCKERHOST --port=3142 --timeout=3 --strict --quiet -- echo "Acquire::http::Proxy \"http://$DOCKERHOST:3142\";" > /etc/apt/apt.conf.d/30proxy \
+    && echo "Proxy detected on docker host - using for this build" || echo "No proxy detected on docker host"
 
 RUN ZEROMQ_VERSION=4.0.5 \
     && ZEROMQ_DOWNLOAD_URL=https://archive.org/download/zeromq_$ZEROMQ_VERSION/zeromq-$ZEROMQ_VERSION.tar.gz \
@@ -23,7 +32,7 @@ RUN ZEROMQ_VERSION=4.0.5 \
 
 RUN OMNIORB_DOWNLOAD_URL=https://svwh.dl.sourceforge.net/project/omniorb/omniORB/omniORB-4.2.1/omniORB-4.2.1-2.tar.bz2 \
     && OMNIORB_PATCH_URL=http://ftp.esrf.fr/pub/cs/tango/Patches/dii_race.patch \
-    && buildDeps='build-essential ca-certificates curl python-dev' \
+    && buildDeps='build-essential ca-certificates curl python-dev python-pkgconfig' \
     && DEBIAN_FRONTEND=noninteractive apt-get update \
     && apt-get -y install --no-install-recommends $buildDeps \
     && rm -rf /var/lib/apt/lists/* \
@@ -39,22 +48,6 @@ RUN OMNIORB_DOWNLOAD_URL=https://svwh.dl.sourceforge.net/project/omniorb/omniORB
     && apt-get purge -y --auto-remove $buildDeps \
     && rm -r /usr/src/omniorb
 
-# Copy across files that are used to help orchestrate container compositions
-# and test execution sequences
-COPY wait-for-it.sh /usr/local/bin/wait-for-it.sh
-COPY retry.sh /usr/local/bin/retry
-
-RUN useradd --create-home --home-dir /home/tango tango \
-    && chown -R tango:tango /home/tango
-
-# add sudo so that the tango user can add test dpkgs
-RUN runtimeDeps='sudo' \
-    && DEBIAN_FRONTEND=noninteractive apt-get update \
-    && DEBIAN_FRONTEND=noninteractive apt-get -y install --no-install-recommends $runtimeDeps \
-    && rm -rf /var/lib/apt/lists/*
-
-RUN echo "tango ALL=(root) NOPASSWD:ALL" > /etc/sudoers.d/tango \
-    && chmod 0440 /etc/sudoers.d/tango
-
-USER tango
+FROM debian:stretch-slim
+COPY --from=buildenv /usr/local /usr/local
 

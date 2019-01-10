@@ -15,6 +15,7 @@ stages:
 - build_2
 - build_3
 - build_4
+- build_5
 - test
 
 # https://docs.gitlab.com/ee/ci/docker/using_docker_build.html#authenticating-to-the-container-registry
@@ -88,35 +89,35 @@ build_tango-java:
     - docker/tango/tango-dependencies/**/*
     - docker/tango/tango-java/**/*
 
-build_ska-python:
+build_ska-python-buildenv:
   retry: 2
   stage: build_3
   tags:
+    - docker-executor
+  script:
+    - cd docker/tango/ska-python-buildenv
+    - make DOCKER_BUILD_ARGS="--no-cache" DOCKER_REGISTRY_USER=$DOCKER_REGISTRY_USER DOCKER_REGISTRY_HOST=$DOCKER_REGISTRY_HOST build
+    - make DOCKER_REGISTRY_USER=$DOCKER_REGISTRY_USER DOCKER_REGISTRY_HOST=$DOCKER_REGISTRY_HOST push
+  only:
+    changes:
+      - docker/tango/tango-dependencies/**/*
+      - docker/tango/tango-cpp/**/*
+      - docker/tango/ska-python-buildenv/**/*
+      -
+build_ska-python-runtime:
+  retry: 2
+  stage: build_4
+  tags:
   - docker-executor
   script:
-  - cd docker/tango/ska-python
+  - cd docker/tango/ska-python-runtime
   - make DOCKER_BUILD_ARGS="--no-cache" DOCKER_REGISTRY_USER=$DOCKER_REGISTRY_USER DOCKER_REGISTRY_HOST=$DOCKER_REGISTRY_HOST build
   - make DOCKER_REGISTRY_USER=$DOCKER_REGISTRY_USER DOCKER_REGISTRY_HOST=$DOCKER_REGISTRY_HOST push
   only:
     changes:
     - docker/tango/tango-dependencies/**/*
     - docker/tango/tango-cpp/**/*
-    - docker/tango/ska-python/**/*
-
-build_tango-python:
-  retry: 2
-  stage: build_3
-  tags:
-  - docker-executor
-  script:
-  - cd docker/tango/tango-python
-  - make DOCKER_BUILD_ARGS="--no-cache" DOCKER_REGISTRY_USER=$DOCKER_REGISTRY_USER DOCKER_REGISTRY_HOST=$DOCKER_REGISTRY_HOST build
-  - make DOCKER_REGISTRY_USER=$DOCKER_REGISTRY_USER DOCKER_REGISTRY_HOST=$DOCKER_REGISTRY_HOST push
-  only:
-    changes:
-    - docker/tango/tango-dependencies/**/*
-    - docker/tango/tango-cpp/**/*
-    - docker/tango/tango-python/**/*
+    - docker/tango/ska-python-runtime/**/*
 
 build_tango-rest:
   retry: 2
@@ -135,7 +136,7 @@ build_tango-rest:
 
 build_tango-itango:
   retry: 2
-  stage: build_4
+  stage: build_5
   tags:
   - docker-executor
   script:
@@ -242,7 +243,7 @@ test-framework-ska-python:
   - docker-executor
   script:
   - mkdir .public
-  - make DOCKER_REGISTRY_USER=$DOCKER_REGISTRY_USER DOCKER_REGISTRY_HOST=$DOCKER_REGISTRY_HOST -C docker/tango/ska-python test > .public/result.txt
+  - make DOCKER_REGISTRY_USER=$DOCKER_REGISTRY_USER DOCKER_REGISTRY_HOST=$DOCKER_REGISTRY_HOST -C docker/tango/ska-python-runtime test > .public/result.txt
   - mv .public public
   artifacts:
     paths:
@@ -251,4 +252,4 @@ test-framework-ska-python:
     # changes:
     # - docker/tango/tango-dependencies/**/*
     # - docker/tango/tango-cpp/**/*
-    # - docker/tango/ska-python/**/*
+    # - docker/tango/ska-python-runtime/**/*

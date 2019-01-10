@@ -1,13 +1,13 @@
 include ../../make/Makefile
 
 # name of the Docker volume used to cache eggs and wheels
-CACHE_VOLUME = tango-python-test-cache
+CACHE_VOLUME = ska-python-buildenv-test-cache
 
 # optional docker run-time arguments
 DOCKER_RUN_ARGS =
 
 # defines the image to test
-IMAGE_TO_TEST = $(DOCKER_REGISTRY_HOST)/$(DOCKER_REGISTRY_USER)/tango-python:latest
+IMAGE_TO_TEST = $(DOCKER_REGISTRY_HOST)/$(DOCKER_REGISTRY_USER)/ska-python-buildenv:latest
 
 # docker-compose commmand for a composition of services for the tango database,
 # databaseds device, and tangotest devices
