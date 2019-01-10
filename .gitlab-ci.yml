@@ -182,24 +182,6 @@ build_tango-starter:
     - docker/tango/tango-cpp/**/*
     - docker/tango/tango-starter/**/*
 
-test-framework-tango-python:
-  retry: 2
-  stage: test
-  tags:
-  - docker-executor
-  script:
-  - mkdir .public
-  - make DOCKER_REGISTRY_USER=$DOCKER_REGISTRY_USER DOCKER_REGISTRY_HOST=$DOCKER_REGISTRY_HOST -C docker/tango/tango-python test > .public/result.txt
-  - mv .public public
-  artifacts:
-    paths:
-    - public
-  # only:
-    # changes:
-    # - docker/tango/tango-dependencies/**/*
-    # - docker/tango/tango-cpp/**/*
-    # - docker/tango/tango-python/**/*
-
 test-framework-tango-itango:
   retry: 2
   stage: test
@@ -238,7 +220,7 @@ test-framework-tango-rest:
     # - docker/tango/tango-cpp/**/*
     # - docker/tango/tango-rest/**/*
 
-test-framework-ska-python:
+test-framework-ska-python-runtime:
   retry: 2
   stage: test
   tags:
