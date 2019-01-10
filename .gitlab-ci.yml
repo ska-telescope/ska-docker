@@ -220,14 +220,14 @@ test-framework-tango-rest:
     # - docker/tango/tango-cpp/**/*
     # - docker/tango/tango-rest/**/*
 
-test-framework-ska-python-runtime:
+test-framework-ska-python-buildenv:
   retry: 2
   stage: test
   tags:
   - docker-executor
   script:
   - mkdir .public
-  - make DOCKER_REGISTRY_USER=$DOCKER_REGISTRY_USER DOCKER_REGISTRY_HOST=$DOCKER_REGISTRY_HOST -C docker/tango/ska-python-runtime test > .public/result.txt
+  - make DOCKER_REGISTRY_USER=$DOCKER_REGISTRY_USER DOCKER_REGISTRY_HOST=$DOCKER_REGISTRY_HOST -C docker/tango/ska-python-buildenv test > .public/result.txt
   - mv .public public
   artifacts:
     paths:
@@ -236,4 +236,4 @@ test-framework-ska-python-runtime:
     # changes:
     # - docker/tango/tango-dependencies/**/*
     # - docker/tango/tango-cpp/**/*
-    # - docker/tango/ska-python-runtime/**/*
+    # - docker/tango/ska-python-buildenv/**/*
