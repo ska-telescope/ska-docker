@@ -22,7 +22,7 @@ ifeq ($(strip $(DOCKER_REGISTRY_HOST)),)
 endif
 
 ifeq ($(strip $(DOCKER_REGISTRY_USER)),)
-  DOCKER_REGISTRY_USER = ci-cd/ska-docker
+  DOCKER_REGISTRY_USER = ska-docker
 endif
 
 IMAGE=$(DOCKER_REGISTRY_HOST)/$(DOCKER_REGISTRY_USER)/$(NAME)
