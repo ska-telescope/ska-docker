@@ -15,17 +15,18 @@ services:
   astor:
     image: ${DOCKER_REGISTRY_HOST}/${DOCKER_REGISTRY_USER}/tango-java:latest
     container_name: astor
+    network_mode: ${NETWORK_MODE}
     depends_on:
       - databaseds
     volumes:
-      - $HOME:/hosthome:ro
+      - ${XAUTHORITY_MOUNT}
     environment:
-      - XAUTHORITY=/hosthome/.Xauthority
+      - XAUTHORITY=${XAUTHORITY}
       - DISPLAY=${DISPLAY}
-      - TANGO_HOST=databaseds:10000 
+      - TANGO_HOST=${TANGO_HOST}
     entrypoint:
       - /usr/local/bin/wait-for-it.sh
-      - databaseds:10000
+      - ${TANGO_HOST}
       - --timeout=30
       - --strict
       - --
@@ -34,6 +35,7 @@ services:
   starter-example:
     image: ${DOCKER_REGISTRY_HOST}/${DOCKER_REGISTRY_USER}/tango-starter:latest
     container_name: starter-example
+    network_mode: ${NETWORK_MODE}
     # set the hostname, otherwise duplicate device registrations result every
     # time the hostname changes as the container is restarted.
     hostname: starter-example
@@ -43,7 +45,7 @@ services:
     - TANGO_HOST=databaseds:10000
     entrypoint:
     - /usr/local/bin/wait-for-it.sh
-    - databaseds:10000
+    - ${TANGO_HOST}
     - --timeout=30
     - --strict
     - --

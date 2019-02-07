@@ -18,33 +18,61 @@ ifdef SERVICE_TARGET
   $(eval $(SERVICE):;@:)
 endif
 
-# find IP addresses of this machine, setting MY_IP to the first address found
-MY_IP := $(shell ifconfig | sed -En 's/127.0.0.1//;s/.*inet (addr:)?(([0-9]*\.){3}[0-9]*).*/\2/p' | head -n1)
-DISPLAY = $(MY_IP):0
+
+ifeq ($(OS),Windows_NT)
+else
+	UNAME_S := $(shell uname -s)
+	ifeq ($(UNAME_S),Linux)
+		DISPLAY ?= :0.0
+		TANGO_HOST ?= $(shell hostname):10000
+		MYSQL_HOST ?= $(shell hostname):3306
+		NETWORK_MODE := host
+		XAUTHORITY_MOUNT := /tmp/.X11-unix:/tmp/.X11-unix
+		XAUTHORITY ?= /hosthome/.Xauthority
+		# /bin/sh (=dash) does not evaluate 'docker network' conditionals correctly
+		SHELL := /bin/bash
+	endif
+	ifeq ($(UNAME_S),Darwin)
+		IF_INTERFACE := $(shell netstat -nr | awk '{ if ($$1 ~/default/) { print $$6} }')
+		DISPLAY := $(shell ifconfig $(IF_INTERFACE) | awk '{ if ($$1 ~/inet/) { print $$2} }'):0
+		# network_mode = host doesn't work on MacOS, so fix to the internal network
+		NETWORK_MODE := tangonet
+		TANGO_HOST := databaseds:10000
+		MYSQL_HOST := tangodb:3306
+		XAUTHORITY_MOUNT := $(HOME):/hosthome:ro
+		XAUTHORITY := /hosthome/.Xauthority
+	endif
+endif
+
+DOCKER_COMPOSE_ARGS := DISPLAY=$(DISPLAY) XAUTHORITY=$(XAUTHORITY) TANGO_HOST=$(TANGO_HOST) \
+		NETWORK_MODE=$(NETWORK_MODE) XAUTHORITY_MOUNT=$(XAUTHORITY_MOUNT) MYSQL_HOST=$(MYSQL_HOST) \
+		COMPOSE_IGNORE_ORPHANS=true
 
 .PHONY: up down minimal start stop status clean pull help
 .DEFAULT_GOAL := help
 
 pull: ## pull the images from the Docker hub
-	docker-compose $(COMPOSE_FILE_ARGS) pull
+	$(DOCKER_COMPOSE_ARGS) docker-compose $(COMPOSE_FILE_ARGS) pull
 
 up: minimal  ## start the base TANGO system and prepare all services
-	DISPLAY=$(DISPLAY) docker-compose $(COMPOSE_FILE_ARGS) up --no-start
+	$(DOCKER_COMPOSE_ARGS) docker-compose $(COMPOSE_FILE_ARGS) up --no-start
 
 down:  ## stop all services and tear down the system
-	DISPLAY=$(DISPLAY) docker-compose $(COMPOSE_FILE_ARGS) down
+	$(DOCKER_COMPOSE_ARGS) docker-compose $(COMPOSE_FILE_ARGS) down
+	docker network inspect tangonet &> /dev/null && ([ $$? -eq 0 ] && docker network rm tangonet) || true
 
 minimal: ## start the base TANGO system
-	docker-compose -f tango.yml up -d
+	docker network inspect tangonet &> /dev/null || ([ $$? -ne 0 ] && docker network create tangonet)
+	$(DOCKER_COMPOSE_ARGS) docker-compose -f tango.yml up -d
 
 start: up ## start a service (usage: make start <servicename>)
-	DISPLAY=$(DISPLAY) docker-compose $(COMPOSE_FILE_ARGS) start $(SERVICE)
+	$(DOCKER_COMPOSE_ARGS) docker-compose $(COMPOSE_FILE_ARGS) start $(SERVICE)
 
 stop:  ## stop a service (usage: make stop <servicename>)
-	DISPLAY=$(DISPLAY) docker-compose $(COMPOSE_FILE_ARGS) stop $(SERVICE)
+	$(DOCKER_COMPOSE_ARGS) docker-compose $(COMPOSE_FILE_ARGS) stop $(SERVICE)
 
 status:  ## show the container status
-	DISPLAY=$(DISPLAY) docker-compose $(COMPOSE_FILE_ARGS) ps
+	$(DOCKER_COMPOSE_ARGS) docker-compose $(COMPOSE_FILE_ARGS) ps
 
 clean: down  ## clear all TANGO database entries
 	docker volume rm $(BASEDIR)_tangodb

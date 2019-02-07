@@ -79,3 +79,13 @@ Running services can be stopped individually or as a whole using the
    # stop all services and tear down the system
    make down
 
+.. note::
+    On Linux, the Docker containers make their services available on the host
+    network and not on a separate container-only network. That is, you can
+    effectively set TANGO_HOST=localhost:10000 and use Tango as though the
+    services are installed and running on your machine rather than inside
+    containers.
+
+    On Windows and MacOS, the host network mode is not available, and services
+    will execute on a separate network partition internal to the Docker
+    containers.

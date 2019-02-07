@@ -9,6 +9,7 @@
 #   - None
 #
 version: '2'
+
 volumes:
   tangodb: {}
         
@@ -16,6 +17,7 @@ services:
   tangodb:
     image: ${DOCKER_REGISTRY_HOST}/${DOCKER_REGISTRY_USER}/tango-db:latest
     container_name: tangodb
+    network_mode: ${NETWORK_MODE}
     environment:
       - MYSQL_ROOT_PASSWORD=secret
       - MYSQL_DATABASE=tango
@@ -27,18 +29,19 @@ services:
   databaseds:
     image: ${DOCKER_REGISTRY_HOST}/${DOCKER_REGISTRY_USER}/tango-cpp:latest
     container_name: databaseds
+    network_mode: ${NETWORK_MODE}
     hostname: databaseds
     depends_on:
       - tangodb
     environment:
-      - MYSQL_HOST=tangodb:3306 
+      - MYSQL_HOST=${MYSQL_HOST}
       - MYSQL_DATABASE=tango
       - MYSQL_USER=tango
       - MYSQL_PASSWORD=tango
-      - TANGO_HOST=databaseds:10000 
+      - TANGO_HOST=${TANGO_HOST}
     entrypoint:
       - /usr/local/bin/wait-for-it.sh
-      - tangodb:3306
+      - ${MYSQL_HOST}
       - --timeout=30
       - --strict
       - --

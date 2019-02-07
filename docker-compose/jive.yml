@@ -14,17 +14,18 @@ services:
   jive:
     image: ${DOCKER_REGISTRY_HOST}/${DOCKER_REGISTRY_USER}/tango-java:latest
     container_name: jive
+    network_mode: ${NETWORK_MODE}
     depends_on:
       - databaseds
     volumes:
-      - $HOME:/hosthome:ro
+      - ${XAUTHORITY_MOUNT}
     environment:
-      - XAUTHORITY=/hosthome/.Xauthority
+      - XAUTHORITY=${XAUTHORITY}
       - DISPLAY=${DISPLAY}
-      - TANGO_HOST=databaseds:10000 
+      - TANGO_HOST=${TANGO_HOST}
     entrypoint:
       - /usr/local/bin/wait-for-it.sh
-      - databaseds:10000
+      - ${TANGO_HOST}
       - --timeout=30
       - --strict
       - --

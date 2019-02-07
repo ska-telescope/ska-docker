@@ -15,18 +15,19 @@ services:
   rest:
     image: ${DOCKER_REGISTRY_HOST}/${DOCKER_REGISTRY_USER}/tango-rest:latest
     container_name: tango-rest
+    network_mode: ${NETWORK_MODE}
     # set the hostname, otherwise duplicate device registrations result every
     # time the hostname changes as the container is restarted.
     hostname: tango-rest
     depends_on:
     - databaseds
     environment:
-    - TANGO_HOST=databaseds:10000
+    - TANGO_HOST=${TANGO_HOST}
     ports:
     - 8080:8080
     entrypoint:
     - /usr/local/bin/wait-for-it.sh
-    - databaseds:10000
+    - ${TANGO_HOST}
     - --timeout=30
     - --strict
     - --

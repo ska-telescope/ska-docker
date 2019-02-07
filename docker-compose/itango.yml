@@ -16,15 +16,16 @@ services:
   itango:
     image: ${DOCKER_REGISTRY_HOST}/${DOCKER_REGISTRY_USER}/tango-itango:latest
     container_name: itango
+    network_mode: ${NETWORK_MODE}
     depends_on:
       - databaseds
     environment:
-      - TANGO_HOST=databaseds:10000 
+      - TANGO_HOST=${TANGO_HOST}
     stdin_open: true
     tty: true
     entrypoint:
       - /usr/local/bin/wait-for-it.sh
-      - databaseds:10000
+      - ${TANGO_HOST}
       - --timeout=30
       - --strict
       - --
