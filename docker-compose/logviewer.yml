@@ -13,10 +13,8 @@ version: '2'
 services:
   logviewer:
     image: ${DOCKER_REGISTRY_HOST}/${DOCKER_REGISTRY_USER}/tango-java:latest
-    container_name: logviewer
+    container_name: ${CONTAINER_NAME_PREFIX}logviewer
     network_mode: ${NETWORK_MODE}
-    depends_on:
-      - databaseds
     volumes:
       - ${XAUTHORITY_MOUNT}
     environment:

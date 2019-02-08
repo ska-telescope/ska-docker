@@ -21,11 +21,11 @@ volumes:
 services:
   pogo:
     image: ${DOCKER_REGISTRY_HOST}/${DOCKER_REGISTRY_USER}/tango-pogo:latest
-    container_name: pogo
+    container_name: ${CONTAINER_NAME_PREFIX}pogo
     network_mode: ${NETWORK_MODE}
     volumes:
       - pogo:/home/tango
-      - $HOME:/hosthome:rw
+      - ${HOME}:/hosthome:rw
       - ${XAUTHORITY_MOUNT}
     environment:
       - XAUTHORITY=${XAUTHORITY}

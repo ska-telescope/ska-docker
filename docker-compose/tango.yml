@@ -16,7 +16,7 @@ volumes:
 services:
   tangodb:
     image: ${DOCKER_REGISTRY_HOST}/${DOCKER_REGISTRY_USER}/tango-db:latest
-    container_name: tangodb
+    container_name: ${CONTAINER_NAME_PREFIX}tangodb
     network_mode: ${NETWORK_MODE}
     environment:
       - MYSQL_ROOT_PASSWORD=secret
@@ -28,9 +28,8 @@ services:
 
   databaseds:
     image: ${DOCKER_REGISTRY_HOST}/${DOCKER_REGISTRY_USER}/tango-cpp:latest
-    container_name: databaseds
+    container_name: ${CONTAINER_NAME_PREFIX}databaseds
     network_mode: ${NETWORK_MODE}
-    hostname: databaseds
     depends_on:
       - tangodb
     environment:

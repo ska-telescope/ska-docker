@@ -13,10 +13,8 @@ version: '2'
 services:
   jive:
     image: ${DOCKER_REGISTRY_HOST}/${DOCKER_REGISTRY_USER}/tango-java:latest
-    container_name: jive
+    container_name: ${CONTAINER_NAME_PREFIX}jive
     network_mode: ${NETWORK_MODE}
-    depends_on:
-      - databaseds
     volumes:
       - ${XAUTHORITY_MOUNT}
     environment:

@@ -12,10 +12,8 @@ version: '2'
 services:
   tangotest:
     image: ${DOCKER_REGISTRY_HOST}/${DOCKER_REGISTRY_USER}/tango-java:latest
-    container_name: tangotest
+    container_name: ${CONTAINER_NAME_PREFIX}tangotest
     network_mode: ${NETWORK_MODE}
-    depends_on:
-      - databaseds
     environment:
       - TANGO_HOST=${TANGO_HOST}
     entrypoint:

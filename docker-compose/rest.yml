@@ -14,13 +14,11 @@ version: '2'
 services:
   rest:
     image: ${DOCKER_REGISTRY_HOST}/${DOCKER_REGISTRY_USER}/tango-rest:latest
-    container_name: tango-rest
+    container_name: ${CONTAINER_NAME_PREFIX}tango-rest
     network_mode: ${NETWORK_MODE}
     # set the hostname, otherwise duplicate device registrations result every
     # time the hostname changes as the container is restarted.
     hostname: tango-rest
-    depends_on:
-    - databaseds
     environment:
     - TANGO_HOST=${TANGO_HOST}
     ports:
