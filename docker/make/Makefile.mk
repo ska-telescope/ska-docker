@@ -1,5 +1,6 @@
 #
 #   Copyright 2015  Xebia Nederland B.V.
+#   Modifications copyright (c) 2019 SKA Organisation
 #
 #   Licensed under the Apache License, Version 2.0 (the "License");
 #   you may not use this file except in compliance with the License.
