@@ -1,6 +1,6 @@
 # GitLab CI in conjunction with GitLab Runner can use Docker Engine to test and build any application.
 # Docker, when used with GitLab CI, runs each job in a separate and isolated container using the predefined image that is set up in .gitlab-ci.yml.
-image: ska-registry.av.it.pt/ska-docker/tango-builder:latest
+image: nexus.engageska-portugal.pt/ska-docker/tango-builder:latest
 
 services:
 - docker:dind
