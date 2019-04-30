@@ -36,6 +36,20 @@ SHELL=/bin/bash
 DOCKER_BUILD_CONTEXT=.
 DOCKER_FILE_PATH=Dockerfile
 
+
+### NEXUS VERSION UPLOAD
+
+set-version: 
+	VERSION=$(shell . $(RELEASE_SUPPORT) ; getRelease)
+
+nexus-push:
+	docker push $(IMAGE):$(VERSION)
+
+nexus-release: set-version build nexus-push
+
+###
+
+
 .PHONY: pre-build docker-build post-build build release patch-release minor-release major-release tag check-status check-release showver \
 	push pre-push do-push post-push
 
@@ -79,6 +93,9 @@ snapshot: build push
 
 showver: .release
 	@. $(RELEASE_SUPPORT); getVersion
+
+showrel: .release
+	@. $(RELEASE_SUPPORT); getRelease
 
 bump-patch-release: VERSION := $(shell . $(RELEASE_SUPPORT); nextPatchLevel)
 bump-patch-release: .release tag
