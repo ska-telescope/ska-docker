@@ -30,6 +30,7 @@ IMAGE=$(DOCKER_REGISTRY_HOST)/$(DOCKER_REGISTRY_USER)/$(NAME)
 
 VERSION=$(shell . $(RELEASE_SUPPORT) ; getVersion)
 TAG=$(shell . $(RELEASE_SUPPORT); getTag)
+RELEASE=$(shell . $(RELEASE_SUPPORT); getRelease)
 
 SHELL=/bin/bash
 
@@ -37,15 +38,11 @@ DOCKER_BUILD_CONTEXT=.
 DOCKER_FILE_PATH=Dockerfile
 
 
-### NEXUS VERSION UPLOAD
+### NEXUS RELEASE UPLOAD
 
-set-version: 
-	VERSION=$(shell . $(RELEASE_SUPPORT) ; getRelease)
-
-nexus-push:
-	docker push $(IMAGE):$(VERSION)
-
-nexus-release: set-version build nexus-push
+nexus-release:
+	docker tag $(IMAGE):$(VERSION) $(IMAGE):$(RELEASE)
+	docker push $(IMAGE):$(RELEASE)
 
 ###
 
