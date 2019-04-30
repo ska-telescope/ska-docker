@@ -91,8 +91,8 @@ snapshot: build push
 showver: .release
 	@. $(RELEASE_SUPPORT); getVersion
 
-showrel: .release
-	@. $(RELEASE_SUPPORT); getRelease
+showrel:
+	@echo $(RELEASE)
 
 bump-patch-release: VERSION := $(shell . $(RELEASE_SUPPORT); nextPatchLevel)
 bump-patch-release: .release tag

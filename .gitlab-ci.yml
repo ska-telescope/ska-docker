@@ -32,9 +32,9 @@ build_tango-builder:
   - make DOCKER_BUILD_ARGS="--no-cache" DOCKER_REGISTRY_USER=$DOCKER_REGISTRY_USER DOCKER_REGISTRY_HOST=$DOCKER_REGISTRY_HOST build
   - make DOCKER_REGISTRY_USER=$DOCKER_REGISTRY_USER DOCKER_REGISTRY_HOST=$DOCKER_REGISTRY_HOST push
   - make DOCKER_REGISTRY_USER=$DOCKER_REGISTRY_USER DOCKER_REGISTRY_HOST=$DOCKER_REGISTRY_HOST nexus-release
-  only:
-    changes:
-    - docker/tango/tango-builder/**/*
+  #only:
+  #  changes:
+  #  - docker/tango/tango-builder/**/*
 
 build_dependencies:
   retry: 2
@@ -46,9 +46,9 @@ build_dependencies:
   - make DOCKER_BUILD_ARGS="--no-cache" DOCKER_REGISTRY_USER=$DOCKER_REGISTRY_USER DOCKER_REGISTRY_HOST=$DOCKER_REGISTRY_HOST build
   - make DOCKER_REGISTRY_USER=$DOCKER_REGISTRY_USER DOCKER_REGISTRY_HOST=$DOCKER_REGISTRY_HOST push
   - make DOCKER_REGISTRY_USER=$DOCKER_REGISTRY_USER DOCKER_REGISTRY_HOST=$DOCKER_REGISTRY_HOST nexus-release
-  only:
-    changes:
-    - docker/tango/tango-dependencies/**/*
+  #only:
+  #  changes:
+  #  - docker/tango/tango-dependencies/**/*
 
 build_tango-db:
   retry: 2
@@ -60,9 +60,9 @@ build_tango-db:
   - make DOCKER_BUILD_ARGS="--no-cache" DOCKER_REGISTRY_USER=$DOCKER_REGISTRY_USER DOCKER_REGISTRY_HOST=$DOCKER_REGISTRY_HOST build
   - make DOCKER_REGISTRY_USER=$DOCKER_REGISTRY_USER DOCKER_REGISTRY_HOST=$DOCKER_REGISTRY_HOST push
   - make DOCKER_REGISTRY_USER=$DOCKER_REGISTRY_USER DOCKER_REGISTRY_HOST=$DOCKER_REGISTRY_HOST nexus-release
-  only:
-    changes:
-    - docker/tango/tango-db/**/*
+  #only:
+  #  changes:
+  #  - docker/tango/tango-db/**/*
 
 build_tango-cpp:
   retry: 2
@@ -74,10 +74,10 @@ build_tango-cpp:
   - make DOCKER_BUILD_ARGS="--no-cache" DOCKER_REGISTRY_USER=$DOCKER_REGISTRY_USER DOCKER_REGISTRY_HOST=$DOCKER_REGISTRY_HOST build
   - make DOCKER_REGISTRY_USER=$DOCKER_REGISTRY_USER DOCKER_REGISTRY_HOST=$DOCKER_REGISTRY_HOST push
   - make DOCKER_REGISTRY_USER=$DOCKER_REGISTRY_USER DOCKER_REGISTRY_HOST=$DOCKER_REGISTRY_HOST nexus-release
-  only:
-    changes:
-    - docker/tango/tango-dependencies/**/*
-    - docker/tango/tango-cpp/**/*
+  #only:
+  #  changes:
+  #  - docker/tango/tango-dependencies/**/*
+  #  - docker/tango/tango-cpp/**/*
 
 build_tango-java:
   retry: 2
@@ -89,10 +89,10 @@ build_tango-java:
   - make DOCKER_BUILD_ARGS="--no-cache" DOCKER_REGISTRY_USER=$DOCKER_REGISTRY_USER DOCKER_REGISTRY_HOST=$DOCKER_REGISTRY_HOST build
   - make DOCKER_REGISTRY_USER=$DOCKER_REGISTRY_USER DOCKER_REGISTRY_HOST=$DOCKER_REGISTRY_HOST push
   - make DOCKER_REGISTRY_USER=$DOCKER_REGISTRY_USER DOCKER_REGISTRY_HOST=$DOCKER_REGISTRY_HOST nexus-release
-  only:
-    changes:
-    - docker/tango/tango-dependencies/**/*
-    - docker/tango/tango-java/**/*
+  #only:
+  #  changes:
+  #  - docker/tango/tango-dependencies/**/*
+  #  - docker/tango/tango-java/**/*
 
 build_ska-python-buildenv:
   retry: 2
@@ -104,11 +104,11 @@ build_ska-python-buildenv:
     - make DOCKER_BUILD_ARGS="--no-cache" DOCKER_REGISTRY_USER=$DOCKER_REGISTRY_USER DOCKER_REGISTRY_HOST=$DOCKER_REGISTRY_HOST build
     - make DOCKER_REGISTRY_USER=$DOCKER_REGISTRY_USER DOCKER_REGISTRY_HOST=$DOCKER_REGISTRY_HOST push
     - make DOCKER_REGISTRY_USER=$DOCKER_REGISTRY_USER DOCKER_REGISTRY_HOST=$DOCKER_REGISTRY_HOST nexus-release
-  only:
-    changes:
-      - docker/tango/tango-dependencies/**/*
-      - docker/tango/tango-cpp/**/*
-      - docker/tango/ska-python-buildenv/**/*
+  #only:
+  #  changes:
+  #    - docker/tango/tango-dependencies/**/*
+  #    - docker/tango/tango-cpp/**/*
+  #    - docker/tango/ska-python-buildenv/**/*
 
 build_ska-python-runtime:
   retry: 2
@@ -120,12 +120,12 @@ build_ska-python-runtime:
   - make DOCKER_BUILD_ARGS="--no-cache" DOCKER_REGISTRY_USER=$DOCKER_REGISTRY_USER DOCKER_REGISTRY_HOST=$DOCKER_REGISTRY_HOST build
   - make DOCKER_REGISTRY_USER=$DOCKER_REGISTRY_USER DOCKER_REGISTRY_HOST=$DOCKER_REGISTRY_HOST push
   - make DOCKER_REGISTRY_USER=$DOCKER_REGISTRY_USER DOCKER_REGISTRY_HOST=$DOCKER_REGISTRY_HOST nexus-release
-  only:
-    changes:
-    - docker/tango/tango-dependencies/**/*
-    - docker/tango/tango-cpp/**/*
-    - docker/tango/ska-python-buildenv/**/*
-    - docker/tango/ska-python-runtime/**/*
+  #only:
+  #  changes:
+  #  - docker/tango/tango-dependencies/**/*
+  #  - docker/tango/tango-cpp/**/*
+  #  - docker/tango/ska-python-buildenv/**/*
+  #  - docker/tango/ska-python-runtime/**/*
 
 build_tango-rest:
   retry: 2
@@ -137,11 +137,11 @@ build_tango-rest:
   - make DOCKER_BUILD_ARGS="--no-cache" DOCKER_REGISTRY_USER=$DOCKER_REGISTRY_USER DOCKER_REGISTRY_HOST=$DOCKER_REGISTRY_HOST build
   - make DOCKER_REGISTRY_USER=$DOCKER_REGISTRY_USER DOCKER_REGISTRY_HOST=$DOCKER_REGISTRY_HOST push
   - make DOCKER_REGISTRY_USER=$DOCKER_REGISTRY_USER DOCKER_REGISTRY_HOST=$DOCKER_REGISTRY_HOST nexus-release
-  only:
-    changes:
-    - docker/tango/tango-dependencies/**/*
-    - docker/tango/tango-cpp/**/*
-    - docker/tango/tango-rest/**/*
+  #only:
+  #  changes:
+  #  - docker/tango/tango-dependencies/**/*
+  #  - docker/tango/tango-cpp/**/*
+  #  - docker/tango/tango-rest/**/*
 
 build_tango-itango:
   retry: 2
@@ -153,13 +153,13 @@ build_tango-itango:
   - make DOCKER_BUILD_ARGS="--no-cache" DOCKER_REGISTRY_USER=$DOCKER_REGISTRY_USER DOCKER_REGISTRY_HOST=$DOCKER_REGISTRY_HOST build
   - make DOCKER_REGISTRY_USER=$DOCKER_REGISTRY_USER DOCKER_REGISTRY_HOST=$DOCKER_REGISTRY_HOST push
   - make DOCKER_REGISTRY_USER=$DOCKER_REGISTRY_USER DOCKER_REGISTRY_HOST=$DOCKER_REGISTRY_HOST nexus-release
-  only:
-    changes:
-    - docker/tango/tango-dependencies/**/*
-    - docker/tango/tango-cpp/**/*
-    - docker/tango/ska-python-buildenv/**/*
-    - docker/tango/ska-python-runtime/**/*
-    - docker/tango/tango-itango/**/*
+  #only:
+  #  changes:
+  #  - docker/tango/tango-dependencies/**/*
+  #  - docker/tango/tango-cpp/**/*
+  #  - docker/tango/ska-python-buildenv/**/*
+  #  - docker/tango/ska-python-runtime/**/*
+  #  - docker/tango/tango-itango/**/*
 
 build_tango-pogo:
   retry: 2
@@ -171,11 +171,11 @@ build_tango-pogo:
   - make DOCKER_BUILD_ARGS="--no-cache" DOCKER_REGISTRY_USER=$DOCKER_REGISTRY_USER DOCKER_REGISTRY_HOST=$DOCKER_REGISTRY_HOST build
   - make DOCKER_REGISTRY_USER=$DOCKER_REGISTRY_USER DOCKER_REGISTRY_HOST=$DOCKER_REGISTRY_HOST push
   - make DOCKER_REGISTRY_USER=$DOCKER_REGISTRY_USER DOCKER_REGISTRY_HOST=$DOCKER_REGISTRY_HOST nexus-release
-  only:
-    changes:
-    - docker/tango/tango-dependencies/**/*
-    - docker/tango/tango-java/**/*
-    - docker/tango/tango-pogo/**/*
+  #only:
+  #  changes:
+  #  - docker/tango/tango-dependencies/**/*
+  #  - docker/tango/tango-java/**/*
+  #  - docker/tango/tango-pogo/**/*
 
 build_tango-starter:
   retry: 2
@@ -187,11 +187,11 @@ build_tango-starter:
   - make DOCKER_BUILD_ARGS="--no-cache" DOCKER_REGISTRY_USER=$DOCKER_REGISTRY_USER DOCKER_REGISTRY_HOST=$DOCKER_REGISTRY_HOST build
   - make DOCKER_REGISTRY_USER=$DOCKER_REGISTRY_USER DOCKER_REGISTRY_HOST=$DOCKER_REGISTRY_HOST push
   - make DOCKER_REGISTRY_USER=$DOCKER_REGISTRY_USER DOCKER_REGISTRY_HOST=$DOCKER_REGISTRY_HOST nexus-release
-  only:
-    changes:
-    - docker/tango/tango-dependencies/**/*
-    - docker/tango/tango-cpp/**/*
-    - docker/tango/tango-starter/**/*
+  #only:
+  #  changes:
+  #  - docker/tango/tango-dependencies/**/*
+  #  - docker/tango/tango-cpp/**/*
+  #  - docker/tango/tango-starter/**/*
 
 test-framework-tango-itango:
   retry: 2
