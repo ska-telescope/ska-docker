@@ -58,6 +58,16 @@ RUN runtimeDeps='firefox-esr' \
     && DEBIAN_FRONTEND=noninteractive apt-get -y install --no-install-recommends $runtimeDeps \
     && rm -rf /var/lib/apt/lists/* /etc/apt/apt.conf.d/30proxy
 
+
+LABEL \
+    author="A Developer <a.developer@.com>" \
+    description="This image illustrates TANGO JAVA dependencies" \
+    license="Apache2.0" \
+    repository="ska-telescope/ska-docker" \
+    vendor="SKA Organisation" \
+    version="0.1.0" \
+    website="http://github.com/ska-telescope/ska-docker"
+
 USER tango
 
 CMD ["/usr/local/bin/pogo"]
