@@ -120,21 +120,6 @@ build_ska-python-runtime:
     - docker/tango/ska-python-buildenv/**/*
     - docker/tango/ska-python-runtime/**/*
 
-build_tango-rest:
-  retry: 2
-  stage: build_3
-  tags:
-  - docker-executor
-  script:
-  - cd docker/tango/tango-rest
-  - make DOCKER_BUILD_ARGS="--no-cache" DOCKER_REGISTRY_USER=$DOCKER_REGISTRY_USER DOCKER_REGISTRY_HOST=$DOCKER_REGISTRY_HOST build
-  - make DOCKER_REGISTRY_USER=$DOCKER_REGISTRY_USER DOCKER_REGISTRY_HOST=$DOCKER_REGISTRY_HOST push
-  only:
-    changes:
-    - docker/tango/tango-dependencies/**/*
-    - docker/tango/tango-cpp/**/*
-    - docker/tango/tango-rest/**/*
-
 build_tango-itango:
   retry: 2
   stage: build_5
@@ -186,24 +171,6 @@ test-framework-tango-itango:
     # - docker/tango/tango-cpp/**/*
     # - docker/tango/tango-python/**/*
     # - docker/tango/tango-itango/**/*
-
-test-framework-tango-rest:
-  retry: 2
-  stage: test
-  tags:
-  - docker-executor
-  script:
-  - mkdir .public
-  - make DOCKER_REGISTRY_USER=$DOCKER_REGISTRY_USER DOCKER_REGISTRY_HOST=$DOCKER_REGISTRY_HOST -C docker/tango/tango-rest test > .public/result.txt
-  - mv .public public
-  artifacts:
-    paths:
-    - public
-  # only:
-    # changes:
-    # - docker/tango/tango-dependencies/**/*
-    # - docker/tango/tango-cpp/**/*
-    # - docker/tango/tango-rest/**/*
 
 test-framework-ska-python-buildenv:
   retry: 2
