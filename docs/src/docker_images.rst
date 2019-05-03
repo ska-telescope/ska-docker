@@ -31,9 +31,6 @@ The following Docker images are built by this project:
 | tango-starter      | Example image that demonstrates how to package the    |
 |                    | Starter device in an image.                           |
 +--------------------+-------------------------------------------------------+
-| tango-rest         | An image containing mtango-rest, which acts as a REST |
-|                    | proxy to a TANGO system.                              |
-+--------------------+-------------------------------------------------------+
 
 To build and register the images locally, from the root of this
 repository execute:
