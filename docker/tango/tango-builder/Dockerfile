@@ -1,27 +1,20 @@
 FROM ubuntu:latest
 
-RUN apt-get update
-RUN buildDeps='make \
-               bash \
-               git \
-               curl \
-               python-pip \
-               apt-transport-https \
-               ca-certificates \
-               software-properties-common'
-RUN apt-get install -y $buildDeps && \
-    apt clean && \
-    rm -rf /var/lib/apt/lists/*
-RUN curl -fsSL https://download.docker.com/linux/ubuntu/gpg | apt-key add -
-RUN apt-key fingerprint 0EBFCD88
-RUN add-apt-repository "deb [arch=amd64] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable"
-RUN apt-get update && \
-    apt-get install -y docker-ce && \
-    apt clean && \
-    rm -rf /var/lib/apt/lists/*
-RUN export LC_ALL=C
-RUN pip install docker-compose
-RUN pip install pytest
+RUN build_deps='make bash git curl python-pip apt-transport-https ca-certificates software-properties-common' && \
+    apt-get update && \
+    apt-get install -y $build_deps && \
+    curl -fsSL https://download.docker.com/linux/ubuntu/gpg | apt-key add - && \
+    apt-key fingerprint 0EBFCD88 && \
+    add-apt-repository "deb [arch=amd64] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable" && \
+    apt-get -y update && \
+    apt-get -y install docker-ce && \
+    apt-get -y purge --auto-remove $build_deps && \
+    apt-get -y clean && \
+    rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
+
+RUN export LC_ALL=C && \
+    pip install docker-compose && \
+    pip install pytest
 
 LABEL \
     author="A Developer <a.developer@.com>" \
