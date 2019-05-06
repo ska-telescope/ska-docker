@@ -63,6 +63,10 @@ RUN runtime_deps='firefox-esr' && \
     apt-get -y clean && \
     rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 
+USER tango
+
+ENTRYPOINT ["/usr/local/bin/pogo"]
+
 LABEL \
     author="A Developer <a.developer@.com>" \
     description="This image illustrates TANGO JAVA dependencies" \
@@ -71,7 +75,3 @@ LABEL \
     vendor="SKA Organisation" \
     version="0.1.2" \
     website="http://github.com/ska-telescope/ska-docker"
-
-USER tango
-
-ENTRYPOINT ["/usr/local/bin/pogo"]
