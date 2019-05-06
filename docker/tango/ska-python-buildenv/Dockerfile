@@ -26,7 +26,7 @@ ARG DEBIAN_FRONTEND=noninteractive
 # * libboost-python-dev is required to bind PyTango to the C++ Tango libs
 # * pkg-config is used to locate required libraries
 # * virtualenv is required to create a new Python virtualenv environment
-RUN runtime_deps='build-essential libboost-python-dev pkg-config virtualenv libsodium18 libsodium-dev' && \
+RUN runtime_deps='build-essential libboost-python-dev pkg-config virtualenv' && \
     mkdir -p /usr/share/man/man1 && \
     apt-get -y update && \
     apt-get -y install --no-install-recommends $runtime_deps && \
