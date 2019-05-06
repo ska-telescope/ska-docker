@@ -33,7 +33,7 @@ RUN omniorb_download_url=https://svwh.dl.sourceforge.net/project/omniorb/omniORB
 
 ARG zeromq_version="4.0.5"
 RUN zeromq_download_url=https://archive.org/download/zeromq_$zeromq_version/zeromq-$zeromq_version.tar.gz && \
-    buildDeps='autoconf automake build-essential ca-certificates curl libkrb5-dev libtool pkg-config unzip libsodium18' && \
+    buildDeps='autoconf automake build-essential ca-certificates curl libkrb5-dev libtool pkg-config unzip libsodium18 libsodium-dev' && \
     apt-get -y update && \
     apt-get install -y $buildDeps --no-install-recommends && \
     mkdir /usr/src/zeromq && \
