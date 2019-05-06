@@ -20,7 +20,7 @@ volumes:
 
 services:
   pogo:
-    image: ${DOCKER_REGISTRY_HOST}/${DOCKER_REGISTRY_USER}/tango-pogo:latest
+    image: ${DOCKER_REGISTRY_HOST}/${DOCKER_REGISTRY_USER}/tango-pogo:${TANGO_POGO_TAG}
     container_name: ${CONTAINER_NAME_PREFIX}pogo
     network_mode: ${NETWORK_MODE}
     volumes:

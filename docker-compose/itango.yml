@@ -7,14 +7,14 @@
 # Defines:
 #   - itango: iTango interactive session
 #
-# Requires: 
+# Requires:
 #   - tango.yml
 #
 version: '2'
 
 services:
   itango:
-    image: ${DOCKER_REGISTRY_HOST}/${DOCKER_REGISTRY_USER}/tango-itango:latest
+    image: ${DOCKER_REGISTRY_HOST}/${DOCKER_REGISTRY_USER}/tango-itango:${TANGO_ITANGO_TAG}
     container_name: ${CONTAINER_NAME_PREFIX}itango
     network_mode: ${NETWORK_MODE}
     environment:

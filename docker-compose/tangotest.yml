@@ -4,14 +4,14 @@
 # Defines:
 #   - tangotest: TANGO test device server
 #
-# Requires: 
+# Requires:
 #   - tango.yml
 #
 version: '2'
 
 services:
   tangotest:
-    image: ${DOCKER_REGISTRY_HOST}/${DOCKER_REGISTRY_USER}/tango-java:latest
+    image: ${DOCKER_REGISTRY_HOST}/${DOCKER_REGISTRY_USER}/tango-java:${TANGO_JAVA_TAG}
     container_name: ${CONTAINER_NAME_PREFIX}tangotest
     network_mode: ${NETWORK_MODE}
     environment:
@@ -24,4 +24,3 @@ services:
       - --
       - /usr/local/bin/TangoTest
       - test
-

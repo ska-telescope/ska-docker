@@ -1,4 +1,4 @@
-# 
+#
 # Docker compose file for TANGO database and database device server
 #
 # Defines:
@@ -12,10 +12,10 @@ version: '2'
 
 volumes:
   tangodb: {}
-        
+
 services:
   tangodb:
-    image: ${DOCKER_REGISTRY_HOST}/${DOCKER_REGISTRY_USER}/tango-db:latest
+    image: ${DOCKER_REGISTRY_HOST}/${DOCKER_REGISTRY_USER}/tango-db:${TANGO_DB_TAG}
     container_name: ${CONTAINER_NAME_PREFIX}tangodb
     network_mode: ${NETWORK_MODE}
     environment:
@@ -27,7 +27,7 @@ services:
       - tangodb:/var/lib/mysql
 
   databaseds:
-    image: ${DOCKER_REGISTRY_HOST}/${DOCKER_REGISTRY_USER}/tango-cpp:latest
+    image: ${DOCKER_REGISTRY_HOST}/${DOCKER_REGISTRY_USER}/tango-cpp:${TANGO_CPP_TAG}
     container_name: ${CONTAINER_NAME_PREFIX}databaseds
     network_mode: ${NETWORK_MODE}
     depends_on:

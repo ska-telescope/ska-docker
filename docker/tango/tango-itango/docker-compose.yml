@@ -14,7 +14,7 @@ volumes:
 
 services:
   tangodb:
-    image: ${DOCKER_REGISTRY_HOST}/${DOCKER_REGISTRY_USER}/tango-db:latest
+    image: ${DOCKER_REGISTRY_HOST}/${DOCKER_REGISTRY_USER}/tango-db:${TANGO_DB_TAG}
     environment:
     - MYSQL_ROOT_PASSWORD=secret
     - MYSQL_DATABASE=tango
@@ -22,7 +22,7 @@ services:
     - MYSQL_PASSWORD=tango
 
   databaseds:
-    image: ${DOCKER_REGISTRY_HOST}/${DOCKER_REGISTRY_USER}/tango-cpp:latest
+    image: ${DOCKER_REGISTRY_HOST}/${DOCKER_REGISTRY_USER}/tango-cpp:${TANGO_CPP_TAG}
     depends_on:
     - tangodb
     environment:
@@ -43,7 +43,7 @@ services:
     - giop:tcp::10000
 
   tangotest:
-    image: ${DOCKER_REGISTRY_HOST}/${DOCKER_REGISTRY_USER}/tango-java:latest
+    image: ${DOCKER_REGISTRY_HOST}/${DOCKER_REGISTRY_USER}/tango-java:${TANGO_JAVA_TAG}
     depends_on:
     - databaseds
     environment:

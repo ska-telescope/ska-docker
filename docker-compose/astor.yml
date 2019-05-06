@@ -13,7 +13,7 @@ version: '2'
 
 services:
   astor:
-    image: ${DOCKER_REGISTRY_HOST}/${DOCKER_REGISTRY_USER}/tango-java:latest
+    image: ${DOCKER_REGISTRY_HOST}/${DOCKER_REGISTRY_USER}/tango-java:${TANGO_JAVA_TAG}
     container_name: ${CONTAINER_NAME_PREFIX}astor
     network_mode: ${NETWORK_MODE}
     volumes:
@@ -31,7 +31,7 @@ services:
       - /usr/local/bin/astor
 
   starter-example:
-    image: ${DOCKER_REGISTRY_HOST}/${DOCKER_REGISTRY_USER}/tango-starter:latest
+    image: ${DOCKER_REGISTRY_HOST}/${DOCKER_REGISTRY_USER}/tango-starter:${TANGO_STARTER_TAG}
     container_name: ${CONTAINER_NAME_PREFIX}starter-example
     network_mode: ${NETWORK_MODE}
     # set the hostname, otherwise duplicate device registrations result every
