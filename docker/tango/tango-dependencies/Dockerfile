@@ -10,9 +10,13 @@ FROM debian:stretch-slim as buildenv
 COPY wait-for-it.sh /usr/local/bin/wait-for-it.sh
 COPY retry.sh /usr/local/bin/retry
 
+# Speed up image builds by adding apt proxy if detected on host
 RUN dockerhost=`awk '/^[a-z]+[0-9]+\t00000000/ { printf("%d.%d.%d.%d", "0x" substr($3, 7, 2), "0x" substr($3, 5, 2), "0x" substr($3, 3, 2), "0x" substr($3, 1, 2)) }' < /proc/net/route` && \
     /usr/local/bin/wait-for-it.sh --host=$dockerhost --port=3142 --timeout=3 --strict --quiet -- echo "Acquire::http::Proxy \"http://$dockerhost:3142\";" > /etc/apt/apt.conf.d/30proxy && \
     echo "Proxy detected on docker host - using for this build" || echo "No proxy detected on docker host"
+
+# Remove warnings when using apt-get noninteractively
+ARG DEBIAN_FRONTEND=noninteractive
 
 ARG omniorb_version="4.2.1-2"
 RUN omniorb_download_url=https://svwh.dl.sourceforge.net/project/omniorb/omniORB/omniORB-4.2.1/omniORB-$omniorb_version.tar.bz2 && \
@@ -29,6 +33,7 @@ RUN omniorb_download_url=https://svwh.dl.sourceforge.net/project/omniorb/omniORB
     ./configure --enable-static=no && \
     make -C /usr/src/omniorb -j$(nproc) && \
     make -C /usr/src/omniorb install && \
+    rm -f /etc/apt/apt.conf.d/30proxy && \
     apt-get -y purge --auto-remove $build_deps && \
     apt-get -y clean && \
     rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
@@ -45,6 +50,7 @@ RUN zeromq_download_url=https://archive.org/download/zeromq_$zeromq_version/zero
     ./configure --enable-static=no && \
     make -C /usr/src/zeromq -j$(nproc) && \
     make -C /usr/src/zeromq install && \
+    rm -f /etc/apt/apt.conf.d/30proxy && \
     apt-get -y purge --auto-remove $build_deps && \
     apt-get -y clean && \
     rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
