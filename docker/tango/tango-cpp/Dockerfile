@@ -48,3 +48,12 @@ RUN echo "tango ALL=(root) NOPASSWD:ALL" > /etc/sudoers.d/tango && \
     chmod 0440 /etc/sudoers.d/tango
 
 USER tango
+
+LABEL \
+    author="A Developer <a.developer@.com>" \
+    description="This image builds base Tango" \
+    license="Apache2.0" \
+    repository="ska-telescope/ska-docker" \
+    vendor="SKA Organisation" \
+    version="0.1.2" \
+    website="http://github.com/ska-telescope/ska-docker"

@@ -26,3 +26,12 @@ RUN tango_download_url=https://netcologne.dl.sourceforge.net/project/tango-cs/ta
     rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 
 COPY sql_mode.cnf /etc/mysql/conf.d
+
+LABEL \
+    author="A Developer <a.developer@.com>" \
+    description="This image contains the Tango database" \
+    license="Apache2.0" \
+    repository="ska-telescope/ska-docker" \
+    vendor="SKA Organisation" \
+    version="0.1.2" \
+    website="http://github.com/ska-telescope/ska-docker"

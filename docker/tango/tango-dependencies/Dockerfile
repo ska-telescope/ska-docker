@@ -51,3 +51,12 @@ RUN zeromq_download_url=https://archive.org/download/zeromq_$zeromq_version/zero
 
 FROM debian:stretch-slim
 COPY --from=buildenv /usr/local /usr/local
+
+LABEL \
+    author="A Developer <a.developer@.com>" \
+    description="This image contains Tango dependencies (ZeroMQ and OmniORB)" \
+    license="Apache2.0" \
+    repository="ska-telescope/ska-docker" \
+    vendor="SKA Organisation" \
+    version="0.1.2" \
+    website="http://github.com/ska-telescope/ska-docker"
