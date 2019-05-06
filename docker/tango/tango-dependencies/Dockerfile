@@ -29,7 +29,9 @@ RUN omniorb_download_url=https://svwh.dl.sourceforge.net/project/omniorb/omniORB
     ./configure --enable-static=no && \
     make -C /usr/src/omniorb -j$(nproc) && \
     make -C /usr/src/omniorb install && \
-    apt-get -y purge --auto-remove $build_deps
+    apt-get -y purge --auto-remove $build_deps && \
+    apt-get -y clean && \
+    rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 
 ARG zeromq_version="4.0.5"
 RUN zeromq_download_url=https://archive.org/download/zeromq_$zeromq_version/zeromq-$zeromq_version.tar.gz && \
@@ -43,7 +45,9 @@ RUN zeromq_download_url=https://archive.org/download/zeromq_$zeromq_version/zero
     ./configure --enable-static=no && \
     make -C /usr/src/zeromq -j$(nproc) && \
     make -C /usr/src/zeromq install && \
-    apt-get -y purge --auto-remove $build_deps
+    apt-get -y purge --auto-remove $build_deps && \
+    apt-get -y clean && \
+    rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 
 FROM debian:stretch-slim
 COPY --from=buildenv /usr/local /usr/local
