@@ -6,7 +6,7 @@ ARG DEBIAN_FRONTEND=noninteractive
 # Remove warnings when adding apt-key
 ARG APT_KEY_DONT_WARN_ON_DANGEROUS_USAGE=DontWarn
 
-RUN runtime_deps='apt-transport-https ca-certificates curl gnupg2 software-properties-common' && \
+RUN runtime_deps='make git apt-transport-https ca-certificates curl gnupg2 software-properties-common' && \
     apt-get -y update && \
     apt-get -y install --no-install-recommends $runtime_deps && \
     curl -fsSL https://download.docker.com/linux/debian/gpg | apt-key add - && \

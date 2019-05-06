@@ -21,7 +21,7 @@ stages:
 # https://docs.gitlab.com/ee/ci/docker/using_docker_build.html#authenticating-to-the-container-registry
 before_script:
   - apt-get -y update
-  - apt-get -y install --no-install-recommends make
+  - apt-get -y install --no-install-recommends make git
   - docker login -u $DOCKER_REGISTRY_USER_LOGIN -p $CI_REGISTRY_PASS_LOGIN $CI_REGISTRY
 
 build_tango-builder:
