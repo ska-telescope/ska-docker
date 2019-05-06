@@ -19,7 +19,7 @@ RUN omniorb_download_url=https://svwh.dl.sourceforge.net/project/omniorb/omniORB
     omniorb_patch_url=http://ftp.esrf.fr/pub/cs/tango/Patches/dii_race.patch && \
     buildDeps='build-essential ca-certificates curl python-dev python-pkgconfig' && \
     apt-get -y update && \
-    apt-get install -y --no-install-recommends $buildDeps && \
+    apt-get -y install --no-install-recommends $buildDeps && \
     mkdir -p /usr/src/omniorb && \
     cd /usr/src/omniorb && \
     curl -fsSL "$omniorb_download_url" -o omniorb.tar.bz2 && \
@@ -29,13 +29,13 @@ RUN omniorb_download_url=https://svwh.dl.sourceforge.net/project/omniorb/omniORB
     ./configure --enable-static=no && \
     make -C /usr/src/omniorb -j$(nproc) && \
     make -C /usr/src/omniorb install && \
-    apt-get purge -y --auto-remove $buildDeps
+    apt-get -y purge --auto-remove $buildDeps
 
 ARG zeromq_version="4.0.5"
 RUN zeromq_download_url=https://archive.org/download/zeromq_$zeromq_version/zeromq-$zeromq_version.tar.gz && \
     buildDeps='autoconf automake build-essential ca-certificates curl libkrb5-dev libtool pkg-config unzip libsodium18 libsodium-dev' && \
     apt-get -y update && \
-    apt-get install -y $buildDeps --no-install-recommends && \
+    apt-get -y install $buildDeps --no-install-recommends && \
     mkdir /usr/src/zeromq && \
     cd /usr/src/zeromq && \
     curl -fsSL "$zeromq_download_url" -o zeromq.tar.gz && \
@@ -43,7 +43,7 @@ RUN zeromq_download_url=https://archive.org/download/zeromq_$zeromq_version/zero
     ./configure --enable-static=no && \
     make -C /usr/src/zeromq -j$(nproc) && \
     make -C /usr/src/zeromq install && \
-    apt-get purge -y --auto-remove $buildDep
+    apt-get -y purge --auto-remove $buildDep
 
 FROM debian:stretch-slim
 COPY --from=buildenv /usr/local /usr/local
