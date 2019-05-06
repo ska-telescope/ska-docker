@@ -69,7 +69,7 @@ ENTRYPOINT ["/usr/local/bin/pogo"]
 
 LABEL \
     author="A Developer <a.developer@.com>" \
-    description="This image illustrates TANGO JAVA dependencies" \
+    description="This image builds the TANGO JAVA dependencies" \
     license="Apache2.0" \
     repository="ska-telescope/ska-docker" \
     vendor="SKA Organisation" \
