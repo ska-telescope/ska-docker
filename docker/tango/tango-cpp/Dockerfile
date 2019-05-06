@@ -59,5 +59,5 @@ LABEL \
     license="Apache2.0" \
     repository="ska-telescope/ska-docker" \
     vendor="SKA Organisation" \
-    version="0.1.2" \
+    version="0.1.3" \
     website="http://github.com/ska-telescope/ska-docker"
