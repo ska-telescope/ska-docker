@@ -2,14 +2,9 @@ FROM ubuntu:latest
 
 RUN build_deps='make bash git curl python-pip apt-transport-https ca-certificates software-properties-common gnupg' && \
     apt-get update && \
-<<<<<<< HEAD
     apt-get install -y --no-install-recommends $build_deps
 
 RUN curl -fsSL https://download.docker.com/linux/ubuntu/gpg | apt-key add - && \
-=======
-    apt-get install -y --no-install-recommends $build_deps && \
-    curl -fsSL https://download.docker.com/linux/ubuntu/gpg | apt-key add - && \
->>>>>>> 7c98c00a2baa042896d2250ce6f6038b86017783
     apt-key fingerprint 0EBFCD88 && \
     add-apt-repository "deb [arch=amd64] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable" && \
     apt-get -y update && \
