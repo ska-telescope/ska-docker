@@ -2,7 +2,7 @@ FROM ubuntu:latest
 
 RUN build_deps='make bash git curl python-pip apt-transport-https ca-certificates software-properties-common' && \
     apt-get update && \
-    apt-get install -y $build_deps && \
+    apt-get install -y --no-install-recommends $build_deps && \
     curl -fsSL https://download.docker.com/linux/ubuntu/gpg | apt-key add - && \
     apt-key fingerprint 0EBFCD88 && \
     add-apt-repository "deb [arch=amd64] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable" && \
