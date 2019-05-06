@@ -16,9 +16,9 @@ RUN dockerhost=`awk '/^[a-z]+[0-9]+\t00000000/ { printf("%d.%d.%d.%d", "0x" subs
 
 ARG zeromq_version="4.0.5"
 RUN zeromq_download_url=https://archive.org/download/zeromq_$zeromq_version/zeromq-$zeromq_version.tar.gz && \
-    buildDeps='autoconf automake build-essential ca-certificates curl libkrb5-dev libtool pkg-config unzip' && \
-    DEBIAN_FRONTEND=noninteractive apt-get update && \
-    apt-get -y install $buildDeps --no-install-recommends && \
+    buildDeps='autoconf automake build-essential ca-certificates curl libkrb5-dev libtool pkg-config unzip libsodium18' && \
+    apt-get -y update && \
+    apt-get install -y $buildDeps --no-install-recommends && \
     mkdir /usr/src/zeromq && \
     cd /usr/src/zeromq && \
     curl -fsSL "$zeromq_download_url" -o zeromq.tar.gz && \
@@ -32,8 +32,8 @@ ARG omniorb_version="4.2.1-2"
 RUN omniorb_download_url=https://svwh.dl.sourceforge.net/project/omniorb/omniORB/omniORB-4.2.1/omniORB-$omniorb_version.tar.bz2 && \
     omniorb_patch_url=http://ftp.esrf.fr/pub/cs/tango/Patches/dii_race.patch && \
     buildDeps='build-essential ca-certificates curl python-dev python-pkgconfig' && \
-    DEBIAN_FRONTEND=noninteractive apt-get update && \
-    apt-get -y install --no-install-recommends $buildDeps && \
+    apt-get -y update && \
+    apt-get install -y --no-install-recommends $buildDeps && \
     mkdir -p /usr/src/omniorb && \
     cd /usr/src/omniorb && \
     curl -fsSL "$omniorb_download_url" -o omniorb.tar.bz2 && \
