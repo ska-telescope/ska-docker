@@ -70,4 +70,4 @@ LABEL \
 
 USER tango
 
-CMD ["/usr/local/bin/pogo"]
+ENTRYPOINT ["/usr/local/bin/pogo"]
