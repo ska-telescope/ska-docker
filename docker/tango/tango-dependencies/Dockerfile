@@ -14,20 +14,6 @@ RUN dockerhost=`awk '/^[a-z]+[0-9]+\t00000000/ { printf("%d.%d.%d.%d", "0x" subs
     /usr/local/bin/wait-for-it.sh --host=$dockerhost --port=3142 --timeout=3 --strict --quiet -- echo "Acquire::http::Proxy \"http://$dockerhost:3142\";" > /etc/apt/apt.conf.d/30proxy && \
     echo "Proxy detected on docker host - using for this build" || echo "No proxy detected on docker host"
 
-ARG zeromq_version="4.0.5"
-RUN zeromq_download_url=https://archive.org/download/zeromq_$zeromq_version/zeromq-$zeromq_version.tar.gz && \
-    buildDeps='autoconf automake build-essential ca-certificates curl libkrb5-dev libtool pkg-config unzip libsodium18' && \
-    apt-get -y update && \
-    apt-get install -y $buildDeps --no-install-recommends && \
-    mkdir /usr/src/zeromq && \
-    cd /usr/src/zeromq && \
-    curl -fsSL "$zeromq_download_url" -o zeromq.tar.gz && \
-    tar xf zeromq.tar.gz -C /usr/src/zeromq --strip-components=1 && \
-    ./configure --enable-static=no && \
-    make -C /usr/src/zeromq -j$(nproc) && \
-    make -C /usr/src/zeromq install && \
-    apt-get purge -y --auto-remove $buildDep
-
 ARG omniorb_version="4.2.1-2"
 RUN omniorb_download_url=https://svwh.dl.sourceforge.net/project/omniorb/omniORB/omniORB-4.2.1/omniORB-$omniorb_version.tar.bz2 && \
     omniorb_patch_url=http://ftp.esrf.fr/pub/cs/tango/Patches/dii_race.patch && \
@@ -44,6 +30,20 @@ RUN omniorb_download_url=https://svwh.dl.sourceforge.net/project/omniorb/omniORB
     make -C /usr/src/omniorb -j$(nproc) && \
     make -C /usr/src/omniorb install && \
     apt-get purge -y --auto-remove $buildDeps
+
+ARG zeromq_version="4.0.5"
+RUN zeromq_download_url=https://archive.org/download/zeromq_$zeromq_version/zeromq-$zeromq_version.tar.gz && \
+    buildDeps='autoconf automake build-essential ca-certificates curl libkrb5-dev libtool pkg-config unzip libsodium18' && \
+    apt-get -y update && \
+    apt-get install -y $buildDeps --no-install-recommends && \
+    mkdir /usr/src/zeromq && \
+    cd /usr/src/zeromq && \
+    curl -fsSL "$zeromq_download_url" -o zeromq.tar.gz && \
+    tar xf zeromq.tar.gz -C /usr/src/zeromq --strip-components=1 && \
+    ./configure --enable-static=no && \
+    make -C /usr/src/zeromq -j$(nproc) && \
+    make -C /usr/src/zeromq install && \
+    apt-get purge -y --auto-remove $buildDep
 
 FROM debian:stretch-slim
 COPY --from=buildenv /usr/local /usr/local
