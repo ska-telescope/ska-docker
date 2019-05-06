@@ -1,7 +1,14 @@
 FROM ubuntu:latest
 
 RUN apt-get update
-RUN buildDeps='make bash git curl python-pip apt-transport-https ca-certificates curl software-properties-common'
+RUN buildDeps='make \
+               bash \
+               git \
+               curl \
+               python-pip \
+               apt-transport-https \
+               ca-certificates \
+               software-properties-common'
 RUN apt-get install -y $buildDeps && \
     apt clean && \
     rm -rf /var/lib/apt/lists/*
