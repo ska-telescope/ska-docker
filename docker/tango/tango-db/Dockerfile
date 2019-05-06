@@ -1,5 +1,8 @@
 FROM mariadb:10
 
+# Remove warnings when using apt-get noninteractively
+ARG DEBIAN_FRONTEND=noninteractive
+
 ARG tango_version="9.2.5a"
 RUN tango_download_url=https://netcologne.dl.sourceforge.net/project/tango-cs/tango-$tango_version.tar.gz && \
     build_deps='curl' && \
