@@ -17,6 +17,9 @@ RUN dockerhost=`awk '/^[a-z]+[0-9]+\t00000000/ { printf("%d.%d.%d.%d", "0x" subs
     /usr/local/bin/wait-for-it.sh --host=$dockerhost --port=3142 --timeout=3 --strict --quiet -- echo "Acquire::http::Proxy \"http://$dockerhost:3142\";" > /etc/apt/apt.conf.d/30proxy && \
     echo "Proxy detected on docker host - using for this build" || echo "No proxy detected on docker host"
 
+# Remove warnings when using apt-get noninteractively
+ARG DEBIAN_FRONTEND=noninteractive
+
 # Install runtime dependencies:
 #
 # * build-essential installs C/C++ compilers and build tools
@@ -26,7 +29,7 @@ RUN dockerhost=`awk '/^[a-z]+[0-9]+\t00000000/ { printf("%d.%d.%d.%d", "0x" subs
 RUN runtime_deps='build-essential libboost-python-dev pkg-config virtualenv' && \
     apt-get -y update && \
     apt-get -y install --no-install-recommends $runtime_deps && \
-    rm -rf /etc/apt/apt.conf.d/30proxy && \
+    rm -f /etc/apt/apt.conf.d/30proxy && \
     apt-get -y clean && \
     rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 
