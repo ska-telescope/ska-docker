@@ -28,7 +28,7 @@ RUN tango_download_url=https://netcologne.dl.sourceforge.net/project/tango-cs/ta
     make -C /usr/src/tango -j$(nproc) && \
     make -C /usr/src/tango install && \
     ldconfig && \
-    rm -r /usr/src/tango && \
+    rm -r /usr/src/tango/* && \
     rm -f /etc/apt/apt.conf.d/30proxy && \
     apt-get -y purge --auto-remove $build_deps && \
     apt-get -y clean && \
