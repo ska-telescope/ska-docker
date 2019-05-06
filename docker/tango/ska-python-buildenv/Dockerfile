@@ -6,7 +6,6 @@
 #
 # This image caches a compilation of PyTango bindings so that child images
 # need not recompile it.
-#
 ARG DOCKER_REGISTRY_USER
 ARG DOCKER_REGISTRY_HOST
 FROM ${DOCKER_REGISTRY_HOST}/${DOCKER_REGISTRY_USER}/tango-cpp:latest
@@ -14,23 +13,22 @@ FROM ${DOCKER_REGISTRY_HOST}/${DOCKER_REGISTRY_USER}/tango-cpp:latest
 USER root
 
 # Speed up image builds by adding apt proxy if detected on host
-RUN DOCKERHOST=`awk '/^[a-z]+[0-9]+\t00000000/ { printf("%d.%d.%d.%d", "0x" substr($3, 7, 2), "0x" substr($3, 5, 2), "0x" substr($3, 3, 2), "0x" substr($3, 1, 2)) }' < /proc/net/route` \
-    && /usr/local/bin/wait-for-it.sh --host=$DOCKERHOST --port=3142 --timeout=3 --strict --quiet -- echo "Acquire::http::Proxy \"http://$DOCKERHOST:3142\";" > /etc/apt/apt.conf.d/30proxy \
-    && echo "Proxy detected on docker host - using for this build" || echo "No proxy detected on docker host"
+RUN dockerhost=`awk '/^[a-z]+[0-9]+\t00000000/ { printf("%d.%d.%d.%d", "0x" substr($3, 7, 2), "0x" substr($3, 5, 2), "0x" substr($3, 3, 2), "0x" substr($3, 1, 2)) }' < /proc/net/route` && \
+    /usr/local/bin/wait-for-it.sh --host=$dockerhost --port=3142 --timeout=3 --strict --quiet -- echo "Acquire::http::Proxy \"http://$dockerhost:3142\";" > /etc/apt/apt.conf.d/30proxy && \
+    echo "Proxy detected on docker host - using for this build" || echo "No proxy detected on docker host"
 
-# Install build dependencies:
+# Install runtime dependencies:
 #
 # * build-essential installs C/C++ compilers and build tools
 # * libboost-python-dev is required to bind PyTango to the C++ Tango libs
 # * pkg-config is used to locate required libraries
 # * virtualenv is required to create a new Python virtualenv environment
-#
-RUN buildDeps='build-essential \
-               libboost-python-dev \
-               pkg-config \
-               virtualenv' \
-    && DEBIAN_FRONTEND=noninteractive apt-get update \
-    && apt-get -y install --no-install-recommends $buildDeps
+RUN runtime_deps='build-essential libboost-python-dev pkg-config virtualenv' && \
+    apt-get -y update && \
+    apt-get -y install --no-install-recommends $runtime_deps && \
+    rm -rf /etc/apt/apt.conf.d/30proxy && \
+    apt-get -y clean && \
+    rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 
 # Set environment variables for pipenv execution:
 #
@@ -43,7 +41,6 @@ RUN buildDeps='build-essential \
 #   set by 'source /venv/bin/activate'
 # * PIPENV_VERBOSITY: hides warning about pipenv running inside a virtualenv.
 # * PIPENV_NOSPIN: disables animated spinner for cleaner CI logs
-#
 ENV LC_ALL=C.UTF-8 \
     LANG=C.UTF-8 \
     PIPENV_TIMEOUT=900 \
@@ -73,3 +70,12 @@ RUN pipenv install --dev
 ONBUILD COPY --chown=tango:tango Pipfile Pipfile
 ONBUILD COPY --chown=tango:tango Pipfile.lock Pipfile.lock
 ONBUILD RUN pipenv install --dev
+
+LABEL \
+    author="A Developer <a.developer@.com>" \
+    description="This image creates the python build environment image with the PyTango bindings" \
+    license="Apache2.0" \
+    repository="ska-telescope/ska-docker" \
+    vendor="SKA Organisation" \
+    version="0.1.1" \
+    website="http://github.com/ska-telescope/ska-docker"
