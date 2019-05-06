@@ -12,7 +12,7 @@ LABEL \
     license="Apache2.0" \
     repository="ska-telescope/ska-docker" \
     vendor="SKA Organisation" \
-    version="0.1.0" \
+    version="0.1.1" \
     website="http://github.com/ska-telescope/ska-docker"
 
 CMD ["itango3"]
