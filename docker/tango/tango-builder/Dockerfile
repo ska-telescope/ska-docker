@@ -1,8 +1,11 @@
-FROM ubuntu:latest
+FROM python:3.5-slim
 
-RUN runtime_deps='make bash git curl python-pip apt-transport-https ca-certificates software-properties-common gnupg' && \
-    apt-get update && \
-    apt-get install -y --no-install-recommends $runtime_deps
+# Remove warnings when using apt-get noninteractively
+ARG DEBIAN_FRONTEND=noninteractive
+
+RUN runtime_deps='make bash git curl apt-transport-https ca-certificates software-properties-common gnupg' && \
+    apt-get -y update && \
+    apt-get -y install --no-install-recommends $runtime_deps
 
 RUN curl -fsSL https://download.docker.com/linux/ubuntu/gpg | apt-key add - && \
     apt-key fingerprint 0EBFCD88 && \
@@ -22,5 +25,5 @@ LABEL \
     license="Apache2.0" \
     repository="ska-telescope/ska-docker" \
     vendor="SKA Organisation" \
-    version="0.1.1" \
+    version="0.2.0" \
     website="http://github.com/ska-telescope/ska-docker"
