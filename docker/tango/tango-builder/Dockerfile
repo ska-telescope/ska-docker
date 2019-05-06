@@ -1,15 +1,14 @@
 FROM ubuntu:latest
 
-RUN build_deps='make bash git curl python-pip apt-transport-https ca-certificates software-properties-common gnupg' && \
+RUN runtime_deps='make bash git curl python-pip apt-transport-https ca-certificates software-properties-common gnupg' && \
     apt-get update && \
-    apt-get install -y --no-install-recommends $build_deps
+    apt-get install -y --no-install-recommends $runtime_deps
 
 RUN curl -fsSL https://download.docker.com/linux/ubuntu/gpg | apt-key add - && \
     apt-key fingerprint 0EBFCD88 && \
     add-apt-repository "deb [arch=amd64] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable" && \
     apt-get -y update && \
     apt-get -y install --no-install-recommends docker-ce && \
-    apt-get -y purge --auto-remove $build_deps && \
     apt-get -y clean && \
     rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 
