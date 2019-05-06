@@ -33,7 +33,7 @@ TAG=$(shell . $(RELEASE_SUPPORT); getTag)
 
 SHELL=/bin/bash
 
-DOCKER_BUILD_CONTEXT=.
+DOCKER_BUILD_CONTEXT=build-context
 DOCKER_FILE_PATH=Dockerfile
 
 .PHONY: pre-build docker-build post-build build release patch-release minor-release major-release tag check-status check-release showver \
