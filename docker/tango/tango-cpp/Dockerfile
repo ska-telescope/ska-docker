@@ -5,7 +5,9 @@
 #
 ARG DOCKER_REGISTRY_USER
 ARG DOCKER_REGISTRY_HOST
-FROM ${DOCKER_REGISTRY_HOST}/${DOCKER_REGISTRY_USER}/tango-dependencies:latest as buildenv
+ARG TANGO_DEPENDENCIES_TAG=latest
+
+FROM ${DOCKER_REGISTRY_HOST}/${DOCKER_REGISTRY_USER}/tango-dependencies:${TANGO_DEPENDENCIES_TAG} as buildenv
 
 # Remove warnings when using apt-get noninteractively
 ARG DEBIAN_FRONTEND=noninteractive

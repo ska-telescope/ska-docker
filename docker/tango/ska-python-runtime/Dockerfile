@@ -4,11 +4,15 @@
 
 ARG DOCKER_REGISTRY_USER
 ARG DOCKER_REGISTRY_HOST
-FROM ${DOCKER_REGISTRY_HOST}/${DOCKER_REGISTRY_USER}/ska-python-buildenv:latest as buildenv
+ARG SKA_PYTHON_BUILDENV_TAG=latest
+ARG TANGO_CPP_TAG=latest
+
+FROM ${DOCKER_REGISTRY_HOST}/${DOCKER_REGISTRY_USER}/ska-python-buildenv:${SKA_PYTHON_BUILDENV_TAG} AS buildenv
 
 # The application Pipfile and lock are pulled into the build environment here
 # and installed within this build image
-FROM ${DOCKER_REGISTRY_HOST}/${DOCKER_REGISTRY_USER}/tango-cpp:latest
+
+FROM ${DOCKER_REGISTRY_HOST}/${DOCKER_REGISTRY_USER}/tango-cpp:${TANGO_CPP_TAG}
 
 # Remove warnings when using apt-get noninteractively
 ARG DEBIAN_FRONTEND=noninteractive

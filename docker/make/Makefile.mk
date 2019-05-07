@@ -26,6 +26,26 @@ ifeq ($(strip $(DOCKER_REGISTRY_USER)),)
   DOCKER_REGISTRY_USER = ska-docker
 endif
 
+ifeq ($(strip $(TANGO_DEPENDENCIES_TAG)),)
+  TANGO_DEPENDENCIES_TAG = latest
+endif
+
+ifeq ($(strip $(TANGO_ITANGO_TAG)),)
+  TANGO_ITANGO_TAG = latest
+endif
+
+ifeq ($(strip $(TANGO_CPP_TAG)),)
+  TANGO_CPP_TAG = latest
+endif
+
+ifeq ($(strip $(SKA_PYTHON_BUILDENV_TAG)),)
+  SKA_PYTHON_BUILDENV_TAG = latest
+endif
+
+ifeq ($(strip $(SKA_PYTHON_RUNTIME_TAG)),)
+  SKA_PYTHON_RUNTIME_TAG = latest
+endif
+
 IMAGE=$(DOCKER_REGISTRY_HOST)/$(DOCKER_REGISTRY_USER)/$(NAME)
 
 VERSION=$(shell . $(RELEASE_SUPPORT) ; getVersion)
@@ -50,7 +70,14 @@ pre-push:
 post-push:
 
 docker-build: .release
-	docker build $(DOCKER_BUILD_ARGS) -t $(IMAGE):$(VERSION) $(DOCKER_BUILD_CONTEXT) -f $(DOCKER_FILE_PATH) --build-arg DOCKER_REGISTRY_HOST=$(DOCKER_REGISTRY_HOST) --build-arg DOCKER_REGISTRY_USER=$(DOCKER_REGISTRY_USER)
+	docker build $(DOCKER_BUILD_ARGS) -t $(IMAGE):$(VERSION) $(DOCKER_BUILD_CONTEXT) \
+	  -f $(DOCKER_FILE_PATH) --build-arg DOCKER_REGISTRY_HOST=$(DOCKER_REGISTRY_HOST) \
+		--build-arg DOCKER_REGISTRY_USER=$(DOCKER_REGISTRY_USER) \
+		--build-arg TANGO_DEPENDENCIES_TAG=$(TANGO_DEPENDENCIES_TAG) \
+		--build-arg TANGO_ITANGO_TAG=$(TANGO_ITANGO_TAG) \
+		--build-arg TANGO_CPP_TAG=$(TANGO_CPP_TAG) \
+		--build-arg SKA_PYTHON_BUILDENV_TAG=$(SKA_PYTHON_BUILDENV_TAG) \
+		--build-arg SKA_PYTHON_RUNTIME_TAG=$(SKA_PYTHON_RUNTIME_TAG)
 	@DOCKER_MAJOR=$(shell docker -v | sed -e 's/.*version //' -e 's/,.*//' | cut -d\. -f1) ; \
 	DOCKER_MINOR=$(shell docker -v | sed -e 's/.*version //' -e 's/,.*//' | cut -d\. -f2) ; \
 	if [ $$DOCKER_MAJOR -eq 1 ] && [ $$DOCKER_MINOR -lt 10 ] ; then \
