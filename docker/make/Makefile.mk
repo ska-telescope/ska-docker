@@ -34,8 +34,16 @@ ifeq ($(strip $(TANGO_ITANGO_TAG)),)
   TANGO_ITANGO_TAG = latest
 endif
 
+ifeq ($(strip $(TANGO_DB_TAG)),)
+  TANGO_DB_TAG = latest
+endif
+
 ifeq ($(strip $(TANGO_CPP_TAG)),)
   TANGO_CPP_TAG = latest
+endif
+
+ifeq ($(strip $(TANGO_JAVA_TAG)),)
+  TANGO_JAVA_TAG = latest
 endif
 
 ifeq ($(strip $(SKA_PYTHON_BUILDENV_TAG)),)
