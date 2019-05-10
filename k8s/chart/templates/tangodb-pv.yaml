@@ -1,0 +1,39 @@
+---
+kind: PersistentVolume
+apiVersion: v1
+metadata:
+  name: tangodb-{{ template "ska-docker-k8s.name" . }}-{{ .Release.Name }}
+  namespace: {{ .Release.Namespace }}
+  labels:
+    app: tangodb-{{ template "ska-docker-k8s.name" . }}-{{ .Release.Name }}
+    chart: {{ template "ska-docker-k8s.chart" . }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+spec:
+  storageClassName: standard
+  capacity:
+    storage: 1Gi
+  accessModes:
+    - ReadWriteOnce
+  hostPath:
+    path: /data/tangodb-{{ template "ska-docker-k8s.name" . }}-{{ .Release.Name }}/
+
+---
+
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: tangodb-{{ template "ska-docker-k8s.name" . }}-{{ .Release.Name }}
+  namespace: {{ .Release.Namespace }}
+  labels:
+    app: tangodb-{{ template "ska-docker-k8s.name" . }}-{{ .Release.Name }}
+    chart: {{ template "ska-docker-k8s.chart" . }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+spec:
+  storageClassName: standard
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 1Gi
