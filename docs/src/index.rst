@@ -15,6 +15,7 @@ that are useful for TANGO control system development.
 
    docker_images
    docker_compose
+   k8s
    interactions
 
 Indices and tables
