@@ -19,7 +19,7 @@ RUN dockerhost=`awk '/^[a-z]+[0-9]+\t00000000/ { printf("%d.%d.%d.%d", "0x" subs
 ARG DEBIAN_FRONTEND=noninteractive
 
 ARG omniorb_version="4.2.1-2"
-RUN omniorb_download_url=https://svwh.dl.sourceforge.net/project/omniorb/omniORB/omniORB-4.2.1/omniORB-$omniorb_version.tar.bz2 && \
+RUN omniorb_download_url=https://nexus.engageska-portugal.pt/repository/raw/omniORB/omniORB-4.2.1/omniORB-$omniorb_version.tar.bz2 && \
     omniorb_patch_url=http://ftp.esrf.fr/pub/cs/tango/Patches/dii_race.patch && \
     build_deps='build-essential ca-certificates curl python-dev python-pkgconfig' && \
     apt-get -y update && \
