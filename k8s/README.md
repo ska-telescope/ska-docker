@@ -209,7 +209,8 @@ serviceaccount/tiller created
 role.rbac.authorization.k8s.io/tiller-manager created
 clusterrolebinding.rbac.authorization.k8s.io/tiller created
 rolebinding.rbac.authorization.k8s.io/tiller-binding created
-osboxes@osboxes:~/ska-docker/k8s$ helm init --service-account tiller --tiller-namespace integration
+
+$ helm init --service-account tiller --tiller-namespace integration
 $HELM_HOME has been configured at /home/osboxes/.helm.
 
 Tiller (the Helm server-side component) has been installed into your Kubernetes Cluster.
@@ -275,4 +276,10 @@ PASSED: tangotest-pod-ska-docker-k8s-ska-docker-k8s
 RUNNING: databaseds-pod-ska-docker-k8s-ska-docker-k8s
 PASSED: databaseds-pod-ska-docker-k8s-ska-docker-k8s
 
+```
+
+To clean the system run the following command:
+
+```
+make test KUBE_NAMESPACE=integration
 ```
