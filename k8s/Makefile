@@ -7,7 +7,8 @@ THIS_HOST := $(shell ifconfig | sed -En 's/127.0.0.1//;s/.*inet (addr:)?(([0-9]*
 DISPLAY := $(THIS_HOST):0
 XAUTHORITYx ?= ${XAUTHORITY}
 KUBE_NAMESPACE ?= default
-HELM_RELEASE = test
+HELM_CHART ?= chart
+HELM_RELEASE = ska-docker-k8s
 
 # activate remote debugger for VSCode (ptvsd)
 REMOTE_DEBUG ?= false
@@ -50,7 +51,7 @@ namespace: ## create the kubernetes namespace
 	kubectl describe namespace $(KUBE_NAMESPACE) || kubectl create namespace $(KUBE_NAMESPACE)
 
 deploy: namespace  ## deploy the helm chart
-	@helm template chart/ --name $(HELM_RELEASE) \
+	@helm template $(HELM_CHART)/ --name $(HELM_RELEASE) \
 				 --namespace $(KUBE_NAMESPACE) \
 	             --tiller-namespace $(KUBE_NAMESPACE) \
 	             --set display="$(DISPLAY)" \
@@ -58,15 +59,37 @@ deploy: namespace  ## deploy the helm chart
 	             --set tangoexample.debug="$(REMOTE_DEBUG)" | kubectl -n $(KUBE_NAMESPACE) apply -f -
 
 show: ## show the helm chart
-	@helm template chart/ --name $(HELM_RELEASE) \
+	@helm template $(HELM_CHART)/ --name $(HELM_RELEASE) \
 				 --namespace $(KUBE_NAMESPACE) \
 	             --tiller-namespace $(KUBE_NAMESPACE) \
 	             --set display="$(DISPLAY)" \
 	             --set xauthority="$(XAUTHORITYx)" \
 	             --set tangoexample.debug="$(REMOTE_DEBUG)"
 
+lint: ## lint check the helm chart
+	@helm lint $(HELM_CHART)/ \
+				 --namespace $(KUBE_NAMESPACE) \
+         		 --tiller-namespace $(KUBE_NAMESPACE) \
+				 --set ingress.hostname=$(INGRESS_HOST)
+
+install: namespace  ## deploy the helm chart
+	@helm install $(HELM_CHART)/ --name $(HELM_RELEASE) \
+				 --namespace $(KUBE_NAMESPACE) \
+	             --tiller-namespace $(KUBE_NAMESPACE) \
+	             --set display="$(DISPLAY)" \
+	             --set xauthority="$(XAUTHORITYx)" \
+	             --set tangoexample.debug="$(REMOTE_DEBUG)"
+
+test: ## test the helm chart
+	@helm test $(HELM_RELEASE) \
+         		 --tiller-namespace $(KUBE_NAMESPACE) \
+				 --cleanup
+
+delete-tiller: ## delete the helm chart release
+	@helm delete $(HELM_RELEASE) --tiller-namespace $(KUBE_NAMESPACE) --purge  
+
 delete: ## delete the helm chart release
-	@helm template chart/ --name $(HELM_RELEASE) \
+	@helm template $(HELM_CHART)/ --name $(HELM_RELEASE) \
 				 --namespace $(KUBE_NAMESPACE) \
 	             --tiller-namespace $(KUBE_NAMESPACE) \
 	             --set display="$(DISPLAY)" \
@@ -120,8 +143,8 @@ localip:  ## set local Minikube IP in /etc/hosts file for apigateway
 
 #mkcerts:  ## Make dummy certificates for integration.engageska-portugal.pt and Ingress
 #	openssl req -x509 -sha256 -nodes -days 365 -newkey rsa:2048 \
-#	   -keyout chart/data/tls.key \
-#		 -out chart/data/tls.crt \
+#	   -keyout data/tls.key \
+#		 -out data/tls.crt \
 #		 -subj "/CN=integration.engageska-portugal.pt/O=Integration"
 
 help:   ## show this help.

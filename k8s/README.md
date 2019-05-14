@@ -186,3 +186,93 @@ To clean up the Helm Chart release:
 ```
 $make delete KUBE_NAMESPACE=integration
 ```
+
+Running Helm Test for the SKA TANGO-controls docker images on Kubernetes
+------------------------------------------------------------------------
+To run the tests locally for the chart, it is needed to run the following commands:
+
+```
+kubectl create namespace integration
+kubectl create -f rbac-config.yaml
+helm init --service-account tiller --tiller-namespace integration
+make install KUBE_NAMESPACE=integration
+make test KUBE_NAMESPACE=integration
+```
+
+This will run tests available within the folder "templates/tests" and gives the following output:
+```
+$kubectl create namespace integration
+namespace/integration created
+
+$ kubectl create -f rbac-config.yaml
+serviceaccount/tiller created
+role.rbac.authorization.k8s.io/tiller-manager created
+clusterrolebinding.rbac.authorization.k8s.io/tiller created
+rolebinding.rbac.authorization.k8s.io/tiller-binding created
+osboxes@osboxes:~/ska-docker/k8s$ helm init --service-account tiller --tiller-namespace integration
+$HELM_HOME has been configured at /home/osboxes/.helm.
+
+Tiller (the Helm server-side component) has been installed into your Kubernetes Cluster.
+
+Please note: by default, Tiller is deployed with an insecure 'allow unauthenticated users' policy.
+To prevent this, run `helm init` with the --tiller-tls-verify flag.
+For more information on securing your installation see: https://docs.helm.sh/using_helm/#securing-your-helm-installation
+Happy Helming!
+$ make install KUBE_NAMESPACE=integration
+kubectl describe namespace integration || kubectl create namespace integration
+Name:         integration
+Labels:       <none>
+Annotations:  <none>
+Status:       Active
+
+No resource quota.
+
+No resource limits.
+NAME:   ska-docker-k8s
+LAST DEPLOYED: Tue May 14 11:45:05 2019
+NAMESPACE: integration
+STATUS: DEPLOYED
+
+RESOURCES:
+==> v1/ConfigMap
+NAME                                                DATA  AGE
+databaseds-configmap-ska-docker-k8s-ska-docker-k8s  1     1s
+tangotest-configmap-ska-docker-k8s-ska-docker-k8s   1     1s
+
+==> v1/PersistentVolume
+NAME                                   CAPACITY  ACCESS MODES  RECLAIM POLICY  STATUS  CLAIM                                              STORAGECLASS  REASON  AGE
+pogo-ska-docker-k8s                    1Gi       RWO           Retain          Bound   integration/tangodb-ska-docker-k8s-ska-docker-k8s  standard      1s
+tangodb-ska-docker-k8s-ska-docker-k8s  1Gi       RWO           Retain          Bound   integration/pogo-ska-docker-k8s                    standard      1s
+
+==> v1/PersistentVolumeClaim
+NAME                                   STATUS  VOLUME                                 CAPACITY  ACCESS MODES  STORAGECLASS  AGE
+pogo-ska-docker-k8s                    Bound   tangodb-ska-docker-k8s-ska-docker-k8s  1Gi       RWO           standard      1s
+tangodb-ska-docker-k8s-ska-docker-k8s  Bound   pogo-ska-docker-k8s                    1Gi       RWO           standard      1s
+
+==> v1/Pod
+NAME                                     READY  STATUS             RESTARTS  AGE
+tangotest-ska-docker-k8s-ska-docker-k8s  0/1    ContainerCreating  0         1s
+
+==> v1/Pod(related)
+NAME                                        READY  STATUS             RESTARTS  AGE
+databaseds-ska-docker-k8s-ska-docker-k8s-0  0/1    ContainerCreating  0         1s
+tangodb-ska-docker-k8s-ska-docker-k8s-0     0/1    ContainerCreating  0         1s
+
+==> v1/Service
+NAME                                      TYPE       CLUSTER-IP  EXTERNAL-IP  PORT(S)    AGE
+databaseds-ska-docker-k8s-ska-docker-k8s  ClusterIP  None        <none>       10000/TCP  1s
+tangodb-ska-docker-k8s-ska-docker-k8s     ClusterIP  None        <none>       3306/TCP   1s
+
+==> v1/StatefulSet
+NAME                                      READY  AGE
+databaseds-ska-docker-k8s-ska-docker-k8s  0/1    1s
+tangodb-ska-docker-k8s-ska-docker-k8s     0/1    1s
+
+
+$ make test KUBE_NAMESPACE=integration
+RUNNING: tangotest-pod-ska-docker-k8s-ska-docker-k8s
+PASSED: tangotest-pod-ska-docker-k8s-ska-docker-k8s
+RUNNING: databaseds-pod-ska-docker-k8s-ska-docker-k8s
+PASSED: databaseds-pod-ska-docker-k8s-ska-docker-k8s
+
+```

@@ -1,0 +1,70 @@
+{{ if .Values.databaseds.enabled }}
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: "databaseds-configmap-{{ template "ska-docker-k8s.name" . }}-{{ .Release.Name }}"
+data:
+  test.py: |
+    #!/usr/bin/env python
+    from tango import Database, DbDevInfo
+    from time import sleep
+    import json
+    
+    timeSleep = 0
+    for x in range(10):
+      try:
+        print ("Connecting to the databaseds")
+        db = Database()
+      except:
+        print ("Could not connect to the databaseds. Retry after " + str(timeSleep) + " seconds.")
+        sleep(timeSleep)
+
+    print("Connected to the databaseds")
+
+---
+apiVersion: v1
+kind: Pod
+metadata:
+  name: databaseds-pod-{{ template "ska-docker-k8s.name" . }}-{{ .Release.Name }}
+  namespace: {{ .Release.Namespace }}
+  annotations:
+    "helm.sh/hook": test-success
+  labels:
+    app: databaseds-pod-{{ template "ska-docker-k8s.name" . }}-{{ .Release.Name }}
+    chart: {{ template "ska-docker-k8s.chart" . }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+spec:
+  volumes:
+    - name: script
+      configMap:
+        name: "databaseds-configmap-{{ template "ska-docker-k8s.name" . }}-{{ .Release.Name }}"
+  containers:
+  - name: test-databaseds
+    image: nexus.engageska-portugal.pt/ska-docker/tango-itango:latest
+    imagePullPolicy: IfNotPresent
+    command: ["python3", "/app/test.py"]
+    env:
+    - name: TANGO_HOST
+      value: databaseds-{{ template "ska-docker-k8s.name" . }}:10000
+    volumeMounts:
+      - name: script
+        mountPath: /app
+        readOnly: true
+  restartPolicy: Never
+{{- with .Values.nodeSelector }}
+  nodeSelector:
+{{ toYaml . | indent 4 }}
+{{- end }}
+{{- with .Values.affinity }}
+  affinity:
+{{ toYaml . | indent 4 }}
+{{- end }}
+{{- with .Values.tolerations }}
+  tolerations:
+{{ toYaml . | indent 4 }}
+{{- end }}
+
+{{ end }}    
+
