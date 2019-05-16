@@ -7,11 +7,20 @@ THIS_HOST := $(shell ifconfig | sed -En 's/127.0.0.1//;s/.*inet (addr:)?(([0-9]*
 DISPLAY := $(THIS_HOST):0
 XAUTHORITYx ?= ${XAUTHORITY}
 KUBE_NAMESPACE ?= default
-HELM_CHART ?= chart
+HELM_CHART ?= ska-docker-k8s
 HELM_RELEASE = ska-docker-k8s
+
+# INGRESS_HOST is the host name used in the Ingress resource definition for
+# publishing services via the Ingress Controller
+INGRESS_HOST ?= $(HELM_RELEASE).$(HELM_CHART).local
+
+SHELL=/bin/bash
 
 # activate remote debugger for VSCode (ptvsd)
 REMOTE_DEBUG ?= false
+
+KUBE_CONFIG_BASE64 ?=  ## base64 encoded kubectl credentials for KUBECONFIG
+KUBECONFIG ?= /etc/deploy/config ## KUBECONFIG location
 
 # define overides for above variables in here
 -include PrivateRules.mak
@@ -68,25 +77,26 @@ show: ## show the helm chart
 
 lint: ## lint check the helm chart
 	@helm lint $(HELM_CHART)/ \
-				 --namespace $(KUBE_NAMESPACE) \
-         		 --tiller-namespace $(KUBE_NAMESPACE) \
-				 --set ingress.hostname=$(INGRESS_HOST)
+		--namespace $(KUBE_NAMESPACE) \
+    	--tiller-namespace $(KUBE_NAMESPACE) \
+		--set ingress.hostname=$(INGRESS_HOST)
 
-install: namespace  ## deploy the helm chart
-	@helm install $(HELM_CHART)/ --name $(HELM_RELEASE) \
-				 --namespace $(KUBE_NAMESPACE) \
-	             --tiller-namespace $(KUBE_NAMESPACE) \
-	             --set display="$(DISPLAY)" \
-	             --set xauthority="$(XAUTHORITYx)" \
-	             --set tangoexample.debug="$(REMOTE_DEBUG)"
 
-test: ## test the helm chart
-	@helm test $(HELM_RELEASE) \
-         		 --tiller-namespace $(KUBE_NAMESPACE) \
-				 --cleanup
+install: namespace mkcerts  ## install the helm chart (with Tiller)
+	@helm tiller run $(KUBE_NAMESPACE) -- helm install $(HELM_CHART)/ --name $(HELM_RELEASE) \
+		--wait \
+		--namespace $(KUBE_NAMESPACE) \
+    	--tiller-namespace $(KUBE_NAMESPACE) \
+		--set ingress.hostname=$(INGRESS_HOST) \
+		--set display="$(DISPLAY)" \
+		--set xauthority="$(XAUTHORITYx)" \
 
-delete-tiller: ## delete the helm chart release
-	@helm delete $(HELM_RELEASE) --tiller-namespace $(KUBE_NAMESPACE) --purge  
+helm_delete: ## delete the helm chart release (with Tiller)
+	@helm tiller run $(KUBE_NAMESPACE) -- helm delete $(HELM_RELEASE) --purge \
+    --tiller-namespace $(KUBE_NAMESPACE)
+
+helm_tests:  ## run Helm chart tests 
+	@helm tiller run $(KUBE_NAMESPACE) -- helm test $(HELM_RELEASE) --cleanup
 
 delete: ## delete the helm chart release
 	@helm template $(HELM_CHART)/ --name $(HELM_RELEASE) \
@@ -96,6 +106,13 @@ delete: ## delete the helm chart release
 	             --set xauthority="$(XAUTHORITYx)" \
 	             --set tangoexample.debug="$(REMOTE_DEBUG)" | kubectl -n $(KUBE_NAMESPACE) delete -f -
 
+delete_namespace: ## delete the kubernetes namespace
+	@if [ "default" == "$(KUBE_NAMESPACE)" ] || [ "kube-system" == "$(KUBE_NAMESPACE)" ]; then \
+	echo "You cannot delete Namespace: $(KUBE_NAMESPACE)"; \
+	exit 1; \
+	else \
+	kubectl describe namespace $(KUBE_NAMESPACE) && kubectl delete namespace $(KUBE_NAMESPACE); \
+	fi
 
 poddescribe: ## describe Pods executed from Helm chart
 	@for i in `kubectl -n $(KUBE_NAMESPACE) get pods -l release=$(HELM_RELEASE) -o=name`; \
@@ -141,11 +158,56 @@ localip:  ## set local Minikube IP in /etc/hosts file for apigateway
 	else sudo perl -i -ne "s/\d+\.\d+.\d+\.\d+/$${new_ip}/ if /integration.engageska-portugal.pt/; print" /etc/hosts; fi && \
 	echo "/etc/hosts is now: " `grep integration.engageska-portugal.pt /etc/hosts`
 
-#mkcerts:  ## Make dummy certificates for integration.engageska-portugal.pt and Ingress
-#	openssl req -x509 -sha256 -nodes -days 365 -newkey rsa:2048 \
-#	   -keyout data/tls.key \
-#		 -out data/tls.crt \
-#		 -subj "/CN=integration.engageska-portugal.pt/O=Integration"
+mkcerts:  ## Make dummy certificates for $(INGRESS_HOST) and Ingress
+	@if [ ! -f $(HELM_CHART)//secrets/tls.key ]; then \
+	openssl req -x509 -sha256 -nodes -days 365 -newkey rsa:2048 \
+	   -keyout $(HELM_CHART)/secrets/tls.key \
+		 -out $(HELM_CHART)/secrets/tls.crt \
+		 -subj "/CN=$(INGRESS_HOST)/O=Minikube"; \
+	else \
+	echo "SSL cert already exits in $(HELM_CHART)/secrets ... skipping"; \
+	fi
+
+# Utility target to install Helm dependencies
+helm_dependencies:
+	@which helm ; rc=$$?; \
+	if [[ $$rc != 0 ]]; then \
+	curl "https://kubernetes-helm.storage.googleapis.com/helm-$(HELM_VERSION)-linux-amd64.tar.gz" | tar zx; \
+	mv linux-amd64/helm /usr/bin/; \
+	helm init --client-only; \
+	fi
+	@helm init --client-only
+	@if [ ! -d $$HOME/.helm/plugins/helm-tiller ]; then \
+	echo "installing tiller plugin..."; \
+	helm plugin install https://github.com/rimusz/helm-tiller; \
+	fi
+	helm version --client
+	@helm tiller stop 2>/dev/null || true
+
+# Utility target to install K8s dependencies
+kubectl_dependencies:
+	@([ -n "$(KUBE_CONFIG_BASE64)" ] && [ -n "$(KUBECONFIG)" ]) || (echo "unset variables [KUBE_CONFIG_BASE64/KUBECONFIG] - abort!"; exit 1)
+	@which kubectl ; rc=$$?; \
+	if [[ $$rc != 0 ]]; then \
+		curl -L -o /usr/bin/kubectl "https://storage.googleapis.com/kubernetes-release/release/$(KUBERNETES_VERSION)/bin/linux/amd64/kubectl"; \
+		chmod +x /usr/bin/kubectl; \
+		mkdir -p /etc/deploy; \
+		echo $(KUBE_CONFIG_BASE64) | base64 -d > $(KUBECONFIG); \
+	fi
+	@echo -e "\nkubectl client version:"
+	@kubectl version --client
+	@echo -e "\nkubectl config view:"
+	@kubectl config view
+	@echo -e "\nkubectl config get-contexts:"
+	@kubectl config get-contexts
+	@echo -e "\nkubectl version:"
+	@kubectl version
+
+kubeconfig: ## export current KUBECONFIG as base64 ready for KUBE_CONFIG_BASE64
+	@KUBE_CONFIG_BASE64=`kubectl config view --flatten | base64 -w 0`; \
+	echo "KUBE_CONFIG_BASE64: $$(echo $${KUBE_CONFIG_BASE64} | cut -c 1-40)..."; \
+	echo "appended to: PrivateRules.mak"; \
+	echo -e "\n\n# base64 encoded from: kubectl config view --flatten\nKUBE_CONFIG_BASE64 = $${KUBE_CONFIG_BASE64}" >> PrivateRules.mak
 
 help:   ## show this help.
 	@grep -E '^[0-9a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) | sort | awk 'BEGIN {FS = ":.*?## "}; {printf "\033[36m%-30s\033[0m %s\n", $$1, $$2}'
