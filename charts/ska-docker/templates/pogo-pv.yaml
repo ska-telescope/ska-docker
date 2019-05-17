@@ -2,11 +2,11 @@
 kind: PersistentVolume
 apiVersion: v1
 metadata:
-  name: tangodb-{{ template "ska-docker-k8s.name" . }}-{{ .Release.Name }}
+  name: pogo-{{ template "ska-docker.name" . }}
   namespace: {{ .Release.Namespace }}
   labels:
-    app: tangodb-{{ template "ska-docker-k8s.name" . }}-{{ .Release.Name }}
-    chart: {{ template "ska-docker-k8s.chart" . }}
+    app: pogo-{{ template "ska-docker.name" . }}
+    chart: {{ template "ska-docker.chart" . }}
     release: {{ .Release.Name }}
     heritage: {{ .Release.Service }}
 spec:
@@ -16,18 +16,18 @@ spec:
   accessModes:
     - ReadWriteOnce
   hostPath:
-    path: /data/tangodb-{{ template "ska-docker-k8s.name" . }}-{{ .Release.Name }}/
+    path: /data/pogo-{{ template "ska-docker.name" . }}/
 
 ---
 
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
-  name: tangodb-{{ template "ska-docker-k8s.name" . }}-{{ .Release.Name }}
+  name: pogo-{{ template "ska-docker.name" . }}
   namespace: {{ .Release.Namespace }}
   labels:
-    app: tangodb-{{ template "ska-docker-k8s.name" . }}-{{ .Release.Name }}
-    chart: {{ template "ska-docker-k8s.chart" . }}
+    app: pogo-{{ template "ska-docker.name" . }}
+    chart: {{ template "ska-docker.chart" . }}
     release: {{ .Release.Name }}
     heritage: {{ .Release.Service }}
 spec:

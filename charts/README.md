@@ -134,18 +134,18 @@ Status:       Active
 No resource quota.
 
 No resource limits.
-persistentvolume/pogo-ska-docker-k8s created
-persistentvolumeclaim/pogo-ska-docker-k8s created
-persistentvolume/tangodb-ska-docker-k8s-test created
-persistentvolumeclaim/tangodb-ska-docker-k8s-test created
-service/databaseds-ska-docker-k8s-test created
-statefulset.apps/databaseds-ska-docker-k8s-test created
-service/tangodb-ska-docker-k8s-test created
-statefulset.apps/tangodb-ska-docker-k8s-test created
-pod/jive-ska-docker-k8s-test created
-pod/logviewer-ska-docker-k8s-test created
-pod/pogo-ska-docker-k8s created
-pod/tangotest-ska-docker-k8s-test created
+persistentvolume/pogo-ska-docker created
+persistentvolumeclaim/pogo-ska-docker created
+persistentvolume/tangodb-ska-docker-test created
+persistentvolumeclaim/tangodb-ska-docker-test created
+service/databaseds-ska-docker-test created
+statefulset.apps/databaseds-ska-docker-test created
+service/tangodb-ska-docker-test created
+statefulset.apps/tangodb-ska-docker-test created
+pod/jive-ska-docker-test created
+pod/logviewer-ska-docker-test created
+pod/pogo-ska-docker created
+pod/tangotest-ska-docker-test created
 ```
 
 Please wait patiently - it will take time for the Container images to download, and for the database to initialise.  After some time, you can check what is running with:
@@ -158,28 +158,28 @@ Which will give output like:
 Every 2.0s: kubectl get all,pv,pvc -n integration           osboxes: Fri Mar 29 09:25:05 2019
 
 NAME                                   READY   STATUS      RESTARTS   AGE
-pod/databaseds-ska-docker-k8s-test-0   0/1     Completed   1          27s
-pod/jive-ska-docker-k8s-test           1/1     Running     0          27s
-pod/logviewer-ska-docker-k8s-test      1/1     Running     0          27s
-pod/pogo-ska-docker-k8s                0/1     Error       1          27s
-pod/tangodb-ska-docker-k8s-test-0      1/1     Running     0          27s
-pod/tangotest-ska-docker-k8s-test      1/1     Running     0          27s
+pod/databaseds-ska-docker-test-0   0/1     Completed   1          27s
+pod/jive-ska-docker-test           1/1     Running     0          27s
+pod/logviewer-ska-docker-test      1/1     Running     0          27s
+pod/pogo-ska-docker                0/1     Error       1          27s
+pod/tangodb-ska-docker-test-0      1/1     Running     0          27s
+pod/tangotest-ska-docker-test      1/1     Running     0          27s
 
 NAME                                     TYPE        CLUSTER-IP   EXTERNAL-IP   PORT(S)     AGE
-service/databaseds-ska-docker-k8s-test   ClusterIP   None         <none>        10000/TCP   27s
-service/tangodb-ska-docker-k8s-test      ClusterIP   None         <none>        3306/TCP    27s
+service/databaseds-ska-docker-test   ClusterIP   None         <none>        10000/TCP   27s
+service/tangodb-ska-docker-test      ClusterIP   None         <none>        3306/TCP    27s
 
 NAME                                              READY   AGE
-statefulset.apps/databaseds-ska-docker-k8s-test   0/1     27s
-statefulset.apps/tangodb-ska-docker-k8s-test      1/1     27s
+statefulset.apps/databaseds-ska-docker-test   0/1     27s
+statefulset.apps/tangodb-ska-docker-test      1/1     27s
 
 NAME                                           CAPACITY   ACCESS MODES   RECLAIM POLICY   STATUS   CLAIM                                     STORAGECLASS   REASON   AGE
-persistentvolume/pogo-ska-docker-k8s           1Gi        RWO            Retain           Bound    integration/pogo-ska-docker-k8s           standard                27s
-persistentvolume/tangodb-ska-docker-k8s-test   1Gi        RWO            Retain           Bound    integration/tangodb-ska-docker-k8s-test   standard                27s
+persistentvolume/pogo-ska-docker           1Gi        RWO            Retain           Bound    integration/pogo-ska-docker           standard                27s
+persistentvolume/tangodb-ska-docker-test   1Gi        RWO            Retain           Bound    integration/tangodb-ska-docker-test   standard                27s
 
 NAME                                                STATUS   VOLUME                        CAPACITY   ACCESS MODES   STORAGECLASS   AGE
-persistentvolumeclaim/pogo-ska-docker-k8s           Bound    pogo-ska-docker-k8s           1Gi        RWO            standard       27s
-persistentvolumeclaim/tangodb-ska-docker-k8s-test   Bound    tangodb-ska-docker-k8s-test   1Gi        RWO            standard       27s
+persistentvolumeclaim/pogo-ska-docker           Bound    pogo-ska-docker           1Gi        RWO            standard       27s
+persistentvolumeclaim/tangodb-ska-docker-test   Bound    tangodb-ska-docker-test   1Gi        RWO            standard       27s
 ```
 
 To clean up the Helm Chart release:
