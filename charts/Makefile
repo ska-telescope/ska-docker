@@ -5,10 +5,10 @@ BASEDIR := $(notdir $(patsubst %/,%,$(dir $(MAKEPATH))))
 # find IP addresses of this machine, setting THIS_HOST to the first address found
 THIS_HOST := $(shell ifconfig | sed -En 's/127.0.0.1//;s/.*inet (addr:)?(([0-9]*\.){3}[0-9]*).*/\2/p' | head -n1)
 DISPLAY := $(THIS_HOST):0
-XAUTHORITYx ?= ${XAUTHORITY}
+XAUTHORITY ?= $(DISPLAY)
 KUBE_NAMESPACE ?= default
-HELM_CHART ?= ska-docker-k8s
-HELM_RELEASE = ska-docker-k8s
+HELM_CHART ?= ska-docker
+HELM_RELEASE = test
 
 # INGRESS_HOST is the host name used in the Ingress resource definition for
 # publishing services via the Ingress Controller
@@ -23,14 +23,14 @@ KUBE_CONFIG_BASE64 ?=  ## base64 encoded kubectl credentials for KUBECONFIG
 KUBECONFIG ?= /etc/deploy/config ## KUBECONFIG location
 
 # define overides for above variables in here
--include PrivateRules.mak
+-include ../PrivateRules.mak
 
-.PHONY: vars k8s apply logs rm show deploy delete ls podlogs launch-tiller tiller-acls namespace help
+.PHONY: vars k8s logs describe show lint install delete namespace delete_namespace localip helm_dependencies kubectl_dependencies kubeconfig mkcerts help
 .DEFAULT_GOAL := help
 
 vars: ## Display variables - pass in DISPLAY and XAUTHORITY
 	@echo "DISPLAY: $(DISPLAY)"
-	@echo "XAUTHORITY: $(XAUTHORITYx)"
+	@echo "XAUTHORITY: $(XAUTHORITY)"
 	@echo "Namespace: $(KUBE_NAMESPACE)"
 
 k8s: ## Which kubernetes are we connected to
@@ -41,20 +41,7 @@ k8s: ## Which kubernetes are we connected to
 	@kubectl version
 	@echo ""
 	@echo "Helm version:"
-	@helm version --tiller-namespace $(KUBE_NAMESPACE)
-
-apply: ## apply resource descriptor k8s.yml
-	kubectl apply -n $(KUBE_NAMESPACE) -f k8s.yml
-
-logs: ## POD logs for descriptor
-	@for i in `kubectl -n $(KUBE_NAMESPACE) get pods -l group=example -o=name`; \
-	do echo "-------------------"; \
-	echo "Logs for $$i"; \
-	kubectl -n $(KUBE_NAMESPACE) logs $$i; \
-	done
-
-rm: ## delete applied resources
-	kubectl delete -n $(KUBE_NAMESPACE) -f k8s.yml
+	@helm version --tiller-namespace $(KUBE_NAMESPACE) --client
 
 namespace: ## create the kubernetes namespace
 	kubectl describe namespace $(KUBE_NAMESPACE) || kubectl create namespace $(KUBE_NAMESPACE)
@@ -64,7 +51,7 @@ deploy: namespace  ## deploy the helm chart
 				 --namespace $(KUBE_NAMESPACE) \
 	             --tiller-namespace $(KUBE_NAMESPACE) \
 	             --set display="$(DISPLAY)" \
-	             --set xauthority="$(XAUTHORITYx)" \
+	             --set xauthority="$(XAUTHORITY)" \
 	             --set tangoexample.debug="$(REMOTE_DEBUG)" | kubectl -n $(KUBE_NAMESPACE) apply -f -
 
 show: ## show the helm chart
@@ -72,39 +59,30 @@ show: ## show the helm chart
 				 --namespace $(KUBE_NAMESPACE) \
 	             --tiller-namespace $(KUBE_NAMESPACE) \
 	             --set display="$(DISPLAY)" \
-	             --set xauthority="$(XAUTHORITYx)" \
+	             --set xauthority="$(XAUTHORITY)" \
 	             --set tangoexample.debug="$(REMOTE_DEBUG)"
 
 lint: ## lint check the helm chart
 	@helm lint $(HELM_CHART)/ \
 		--namespace $(KUBE_NAMESPACE) \
-    	--tiller-namespace $(KUBE_NAMESPACE) \
+    --tiller-namespace $(KUBE_NAMESPACE) \
 		--set ingress.hostname=$(INGRESS_HOST)
-
 
 install: namespace mkcerts  ## install the helm chart (with Tiller)
 	@helm tiller run $(KUBE_NAMESPACE) -- helm install $(HELM_CHART)/ --name $(HELM_RELEASE) \
 		--wait \
 		--namespace $(KUBE_NAMESPACE) \
-    	--tiller-namespace $(KUBE_NAMESPACE) \
+    --tiller-namespace $(KUBE_NAMESPACE) \
 		--set ingress.hostname=$(INGRESS_HOST) \
 		--set display="$(DISPLAY)" \
-		--set xauthority="$(XAUTHORITYx)" \
+		--set xauthority="$(XAUTHORITY)"
 
-helm_delete: ## delete the helm chart release (with Tiller)
+delete: ## delete the helm chart release (with Tiller)
 	@helm tiller run $(KUBE_NAMESPACE) -- helm delete $(HELM_RELEASE) --purge \
     --tiller-namespace $(KUBE_NAMESPACE)
 
-helm_tests:  ## run Helm chart tests 
+tests:  ## run Helm chart tests
 	@helm tiller run $(KUBE_NAMESPACE) -- helm test $(HELM_RELEASE) --cleanup
-
-delete: ## delete the helm chart release
-	@helm template $(HELM_CHART)/ --name $(HELM_RELEASE) \
-				 --namespace $(KUBE_NAMESPACE) \
-	             --tiller-namespace $(KUBE_NAMESPACE) \
-	             --set display="$(DISPLAY)" \
-	             --set xauthority="$(XAUTHORITYx)" \
-	             --set tangoexample.debug="$(REMOTE_DEBUG)" | kubectl -n $(KUBE_NAMESPACE) delete -f -
 
 delete_namespace: ## delete the kubernetes namespace
 	@if [ "default" == "$(KUBE_NAMESPACE)" ] || [ "kube-system" == "$(KUBE_NAMESPACE)" ]; then \
@@ -114,7 +92,7 @@ delete_namespace: ## delete the kubernetes namespace
 	kubectl describe namespace $(KUBE_NAMESPACE) && kubectl delete namespace $(KUBE_NAMESPACE); \
 	fi
 
-poddescribe: ## describe Pods executed from Helm chart
+describe: ## describe Pods executed from Helm chart
 	@for i in `kubectl -n $(KUBE_NAMESPACE) get pods -l release=$(HELM_RELEASE) -o=name`; \
 	do echo "---------------------------------------------------"; \
 	echo "Describe for $${i}"; \
@@ -125,7 +103,7 @@ poddescribe: ## describe Pods executed from Helm chart
 	echo ""; echo ""; echo ""; \
 	done
 
-podlogs: ## show Helm chart POD logs
+logs: ## show Helm chart POD logs
 	@for i in `kubectl -n $(KUBE_NAMESPACE) get pods -l release=$(HELM_RELEASE) -o=name`; \
 	do \
 	echo "---------------------------------------------------"; \
@@ -206,8 +184,11 @@ kubectl_dependencies:
 kubeconfig: ## export current KUBECONFIG as base64 ready for KUBE_CONFIG_BASE64
 	@KUBE_CONFIG_BASE64=`kubectl config view --flatten | base64 -w 0`; \
 	echo "KUBE_CONFIG_BASE64: $$(echo $${KUBE_CONFIG_BASE64} | cut -c 1-40)..."; \
-	echo "appended to: PrivateRules.mak"; \
-	echo -e "\n\n# base64 encoded from: kubectl config view --flatten\nKUBE_CONFIG_BASE64 = $${KUBE_CONFIG_BASE64}" >> PrivateRules.mak
+	echo "appended to: ../PrivateRules.mak"; \
+	echo -e "\n\n# base64 encoded from: kubectl config view --flatten\nKUBE_CONFIG_BASE64 = $${KUBE_CONFIG_BASE64}" >> ../PrivateRules.mak
 
-help:   ## show this help.
-	@grep -E '^[0-9a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) | sort | awk 'BEGIN {FS = ":.*?## "}; {printf "\033[36m%-30s\033[0m %s\n", $$1, $$2}'
+help:  ## show this help.
+	@echo "make targets:"
+	@grep -hE '^[0-9a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) | sort | awk 'BEGIN {FS = ":.*?## "}; {printf "\033[36m%-30s\033[0m %s\n", $$1, $$2}'
+	@echo ""; echo "make vars (+defaults):"
+	@grep -hE '^[0-9a-zA-Z_-]+ \?=.*$$' $(MAKEFILE_LIST) | sort | awk 'BEGIN {FS = " \?\= "}; {printf "\033[36m%-30s\033[0m %s\n", $$1, $$2}' | sed -e 's/\#\#/  \#/'

@@ -3,14 +3,14 @@
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: "tangotest-configmap-{{ template "ska-docker-k8s.name" . }}-{{ .Release.Name }}"
+  name: "tangotest-configmap-{{ template "ska-docker.name" . }}-{{ .Release.Name }}"
 data:
   test.py: |
     #!/usr/bin/env python
     from tango import DeviceProxy, DevState
     from time import sleep
     import json
-    
+
     timeSleep = 0
     exception = False
     for x in range(10):
@@ -30,26 +30,26 @@ data:
 
     if(exception):
       raise Exception('Device TangoTest NOT in RUNNING state')
-    
+
 
 ---
 apiVersion: v1
 kind: Pod
 metadata:
-  name: tangotest-pod-{{ template "ska-docker-k8s.name" . }}-{{ .Release.Name }}
+  name: tangotest-pod-{{ template "ska-docker.name" . }}-{{ .Release.Name }}
   namespace: {{ .Release.Namespace }}
   annotations:
     "helm.sh/hook": test-success
   labels:
-    app: tangotest-pod-{{ template "ska-docker-k8s.name" . }}-{{ .Release.Name }}
-    chart: {{ template "ska-docker-k8s.chart" . }}
+    app: tangotest-pod-{{ template "ska-docker.name" . }}-{{ .Release.Name }}
+    chart: {{ template "ska-docker.chart" . }}
     release: {{ .Release.Name }}
     heritage: {{ .Release.Service }}
 spec:
   volumes:
     - name: script
       configMap:
-        name: "tangotest-configmap-{{ template "ska-docker-k8s.name" . }}-{{ .Release.Name }}"
+        name: "tangotest-configmap-{{ template "ska-docker.name" . }}-{{ .Release.Name }}"
   containers:
   - name: test-tangotest
     image: nexus.engageska-portugal.pt/ska-docker/tango-itango:latest
@@ -57,7 +57,7 @@ spec:
     command: ["python3", "/app/test.py"]
     env:
     - name: TANGO_HOST
-      value: databaseds-{{ template "ska-docker-k8s.name" . }}:10000
+      value: databaseds-{{ template "ska-docker.name" . }}:10000
     volumeMounts:
       - name: script
         mountPath: /app
@@ -77,4 +77,3 @@ spec:
 {{- end }}
 
 {{ end }}
-

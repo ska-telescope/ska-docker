@@ -1,40 +1,38 @@
-{{ if .Values.logviewer.enabled }}
+{{ if .Values.pogo.enabled }}
 ---
 
 apiVersion: v1
 kind: Pod
 metadata:
-  name: logviewer-{{ template "ska-docker-k8s.name" . }}-{{ .Release.Name }}
+  name: pogo-{{ template "ska-docker.name" . }}
   namespace: {{ .Release.Namespace }}
   labels:
-    app: logviewer-{{ template "ska-docker-k8s.name" . }}-{{ .Release.Name }}
-    chart: {{ template "ska-docker-k8s.chart" . }}
+    app: pogo-{{ template "ska-docker.name" . }}
+    chart: {{ template "ska-docker.chart" . }}
     release: {{ .Release.Name }}
     heritage: {{ .Release.Service }}
 spec:
   containers:
-  - name: logviewer
-    image: "{{ .Values.logviewer.image.registry }}/{{ .Values.logviewer.image.image }}:{{ .Values.logviewer.image.tag }}"
-    imagePullPolicy: {{ .Values.logviewer.image.pullPolicy }}
-    command:
-      - /usr/local/bin/wait-for-it.sh
-      - databaseds-{{ template "ska-docker-k8s.name" . }}-{{ .Release.Name }}:10000
-      - --timeout=30
-      - --strict
-      - --
-      - /usr/local/bin/logviewer
+  - name: pogo
+    image: "{{ .Values.pogo.image.registry }}/{{ .Values.pogo.image.image }}:{{ .Values.pogo.image.tag }}"
+    imagePullPolicy: {{ .Values.pogo.image.pullPolicy }}
     env:
     - name: XAUTHORITY
       value: "/tmp/.Xauthority"
     - name: DISPLAY
       value: "{{ .Values.display }}"
     - name: TANGO_HOST
-      value: databaseds-{{ template "ska-docker-k8s.name" . }}-{{ .Release.Name }}:10000
+      value: databaseds-{{ template "ska-docker.name" . }}:10000
     volumeMounts:
       - name: xauthority
         mountPath: /tmp/.Xauthority
         readOnly: true
+      - name: pogo
+        mountPath: /home/pogo
   volumes:
+  - name: pogo
+    persistentVolumeClaim:
+      claimName: pogo-{{ template "ska-docker.name" . }}
   - hostPath:
       path: {{ .Values.xauthority }}
       type: File

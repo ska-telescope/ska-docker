@@ -3,14 +3,14 @@
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: "databaseds-configmap-{{ template "ska-docker-k8s.name" . }}-{{ .Release.Name }}"
+  name: "databaseds-configmap-{{ template "ska-docker.name" . }}-{{ .Release.Name }}"
 data:
   test.py: |
     #!/usr/bin/env python
     from tango import Database, DbDevInfo
     from time import sleep
     import json
-    
+
     timeSleep = 0
     for x in range(10):
       try:
@@ -26,20 +26,20 @@ data:
 apiVersion: v1
 kind: Pod
 metadata:
-  name: databaseds-pod-{{ template "ska-docker-k8s.name" . }}-{{ .Release.Name }}
+  name: databaseds-pod-{{ template "ska-docker.name" . }}-{{ .Release.Name }}
   namespace: {{ .Release.Namespace }}
   annotations:
     "helm.sh/hook": test-success
   labels:
-    app: databaseds-pod-{{ template "ska-docker-k8s.name" . }}-{{ .Release.Name }}
-    chart: {{ template "ska-docker-k8s.chart" . }}
+    app: databaseds-pod-{{ template "ska-docker.name" . }}-{{ .Release.Name }}
+    chart: {{ template "ska-docker.chart" . }}
     release: {{ .Release.Name }}
     heritage: {{ .Release.Service }}
 spec:
   volumes:
     - name: script
       configMap:
-        name: "databaseds-configmap-{{ template "ska-docker-k8s.name" . }}-{{ .Release.Name }}"
+        name: "databaseds-configmap-{{ template "ska-docker.name" . }}-{{ .Release.Name }}"
   containers:
   - name: test-databaseds
     image: nexus.engageska-portugal.pt/ska-docker/tango-itango:latest
@@ -47,7 +47,7 @@ spec:
     command: ["python3", "/app/test.py"]
     env:
     - name: TANGO_HOST
-      value: databaseds-{{ template "ska-docker-k8s.name" . }}:10000
+      value: databaseds-{{ template "ska-docker.name" . }}:10000
     volumeMounts:
       - name: script
         mountPath: /app
@@ -66,5 +66,4 @@ spec:
 {{ toYaml . | indent 4 }}
 {{- end }}
 
-{{ end }}    
-
+{{ end }}
