@@ -81,6 +81,14 @@ delete: ## delete the helm chart release (with Tiller)
 	@helm tiller run $(KUBE_NAMESPACE) -- helm delete $(HELM_RELEASE) --purge \
     --tiller-namespace $(KUBE_NAMESPACE)
 
+delete_template: ## delete the helm chart release
+	@helm template ska-docker/ --name $(HELM_RELEASE) \
+				 --namespace $(KUBE_NAMESPACE) \
+	             --tiller-namespace $(KUBE_NAMESPACE) \
+	             --set display="$(DISPLAY)" \
+	             --set xauthority="$(XAUTHORITYx)" \
+	             --set tangoexample.debug="$(REMOTE_DEBUG)" | kubectl -n $(KUBE_NAMESPACE) delete -f -
+
 tests:  ## run Helm chart tests
 	@helm tiller run $(KUBE_NAMESPACE) -- helm test $(HELM_RELEASE) --cleanup
 
