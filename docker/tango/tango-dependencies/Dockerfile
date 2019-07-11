@@ -3,7 +3,7 @@
 # intermediate image, then creates a release image containing the compiled
 # binaries.
 #
-FROM debian:stretch-slim as buildenv
+FROM debian:buster-slim as buildenv
 
 # Copy across files that are used to help orchestrate container compositions
 # and test execution sequences
@@ -22,7 +22,7 @@ RUN ZEROMQ_VERSION=4.0.5 \
     && rm -rf /var/lib/apt/lists/* \
     && mkdir /usr/src/zeromq \
     && cd /usr/src/zeromq \
-    && curl -fsSL "$ZEROMQ_DOWNLOAD_URL" -o zeromq.tar.gz \
+    && curl -kfsSL "$ZEROMQ_DOWNLOAD_URL" -o zeromq.tar.gz \
     && tar xf zeromq.tar.gz -C /usr/src/zeromq --strip-components=1 \
     && ./configure --enable-static=no \
     && make -C /usr/src/zeromq -j$(nproc) \
@@ -38,8 +38,8 @@ RUN OMNIORB_DOWNLOAD_URL=https://svwh.dl.sourceforge.net/project/omniorb/omniORB
     && rm -rf /var/lib/apt/lists/* \
     && mkdir -p /usr/src/omniorb \
     && cd /usr/src/omniorb \
-    && curl -fsSL "$OMNIORB_DOWNLOAD_URL" -o omniorb.tar.bz2 \
-    && curl -fsSL "$OMNIORB_PATCH_URL" -o dii_race.patch \
+    && curl -kfsSL "$OMNIORB_DOWNLOAD_URL" -o omniorb.tar.bz2 \
+    && curl -kfsSL "$OMNIORB_PATCH_URL" -o dii_race.patch \
     && tar xf omniorb.tar.bz2 -C /usr/src/omniorb --strip-components=1 \
     && patch -p0 < dii_race.patch \
     && ./configure --enable-static=no \
@@ -48,6 +48,6 @@ RUN OMNIORB_DOWNLOAD_URL=https://svwh.dl.sourceforge.net/project/omniorb/omniORB
     && apt-get purge -y --auto-remove $buildDeps \
     && rm -r /usr/src/omniorb
 
-FROM debian:stretch-slim
+FROM debian:buster-slim
 COPY --from=buildenv /usr/local /usr/local
 

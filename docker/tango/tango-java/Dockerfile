@@ -28,10 +28,10 @@ RUN TANGO_VERSION=9.2.5a \
     && apt-get purge -y --auto-remove $buildDeps \
     && rm -r /usr/src/tango
 
-FROM debian:stretch-slim
+FROM debian:buster-slim
 COPY --from=buildenv /usr/local /usr/local
 
-RUN runtimeDeps='default-jre-headless libmariadbclient18 sudo' \
+RUN runtimeDeps='default-jre-headless libmariadb3 sudo' \
     && mkdir -p /usr/share/man/man1 \
     && DOCKERHOST=`awk '/^[a-z]+[0-9]+\t00000000/ { printf("%d.%d.%d.%d", "0x" substr($3, 7, 2), "0x" substr($3, 5, 2), "0x" substr($3, 3, 2), "0x" substr($3, 1, 2)) }' < /proc/net/route` \
     && /usr/local/bin/wait-for-it.sh --host=$DOCKERHOST --port=3142 --timeout=3 --strict --quiet -- echo "Acquire::http::Proxy \"http://$DOCKERHOST:3142\";" > /etc/apt/apt.conf.d/30proxy \

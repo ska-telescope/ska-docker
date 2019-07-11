@@ -1,6 +1,6 @@
 ARG DOCKER_REGISTRY_HOST
 ARG DOCKER_REGISTRY_USER
-FROM debian:stretch-slim as buildenv
+FROM debian:buster-slim as buildenv
 
 RUN MTANGOREST_VERSION=rc4-2.12 \
     && MTANGOREST_DOWNLOAD_URL=https://github.com/Ingvord/mtangorest.server/releases/download/mtangorest.server-$MTANGOREST_VERSION/mtangorest.server-$MTANGOREST_VERSION.jar \
