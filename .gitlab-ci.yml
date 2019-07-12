@@ -210,7 +210,7 @@ test-framework-tango-rest:
   retry: 2
   stage: test
   tags:
-  - shell
+  - docker-executor
   script:
   - mkdir .public
   - make DOCKER_REGISTRY_USER=$DOCKER_REGISTRY_USER DOCKER_REGISTRY_HOST=$DOCKER_REGISTRY_HOST -C docker/tango/tango-rest test | tee .public/result.txt
