@@ -7,7 +7,7 @@ CACHE_VOLUME = ska-python-buildenv-test-cache
 DOCKER_RUN_ARGS =
 
 # defines the image to test
-IMAGE_TO_TEST = $(DOCKER_REGISTRY_HOST)/$(DOCKER_REGISTRY_USER)/ska-python-buildenv:latest
+IMAGE_TO_TEST = $(DOCKER_REGISTRY_HOST)/$(DOCKER_REGISTRY_USER)/ska-python-buildenv:$(SKA_PYTHON_BUILDENV_TAG)
 
 # docker-compose commmand for a composition of services for the tango database,
 # databaseds device, and tangotest devices

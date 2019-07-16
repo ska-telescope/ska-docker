@@ -20,6 +20,8 @@ stages:
 
 # https://docs.gitlab.com/ee/ci/docker/using_docker_build.html#authenticating-to-the-container-registry
 before_script:
+  - apt-get -y update
+  - apt-get -y install --no-install-recommends make git
   - docker login -u $DOCKER_REGISTRY_USER_LOGIN -p $CI_REGISTRY_PASS_LOGIN $CI_REGISTRY
 
 build_tango-builder:
@@ -135,21 +137,6 @@ build_ska-python-runtime:
     - docker/tango/ska-python-buildenv/**/*
     - docker/tango/ska-python-runtime/**/*
 
-build_tango-rest:
-  retry: 2
-  stage: build_3
-  tags:
-  - docker-executor
-  script:
-  - cd docker/tango/tango-rest
-  - make DOCKER_BUILD_ARGS="--no-cache" DOCKER_REGISTRY_USER=$DOCKER_REGISTRY_USER DOCKER_REGISTRY_HOST=$DOCKER_REGISTRY_HOST build
-  - make DOCKER_REGISTRY_USER=$DOCKER_REGISTRY_USER DOCKER_REGISTRY_HOST=$DOCKER_REGISTRY_HOST push
-  only:
-    changes:
-    - docker/tango/tango-dependencies/**/*
-    - docker/tango/tango-cpp/**/*
-    - docker/tango/tango-rest/**/*
-
 build_tango-itango:
   retry: 2
   stage: build_5
@@ -166,36 +153,6 @@ build_tango-itango:
     - docker/tango/ska-python-buildenv/**/*
     - docker/tango/ska-python-runtime/**/*
     - docker/tango/tango-itango/**/*
-
-build_tango-pogo:
-  retry: 2
-  stage: build_3
-  tags:
-  - docker-executor
-  script:
-  - cd docker/tango/tango-pogo
-  - make DOCKER_BUILD_ARGS="--no-cache" DOCKER_REGISTRY_USER=$DOCKER_REGISTRY_USER DOCKER_REGISTRY_HOST=$DOCKER_REGISTRY_HOST build
-  - make DOCKER_REGISTRY_USER=$DOCKER_REGISTRY_USER DOCKER_REGISTRY_HOST=$DOCKER_REGISTRY_HOST push
-  only:
-    changes:
-    - docker/tango/tango-dependencies/**/*
-    - docker/tango/tango-java/**/*
-    - docker/tango/tango-pogo/**/*
-
-build_tango-starter:
-  retry: 2
-  stage: build_3
-  tags:
-  - docker-executor
-  script:
-  - cd docker/tango/tango-starter
-  - make DOCKER_BUILD_ARGS="--no-cache" DOCKER_REGISTRY_USER=$DOCKER_REGISTRY_USER DOCKER_REGISTRY_HOST=$DOCKER_REGISTRY_HOST build
-  - make DOCKER_REGISTRY_USER=$DOCKER_REGISTRY_USER DOCKER_REGISTRY_HOST=$DOCKER_REGISTRY_HOST push
-  only:
-    changes:
-    - docker/tango/tango-dependencies/**/*
-    - docker/tango/tango-cpp/**/*
-    - docker/tango/tango-starter/**/*
 
 test-framework-tango-itango:
   retry: 2
@@ -216,24 +173,6 @@ test-framework-tango-itango:
     # - docker/tango/tango-cpp/**/*
     # - docker/tango/tango-python/**/*
     # - docker/tango/tango-itango/**/*
-
-test-framework-tango-rest:
-  retry: 2
-  stage: test
-  tags:
-  - docker-executor
-  script:
-  - mkdir .public
-  - make DOCKER_REGISTRY_USER=$DOCKER_REGISTRY_USER DOCKER_REGISTRY_HOST=$DOCKER_REGISTRY_HOST -C docker/tango/tango-rest test > .public/result.txt
-  - mv .public public
-  artifacts:
-    paths:
-    - public
-  # only:
-    # changes:
-    # - docker/tango/tango-dependencies/**/*
-    # - docker/tango/tango-cpp/**/*
-    # - docker/tango/tango-rest/**/*
 
 test-framework-ska-python-buildenv:
   retry: 2
