@@ -213,6 +213,7 @@ test-framework-tango-rest:
     paths:
     - public
   allow_failure: true
+  when: manual
 
 test-framework-ska-python-buildenv:
   retry: 2
