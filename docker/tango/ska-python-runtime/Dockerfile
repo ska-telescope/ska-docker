@@ -21,7 +21,7 @@ USER root
 # * python3 is required as this image is intended for running Python Tango
 #   devices.
 #
-RUN runtimeDeps='libboost-python1.62.0 \
+RUN runtimeDeps='libboost-python1.67.0 \
                  make \
                  python3' \
     && DOCKERHOST=`awk '/^[a-z]+[0-9]+\t00000000/ { printf("%d.%d.%d.%d", "0x" substr($3, 7, 2), "0x" substr($3, 5, 2), "0x" substr($3, 3, 2), "0x" substr($3, 1, 2)) }' < /proc/net/route` \

@@ -65,7 +65,11 @@ COPY --chown=tango:tango Pipfile Pipfile
 COPY --chown=tango:tango Pipfile.lock Pipfile.lock
 
 # Install PyTango et al. into the virtual environment.
-RUN pipenv install --dev
+# for Debian buster - make sure the correct libboost_python named lib is present
+RUN if [ -f "/usr/lib/x86_64-linux-gnu/libboost_python3-py37.so" ] && [ ! -f "/usr/lib/x86_64-linux-gnu/libboost_python-py37.so" ]; then \
+    ln -s /usr/lib/x86_64-linux-gnu/libboost_python3-py37.so /usr/lib/x86_64-linux-gnu/libboost_python-py37.so; \
+    fi; \
+    pipenv install --dev
 
 # The following commands are executed when extending this image.
 # Copy the Pipfile across to the image so that pipenv knows which dependencies

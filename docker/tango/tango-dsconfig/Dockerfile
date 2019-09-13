@@ -16,7 +16,9 @@ RUN DOCKERHOST=`awk '/^[a-z]+[0-9]+\t00000000/ { printf("%d.%d.%d.%d", "0x" subs
 # * pkg-config is used to locate required libraries
 # * virtualenv is required to create a new Python virtualenv environment
 #
-RUN buildDeps='build-essential \
+
+RUN ln -s /usr/lib/x86_64-linux-gnu/libboost_python27.so /usr/lib/x86_64-linux-gnu/libboost_python-py27.so; \
+    buildDeps='build-essential \
                libboost-python-dev \
                pkg-config \
                git \

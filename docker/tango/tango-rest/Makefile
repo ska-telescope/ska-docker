@@ -7,7 +7,7 @@ CACHE_VOLUME = tango-rest-test-cache
 DOCKER_RUN_ARGS =
 
 # defines the image to test
-IMAGE_TO_TEST = $(DOCKER_REGISTRY_HOST)/$(DOCKER_REGISTRY_USER)/tango-rest:latest
+IMAGE_TO_TEST = $(DOCKER_REGISTRY_HOST)/$(DOCKER_REGISTRY_USER)/tango-itango:latest
 
 # docker-compose commmand for a composition of services for the tango database,
 # databaseds device, and tangotest devices

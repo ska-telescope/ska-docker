@@ -1,9 +1,8 @@
 FROM mariadb:10
 
-ENV TANGO_VERSION=9.2.5a
-ENV TANGO_DOWNLOAD_URL=https://netcologne.dl.sourceforge.net/project/tango-cs/tango-$TANGO_VERSION.tar.gz                                                                    
+ENV TANGO_DOWNLOAD_URL=https://nexus.engageska-portugal.pt/repository/raw/tango-cs/tango-9.3.3-rc2.tar.gz                                                               
 
-RUN buildDeps='curl' \
+RUN buildDeps='curl ca-certificates' \
     && DEBIAN_FRONTEND=noninteractive apt-get update \
     && apt-get -y install --no-install-recommends $buildDeps \
     && rm -rf /var/lib/apt/lists/* \
