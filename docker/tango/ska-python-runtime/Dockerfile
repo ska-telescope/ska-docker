@@ -23,7 +23,8 @@ USER root
 #
 RUN runtimeDeps='libboost-python1.67.0 \
                  make \
-                 python3' \
+                 python3 \
+                 python3-distutils' \
     && DOCKERHOST=`awk '/^[a-z]+[0-9]+\t00000000/ { printf("%d.%d.%d.%d", "0x" substr($3, 7, 2), "0x" substr($3, 5, 2), "0x" substr($3, 3, 2), "0x" substr($3, 1, 2)) }' < /proc/net/route` \
     && /usr/local/bin/wait-for-it.sh --host=$DOCKERHOST --port=3142 --timeout=3 --strict --quiet -- echo "Acquire::http::Proxy \"http://$DOCKERHOST:3142\";" > /etc/apt/apt.conf.d/30proxy \
     && echo "Proxy detected on docker host - using for this build" || echo "No proxy detected on docker host" \

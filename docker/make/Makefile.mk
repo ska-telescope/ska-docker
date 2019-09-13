@@ -80,14 +80,14 @@ snapshot: build push
 showver: .release
 	@. $(RELEASE_SUPPORT); getVersion
 
-bump-patch-release: VERSION := $(shell . $(RELEASE_SUPPORT); nextPatchLevel)
-bump-patch-release: .release tag
+tag-patch-release: VERSION := $(shell . $(RELEASE_SUPPORT); nextPatchLevel)
+tag-patch-release: .release tag
 
-bump-minor-release: VERSION := $(shell . $(RELEASE_SUPPORT); nextMinorLevel)
-bump-minor-release: .release tag
+tag-minor-release: VERSION := $(shell . $(RELEASE_SUPPORT); nextMinorLevel)
+tag-minor-release: .release tag
 
-bump-major-release: VERSION := $(shell . $(RELEASE_SUPPORT); nextMajorLevel)
-bump-major-release: .release tag
+tag-major-release: VERSION := $(shell . $(RELEASE_SUPPORT); nextMajorLevel)
+tag-major-release: .release tag
 
 patch-release: tag-patch-release release
 	@echo $(VERSION)

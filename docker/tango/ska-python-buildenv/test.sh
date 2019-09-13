@@ -59,11 +59,13 @@ function runPreTagCommand() {
 	fi
 }
 
+
 function tagExists() {
 	tag=${1:-$(getTag)}
 	test -n "$tag" && test -n "$(git tag | grep "^$tag\$")"
 }
 
+# option -n True if string is not empty.
 function differsFromRelease() {
 	tag=$(getTag)
 	! tagExists $tag || test -n "$(git diff --shortstat -r $tag .)"
@@ -72,10 +74,9 @@ function differsFromRelease() {
 function getVersion() {
 	result=$(getRelease)
 
-	#MDC 14092019 the release support must be reviewed
-	#if differsFromRelease; then
-	#	result="$result-$(git log -n 1 --format=%h .)"
-	#fi
+	if differsFromRelease; then
+		result="$result-$(git log -n 1 --format=%h .)"
+	fi
 
 	if hasChanges ; then
 		result="$result-dirty"
@@ -105,3 +106,13 @@ function nextMajorLevel() {
 	version=$(printf "%d.0.0" $(($major + 1)))
 	echo $version
 }
+
+
+echo getVersion=$(getVersion)
+echo getTag=$(getTag)
+echo differsFromRelease=$(differsFromRelease)
+echo tagExists=$(tagExists)
+echo test=$(test -n "$(git diff --shortstat -r $getTag .)")
+echo "$(getBaseTag)$1"
+
+echo $(git diff --shortstat -r $tag .)
