@@ -28,7 +28,8 @@ RUN DOCKERHOST=`awk '/^[a-z]+[0-9]+\t00000000/ { printf("%d.%d.%d.%d", "0x" subs
 RUN buildDeps='build-essential \
                libboost-python-dev \
                pkg-config \
-               virtualenv' \
+               virtualenv \
+               python3-distutils' \
     && DEBIAN_FRONTEND=noninteractive apt-get update \
     && apt-get -y install --no-install-recommends $buildDeps
 
