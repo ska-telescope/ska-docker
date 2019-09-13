@@ -1,6 +1,6 @@
 FROM mariadb:10
 
-ENV TANGO_DOWNLOAD_URL=https://github.com/tango-controls/TangoSourceDistribution/releases/download/9.3.3-rc2/tango-9.3.3-rc2.tar.gz                                                               
+ENV TANGO_DOWNLOAD_URL=https://nexus.engageska-portugal.pt/repository/raw/tango-cs/tango-9.3.3-rc2.tar.gz                                                               
 
 RUN buildDeps='curl ca-certificates' \
     && DEBIAN_FRONTEND=noninteractive apt-get update \

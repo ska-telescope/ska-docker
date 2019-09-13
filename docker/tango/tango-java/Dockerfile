@@ -19,7 +19,7 @@ RUN JAVA_DOWNLOAD_URL=https://nexus.engageska-portugal.pt/repository/raw/java/jr
     && update-alternatives --set java /usr/java/jre1.8.0_221/bin/java \
     && rm /usr/java/java.tar.gz
 
-RUN TANGO_DOWNLOAD_URL=https://github.com/tango-controls/TangoSourceDistribution/releases/download/9.3.3-rc2/tango-9.3.3-rc2.tar.gz \
+RUN TANGO_DOWNLOAD_URL=https://nexus.engageska-portugal.pt/repository/raw/tango-cs/tango-9.3.3-rc2.tar.gz \
     && DOCKERHOST=`awk '/^[a-z]+[0-9]+\t00000000/ { printf("%d.%d.%d.%d", "0x" substr($3, 7, 2), "0x" substr($3, 5, 2), "0x" substr($3, 3, 2), "0x" substr($3, 1, 2)) }' < /proc/net/route` \
     && /usr/local/bin/wait-for-it.sh --host=$DOCKERHOST --port=3142 --timeout=3 --strict --quiet -- echo "Acquire::http::Proxy \"http://$DOCKERHOST:3142\";" > /etc/apt/apt.conf.d/30proxy \
     && echo "Proxy detected on docker host - using for this build" || echo "No proxy detected on docker host" \
