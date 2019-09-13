@@ -199,12 +199,6 @@ test-framework-tango-itango:
   artifacts:
     paths:
     - public
-    # only:
-    # changes:
-    # - docker/tango/tango-dependencies/**/*
-    # - docker/tango/tango-cpp/**/*
-    # - docker/tango/tango-python/**/*
-    # - docker/tango/tango-itango/**/*
 
 test-framework-tango-rest:
   retry: 2
@@ -219,11 +213,6 @@ test-framework-tango-rest:
     paths:
     - public
   allow_failure: true
-  # only:
-    # changes:
-    # - docker/tango/tango-dependencies/**/*
-    # - docker/tango/tango-cpp/**/*
-    # - docker/tango/tango-rest/**/*
 
 test-framework-ska-python-buildenv:
   retry: 2
@@ -237,11 +226,6 @@ test-framework-ska-python-buildenv:
   artifacts:
     paths:
     - public
-  # only:
-    # changes:
-    # - docker/tango/tango-dependencies/**/*
-    # - docker/tango/tango-cpp/**/*
-    # - docker/tango/ska-python-buildenv/**/*
 
 push: 
   stage: push
