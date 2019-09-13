@@ -30,7 +30,7 @@ build_tango-builder:
   - shell
   script:
   - cd docker/tango/tango-builder
-  - make DOCKER_BUILD_ARGS="--no-cache" DOCKER_REGISTRY_USER=$DOCKER_REGISTRY_USER DOCKER_REGISTRY_HOST=$DOCKER_REGISTRY_HOST build
+  - make DOCKER_BUILD_ARGS="--no-cache" DOCKER_REGISTRY_USER=$DOCKER_REGISTRY_USERNAME DOCKER_REGISTRY_HOST=$DOCKER_REGISTRY_HOST build
   only:
     changes:
     - docker/tango/tango-builder/**/*
@@ -42,7 +42,7 @@ build_dependencies:
   - shell
   script:
   - cd docker/tango/tango-dependencies
-  - make DOCKER_BUILD_ARGS="--no-cache" DOCKER_REGISTRY_USER=$DOCKER_REGISTRY_USER DOCKER_REGISTRY_HOST=$DOCKER_REGISTRY_HOST build
+  - make DOCKER_BUILD_ARGS="--no-cache" DOCKER_REGISTRY_USER=$DOCKER_REGISTRY_USERNAME DOCKER_REGISTRY_HOST=$DOCKER_REGISTRY_HOST build
   only:
     changes:
     - docker/tango/tango-dependencies/**/*
@@ -54,7 +54,7 @@ build_tango-db:
   - shell
   script:
   - cd docker/tango/tango-db
-  - make DOCKER_BUILD_ARGS="--no-cache" DOCKER_REGISTRY_USER=$DOCKER_REGISTRY_USER DOCKER_REGISTRY_HOST=$DOCKER_REGISTRY_HOST build
+  - make DOCKER_BUILD_ARGS="--no-cache" DOCKER_REGISTRY_USER=$DOCKER_REGISTRY_USERNAME DOCKER_REGISTRY_HOST=$DOCKER_REGISTRY_HOST build
   only:
     changes:
     - docker/tango/tango-db/**/*
@@ -66,7 +66,7 @@ build_tango-cpp:
   - shell
   script:
   - cd docker/tango/tango-cpp
-  - make DOCKER_BUILD_ARGS="--no-cache" DOCKER_REGISTRY_USER=$DOCKER_REGISTRY_USER DOCKER_REGISTRY_HOST=$DOCKER_REGISTRY_HOST build
+  - make DOCKER_BUILD_ARGS="--no-cache" DOCKER_REGISTRY_USER=$DOCKER_REGISTRY_USERNAME DOCKER_REGISTRY_HOST=$DOCKER_REGISTRY_HOST build
   only:
     changes:
     - docker/tango/tango-dependencies/**/*
@@ -79,7 +79,7 @@ build_tango-java:
   - shell
   script:
   - cd docker/tango/tango-java
-  - make DOCKER_BUILD_ARGS="--no-cache" DOCKER_REGISTRY_USER=$DOCKER_REGISTRY_USER DOCKER_REGISTRY_HOST=$DOCKER_REGISTRY_HOST build
+  - make DOCKER_BUILD_ARGS="--no-cache" DOCKER_REGISTRY_USER=$DOCKER_REGISTRY_USERNAME DOCKER_REGISTRY_HOST=$DOCKER_REGISTRY_HOST build
   only:
     changes:
     - docker/tango/tango-dependencies/**/*
@@ -92,7 +92,7 @@ build_tango-dsconfig:
   - shell
   script:
   - cd docker/tango/tango-dsconfig
-  - make DOCKER_BUILD_ARGS="--no-cache" DOCKER_REGISTRY_USER=$DOCKER_REGISTRY_USER DOCKER_REGISTRY_HOST=$DOCKER_REGISTRY_HOST build
+  - make DOCKER_BUILD_ARGS="--no-cache" DOCKER_REGISTRY_USER=$DOCKER_REGISTRY_USERNAME DOCKER_REGISTRY_HOST=$DOCKER_REGISTRY_HOST build
   only:
     changes:
     - docker/tango/tango-dependencies/**/*
@@ -106,7 +106,7 @@ build_ska-python-buildenv:
     - shell
   script:
     - cd docker/tango/ska-python-buildenv
-    - make DOCKER_BUILD_ARGS="--no-cache" DOCKER_REGISTRY_USER=$DOCKER_REGISTRY_USER DOCKER_REGISTRY_HOST=$DOCKER_REGISTRY_HOST build
+    - make DOCKER_BUILD_ARGS="--no-cache" DOCKER_REGISTRY_USER=$DOCKER_REGISTRY_USERNAME DOCKER_REGISTRY_HOST=$DOCKER_REGISTRY_HOST build
   only:
     changes:
       - docker/tango/tango-dependencies/**/*
@@ -120,7 +120,7 @@ build_ska-python-runtime:
   - shell
   script:
   - cd docker/tango/ska-python-runtime
-  - make DOCKER_BUILD_ARGS="--no-cache" DOCKER_REGISTRY_USER=$DOCKER_REGISTRY_USER DOCKER_REGISTRY_HOST=$DOCKER_REGISTRY_HOST build
+  - make DOCKER_BUILD_ARGS="--no-cache" DOCKER_REGISTRY_USER=$DOCKER_REGISTRY_USERNAME DOCKER_REGISTRY_HOST=$DOCKER_REGISTRY_HOST build
   only:
     changes:
     - docker/tango/tango-dependencies/**/*
@@ -135,7 +135,7 @@ build_tango-rest:
   - shell
   script:
   - cd docker/tango/tango-rest
-  - make DOCKER_BUILD_ARGS="--no-cache" DOCKER_REGISTRY_USER=$DOCKER_REGISTRY_USER DOCKER_REGISTRY_HOST=$DOCKER_REGISTRY_HOST build
+  - make DOCKER_BUILD_ARGS="--no-cache" DOCKER_REGISTRY_USER=$DOCKER_REGISTRY_USERNAME DOCKER_REGISTRY_HOST=$DOCKER_REGISTRY_HOST build
   only:
     changes:
     - docker/tango/tango-dependencies/**/*
@@ -149,7 +149,7 @@ build_tango-itango:
   - shell
   script:
   - cd docker/tango/tango-itango
-  - make DOCKER_BUILD_ARGS="--no-cache" DOCKER_REGISTRY_USER=$DOCKER_REGISTRY_USER DOCKER_REGISTRY_HOST=$DOCKER_REGISTRY_HOST build
+  - make DOCKER_BUILD_ARGS="--no-cache" DOCKER_REGISTRY_USER=$DOCKER_REGISTRY_USERNAME DOCKER_REGISTRY_HOST=$DOCKER_REGISTRY_HOST build
   only:
     changes:
     - docker/tango/tango-dependencies/**/*
@@ -165,7 +165,7 @@ build_tango-pogo:
   - shell
   script:
   - cd docker/tango/tango-pogo
-  - make DOCKER_BUILD_ARGS="--no-cache" DOCKER_REGISTRY_USER=$DOCKER_REGISTRY_USER DOCKER_REGISTRY_HOST=$DOCKER_REGISTRY_HOST build
+  - make DOCKER_BUILD_ARGS="--no-cache" DOCKER_REGISTRY_USER=$DOCKER_REGISTRY_USERNAME DOCKER_REGISTRY_HOST=$DOCKER_REGISTRY_HOST build
   only:
     changes:
     - docker/tango/tango-dependencies/**/*
@@ -179,7 +179,7 @@ build_tango-starter:
   - shell
   script:
   - cd docker/tango/tango-starter
-  - make DOCKER_BUILD_ARGS="--no-cache" DOCKER_REGISTRY_USER=$DOCKER_REGISTRY_USER DOCKER_REGISTRY_HOST=$DOCKER_REGISTRY_HOST build
+  - make DOCKER_BUILD_ARGS="--no-cache" DOCKER_REGISTRY_USER=$DOCKER_REGISTRY_USERNAME DOCKER_REGISTRY_HOST=$DOCKER_REGISTRY_HOST build
   only:
     changes:
     - docker/tango/tango-dependencies/**/*
@@ -193,8 +193,8 @@ test-framework-tango-itango:
   - shell
   script:
   - mkdir .public
-  - make DOCKER_REGISTRY_USER=$DOCKER_REGISTRY_USER DOCKER_REGISTRY_HOST=$DOCKER_REGISTRY_HOST -C docker/tango/tango-itango pull | tee .public/pull.txt
-  - make DOCKER_REGISTRY_USER=$DOCKER_REGISTRY_USER DOCKER_REGISTRY_HOST=$DOCKER_REGISTRY_HOST -C docker/tango/tango-itango test | tee .public/result.txt
+  - make DOCKER_REGISTRY_USER=$DOCKER_REGISTRY_USERNAME DOCKER_REGISTRY_HOST=$DOCKER_REGISTRY_HOST -C docker/tango/tango-itango pull | tee .public/pull.txt
+  - make DOCKER_REGISTRY_USER=$DOCKER_REGISTRY_USERNAME DOCKER_REGISTRY_HOST=$DOCKER_REGISTRY_HOST -C docker/tango/tango-itango test | tee .public/result.txt
   - mv .public public
   artifacts:
     paths:
@@ -207,7 +207,7 @@ test-framework-tango-rest:
   - shell
   script:
   - mkdir .public
-  - make DOCKER_REGISTRY_USER=$DOCKER_REGISTRY_USER DOCKER_REGISTRY_HOST=$DOCKER_REGISTRY_HOST -C docker/tango/tango-rest test | tee .public/result.txt
+  - make DOCKER_REGISTRY_USER=$DOCKER_REGISTRY_USERNAME DOCKER_REGISTRY_HOST=$DOCKER_REGISTRY_HOST -C docker/tango/tango-rest test | tee .public/result.txt
   - mv .public public
   artifacts:
     paths:
@@ -221,7 +221,7 @@ test-framework-ska-python-buildenv:
   - shell
   script:
   - mkdir .public
-  - make DOCKER_REGISTRY_USER=$DOCKER_REGISTRY_USER DOCKER_REGISTRY_HOST=$DOCKER_REGISTRY_HOST -C docker/tango/ska-python-buildenv test | tee .public/result.txt
+  - make DOCKER_REGISTRY_USER=$DOCKER_REGISTRY_USERNAME DOCKER_REGISTRY_HOST=$DOCKER_REGISTRY_HOST -C docker/tango/ska-python-buildenv test | tee .public/result.txt
   - mv .public public
   artifacts:
     paths:
@@ -233,27 +233,27 @@ push:
   - shell
   script: 
   - cd docker/tango/tango-builder
-  - make DOCKER_REGISTRY_USER=$DOCKER_REGISTRY_USER DOCKER_REGISTRY_HOST=$DOCKER_REGISTRY_HOST push
+  - make DOCKER_REGISTRY_USER=$DOCKER_REGISTRY_USERNAME DOCKER_REGISTRY_HOST=$DOCKER_REGISTRY_HOST push
   - cd ../../../docker/tango/tango-dependencies
-  - make DOCKER_REGISTRY_USER=$DOCKER_REGISTRY_USER DOCKER_REGISTRY_HOST=$DOCKER_REGISTRY_HOST push
+  - make DOCKER_REGISTRY_USER=$DOCKER_REGISTRY_USERNAME DOCKER_REGISTRY_HOST=$DOCKER_REGISTRY_HOST push
   - cd ../../../docker/tango/tango-db
-  - make DOCKER_REGISTRY_USER=$DOCKER_REGISTRY_USER DOCKER_REGISTRY_HOST=$DOCKER_REGISTRY_HOST push
+  - make DOCKER_REGISTRY_USER=$DOCKER_REGISTRY_USERNAME DOCKER_REGISTRY_HOST=$DOCKER_REGISTRY_HOST push
   - cd ../../../docker/tango/tango-cpp
-  - make DOCKER_REGISTRY_USER=$DOCKER_REGISTRY_USER DOCKER_REGISTRY_HOST=$DOCKER_REGISTRY_HOST push
+  - make DOCKER_REGISTRY_USER=$DOCKER_REGISTRY_USERNAME DOCKER_REGISTRY_HOST=$DOCKER_REGISTRY_HOST push
   - cd ../../../docker/tango/tango-java
-  - make DOCKER_REGISTRY_USER=$DOCKER_REGISTRY_USER DOCKER_REGISTRY_HOST=$DOCKER_REGISTRY_HOST push
+  - make DOCKER_REGISTRY_USER=$DOCKER_REGISTRY_USERNAME DOCKER_REGISTRY_HOST=$DOCKER_REGISTRY_HOST push
   - cd ../../../docker/tango/tango-dsconfig
-  - make DOCKER_REGISTRY_USER=$DOCKER_REGISTRY_USER DOCKER_REGISTRY_HOST=$DOCKER_REGISTRY_HOST push
+  - make DOCKER_REGISTRY_USER=$DOCKER_REGISTRY_USERNAME DOCKER_REGISTRY_HOST=$DOCKER_REGISTRY_HOST push
   - cd ../../../docker/tango/ska-python-buildenv
-  - make DOCKER_REGISTRY_USER=$DOCKER_REGISTRY_USER DOCKER_REGISTRY_HOST=$DOCKER_REGISTRY_HOST push
+  - make DOCKER_REGISTRY_USER=$DOCKER_REGISTRY_USERNAME DOCKER_REGISTRY_HOST=$DOCKER_REGISTRY_HOST push
   - cd ../../../docker/tango/ska-python-runtime
-  - make DOCKER_REGISTRY_USER=$DOCKER_REGISTRY_USER DOCKER_REGISTRY_HOST=$DOCKER_REGISTRY_HOST push
+  - make DOCKER_REGISTRY_USER=$DOCKER_REGISTRY_USERNAME DOCKER_REGISTRY_HOST=$DOCKER_REGISTRY_HOST push
   - cd ../../../docker/tango/tango-rest
-  - make DOCKER_REGISTRY_USER=$DOCKER_REGISTRY_USER DOCKER_REGISTRY_HOST=$DOCKER_REGISTRY_HOST push
+  - make DOCKER_REGISTRY_USER=$DOCKER_REGISTRY_USERNAME DOCKER_REGISTRY_HOST=$DOCKER_REGISTRY_HOST push
   - cd ../../../docker/tango/tango-itango
-  - make DOCKER_REGISTRY_USER=$DOCKER_REGISTRY_USER DOCKER_REGISTRY_HOST=$DOCKER_REGISTRY_HOST push
+  - make DOCKER_REGISTRY_USER=$DOCKER_REGISTRY_USERNAME DOCKER_REGISTRY_HOST=$DOCKER_REGISTRY_HOST push
   - cd ../../../docker/tango/tango-pogo
-  - make DOCKER_REGISTRY_USER=$DOCKER_REGISTRY_USER DOCKER_REGISTRY_HOST=$DOCKER_REGISTRY_HOST push
+  - make DOCKER_REGISTRY_USER=$DOCKER_REGISTRY_USERNAME DOCKER_REGISTRY_HOST=$DOCKER_REGISTRY_HOST push
   - cd ../../../docker/tango/tango-starter
-  - make DOCKER_REGISTRY_USER=$DOCKER_REGISTRY_USER DOCKER_REGISTRY_HOST=$DOCKER_REGISTRY_HOST push
+  - make DOCKER_REGISTRY_USER=$DOCKER_REGISTRY_USERNAME DOCKER_REGISTRY_HOST=$DOCKER_REGISTRY_HOST push
   when: manual
