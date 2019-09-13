@@ -7,3 +7,4 @@ FROM ${DOCKER_REGISTRY_HOST}/${DOCKER_REGISTRY_USER}/ska-python-runtime:latest
 RUN ipython profile create
 
 CMD ["itango3"]
+ 
