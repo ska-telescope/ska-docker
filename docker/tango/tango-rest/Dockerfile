@@ -2,8 +2,7 @@ ARG DOCKER_REGISTRY_HOST
 ARG DOCKER_REGISTRY_USER
 FROM debian:buster-slim as buildenv
 
-RUN MTANGOREST_VERSION=rc4-2.12 \
-    && MTANGOREST_DOWNLOAD_URL=https://github.com/Ingvord/mtangorest.server/releases/download/mtangorest.server-$MTANGOREST_VERSION/mtangorest.server-$MTANGOREST_VERSION.jar \
+RUN MTANGOREST_DOWNLOAD_URL=https://github.com/tango-controls/rest-server/releases/download/rest-server-1.14/rest-server-1.14.jar \
     && DOCKERHOST=`awk '/^[a-z]+[0-9]+\t00000000/ { printf("%d.%d.%d.%d", "0x" substr($3, 7, 2), "0x" substr($3, 5, 2), "0x" substr($3, 3, 2), "0x" substr($3, 1, 2)) }' < /proc/net/route` \
     && /usr/local/bin/wait-for-it.sh --host=$DOCKERHOST --port=3142 --timeout=3 --strict --quiet -- echo "Acquire::http::Proxy \"http://$DOCKERHOST:3142\";" > /etc/apt/apt.conf.d/30proxy \
     && echo "Proxy detected on docker host - using for this build" || echo "No proxy detected on docker host" \
@@ -15,6 +14,7 @@ RUN MTANGOREST_VERSION=rc4-2.12 \
     && cd /usr/local/lib/tango \
     && curl -fsSL "$MTANGOREST_DOWNLOAD_URL" -o mtangorest.jar \
     && apt-get purge -y --auto-remove $buildDeps
+
 
 FROM ${DOCKER_REGISTRY_HOST}/${DOCKER_REGISTRY_USER}/tango-cpp:latest
 
@@ -37,4 +37,4 @@ COPY tango_register_device.sh /usr/local/bin/
 COPY supervisord.conf /etc/supervisor/conf.d/
 
 # Start supervisor as daemon
-CMD ["/usr/bin/supervisord", "--configuration", "/etc/supervisor/supervisord.conf"]
+CMD ["/usr/bin/java", "-jar -Xmx4G -Xshare:off -XX:+UseG1GC -agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=5009 /usr/local/lib/tango/mtangorest.jar tango-rest/rest/0"]
