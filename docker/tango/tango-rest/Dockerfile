@@ -15,7 +15,6 @@ RUN MTANGOREST_DOWNLOAD_URL=https://github.com/tango-controls/rest-server/releas
     && curl -fsSL "$MTANGOREST_DOWNLOAD_URL" -o mtangorest.jar \
     && apt-get purge -y --auto-remove $buildDeps
 
-
 FROM ${DOCKER_REGISTRY_HOST}/${DOCKER_REGISTRY_USER}/tango-cpp:latest
 
 COPY --from=buildenv /usr/local/lib/tango/mtangorest.jar /usr/local/lib/tango/mtangorest.jar
@@ -37,4 +36,4 @@ COPY tango_register_device.sh /usr/local/bin/
 COPY supervisord.conf /etc/supervisor/conf.d/
 
 # Start supervisor as daemon
-CMD ["/usr/bin/java", "-jar -Xmx4G -Xshare:off -XX:+UseG1GC -agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=5009 /usr/local/lib/tango/mtangorest.jar tango-rest/rest/0"]
+CMD ["/usr/bin/supervisord", "--configuration", "/etc/supervisor/supervisord.conf"]
