@@ -56,19 +56,13 @@ services:
     - test
 
   rest:
-    image: ${DOCKER_REGISTRY_HOST}/${DOCKER_REGISTRY_USER}/tango-rest:latest
+    image: hzgde/mtangorest.docker:rc4
     depends_on:
     - tangotest
     environment:
     - TANGO_HOST=databaseds:10000
+    - REST_API_PORT=8080
     ports:
-    - 8080:8080
-    entrypoint:
-    - /usr/local/bin/wait-for-it.sh
-    - databaseds:10000
-    - --timeout=30
-    - --strict
-    - --
-    - /usr/bin/supervisord
-    - --configuration
-    - /etc/supervisor/supervisord.conf
+    - "8080:8080"
+    links:
+      - "databaseds:localhost"
