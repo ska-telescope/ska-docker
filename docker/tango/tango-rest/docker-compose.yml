@@ -18,6 +18,8 @@ services:
     - MYSQL_DATABASE=tango
     - MYSQL_USER=tango
     - MYSQL_PASSWORD=tango
+    restart: on-failure
+
 
   databaseds:
     image: ${DOCKER_REGISTRY_HOST}/${DOCKER_REGISTRY_USER}/tango-cpp:latest
@@ -39,6 +41,7 @@ services:
     - "2"
     - -ORBendPoint
     - giop:tcp::10000
+    restart: on-failure
 
   tangotest:
     image: ${DOCKER_REGISTRY_HOST}/${DOCKER_REGISTRY_USER}/tango-java:latest
@@ -54,15 +57,23 @@ services:
     - --
     - /usr/local/bin/TangoTest
     - test
+    restart: on-failure
 
   rest:
-    image: hzgde/mtangorest.docker:rc4
+    image: ${DOCKER_REGISTRY_HOST}/${DOCKER_REGISTRY_USER}/tango-rest:latest
     depends_on:
     - tangotest
     environment:
     - TANGO_HOST=databaseds:10000
-    - REST_API_PORT=8080
     ports:
-    - "8080:8080"
-    links:
-      - "databaseds:localhost"
+    - 8080:8080
+    entrypoint:
+    - /usr/local/bin/wait-for-it.sh
+    - databaseds:10000
+    - --timeout=30
+    - --strict
+    - --
+    - /usr/bin/supervisord
+    - --configuration
+    - /etc/supervisor/supervisord.conf
+    restart: on-failure

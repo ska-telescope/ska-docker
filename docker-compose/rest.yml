@@ -13,11 +13,22 @@ version: '2'
 
 services:
   rest:
-    image: hzgde/mtangorest.docker:rc4
+    image: ${DOCKER_REGISTRY_HOST}/${DOCKER_REGISTRY_USER}/tango-rest:latest
     container_name: ${CONTAINER_NAME_PREFIX}tango-rest
     network_mode: ${NETWORK_MODE}
+    # set the hostname, otherwise duplicate device registrations result every
+    # time the hostname changes as the container is restarted.
+    hostname: tango-rest
     environment:
     - TANGO_HOST=${TANGO_HOST}
-    - REST_API_PORT=8080
     ports:
-    - "8080:8080"
+    - 8080:8080
+    entrypoint:
+    - /usr/local/bin/wait-for-it.sh
+    - ${TANGO_HOST}
+    - --timeout=30
+    - --strict
+    - --
+    - /usr/bin/supervisord
+    - --configuration
+    - /etc/supervisor/supervisord.conf
