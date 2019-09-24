@@ -68,5 +68,11 @@ expect {
     -ex "dev.DevString('hello world!')\r\nOut\[3\]: 'hello world!'\r\n\r\nIn \[4\]: " {}
 }
 
+send "not isinstance(dev.read_attribute('short_spectrum_ro').value, tuple)\r"
+expect {
+    timeout { send_user "\nFailure executing command\n"; exit 1 }
+    -ex "not isinstance(dev.read_attribute('short_spectrum_ro').value, tuple)\r\nOut\[4\]: True\r\n\r\nIn \[5\]: " {}
+}
+
 send "exit\r"
 expect eof
