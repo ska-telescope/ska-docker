@@ -20,6 +20,7 @@ services:
     - MYSQL_DATABASE=tango
     - MYSQL_USER=tango
     - MYSQL_PASSWORD=tango
+    restart: on-failure
 
   databaseds:
     image: ${DOCKER_REGISTRY_HOST}/${DOCKER_REGISTRY_USER}/tango-cpp:latest
@@ -41,6 +42,7 @@ services:
     - "2"
     - -ORBendPoint
     - giop:tcp::10000
+    restart: on-failure
 
   tangotest:
     image: ${DOCKER_REGISTRY_HOST}/${DOCKER_REGISTRY_USER}/tango-java:latest
@@ -56,3 +58,4 @@ services:
     - --
     - /usr/local/bin/TangoTest
     - test
+    restart: on-failure

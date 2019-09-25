@@ -74,5 +74,11 @@ expect {
     -ex "import numpy; isinstance(dev.read_attribute('short_spectrum_ro').value, numpy.ndarray)\r\nOut\[4\]: True\r\n\r\nIn \[5\]: " {}
 }
 
+send "import numpy; isinstance(dev.read_attribute('short_spectrum').value, numpy.ndarray)\r"
+expect {
+    timeout { send_user "\nFailure executing command\n"; exit 1 }
+    -ex "import numpy; isinstance(dev.read_attribute('short_spectrum').value, numpy.ndarray)\r\nOut\[5\]: True\r\n\r\nIn \[6\]: " {}
+}
+
 send "exit\r"
 expect eof
