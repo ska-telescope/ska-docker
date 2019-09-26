@@ -35,6 +35,19 @@ build_tango-builder:
     changes:
     - docker/tango/tango-builder/**/*
 
+build_deploy_image:
+  retry: 2
+  stage: build_0
+  tags:
+  - shell
+  script:
+  - cd docker/deploy
+  - make DOCKER_BUILD_ARGS="--no-cache" DOCKER_REGISTRY_USER=$DOCKER_REGISTRY_FOLDER DOCKER_REGISTRY_HOST=$DOCKER_REGISTRY_HOST build
+  - make DOCKER_REGISTRY_USER=$DOCKER_REGISTRY_FOLDER DOCKER_REGISTRY_HOST=$DOCKER_REGISTRY_HOST push
+  only:
+    changes:
+    - docker/deploy/**/*
+
 build_dependencies:
   retry: 2
   stage: build_1
