@@ -4,9 +4,9 @@ verify_ssl = true
 name = "pypi"
 
 [packages]
-numpy = "==1.15.4"
-pytango = "==9.2.5"
+numpy = "==1.17.2"
+pytango = "==9.3.1"
 itango = "*"
 
 [requires]
-python_version = "3"
+python_version = "3.7"

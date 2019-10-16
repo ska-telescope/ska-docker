@@ -70,6 +70,7 @@ COPY --chown=tango:tango Pipfile.lock Pipfile.lock
 RUN if [ -f "/usr/lib/x86_64-linux-gnu/libboost_python3-py37.so" ] && [ ! -f "/usr/lib/x86_64-linux-gnu/libboost_python-py37.so" ]; then \
     ln -s /usr/lib/x86_64-linux-gnu/libboost_python3-py37.so /usr/lib/x86_64-linux-gnu/libboost_python-py37.so; \
     fi; \
+    pipenv run pip install numpy==1.17.2; \
     pipenv install --dev
 
 # The following commands are executed when extending this image.
