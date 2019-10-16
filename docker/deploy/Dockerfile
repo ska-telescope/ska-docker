@@ -22,7 +22,7 @@ RUN wget -q https://storage.googleapis.com/kubernetes-release/release/${KUBE_LAT
     && chmod +x /usr/local/bin/helm
 
 RUN apt-get update
-RUN apt-get install -y python software-properties-common
+RUN apt-get install -y python software-properties-common net-tools
 RUN apt-add-repository --yes --update ppa:ansible/ansible 
 RUN printf "#!/bin/sh\nexit 0" > /usr/sbin/policy-rc.d 
 RUN apt-get -y install ansible ssh python-apt
