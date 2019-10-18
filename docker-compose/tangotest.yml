@@ -24,4 +24,5 @@ services:
       - --
       - /usr/local/bin/TangoTest
       - test
+    restart: on-failure
 

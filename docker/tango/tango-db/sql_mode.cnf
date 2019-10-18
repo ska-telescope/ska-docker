@@ -1,2 +1,4 @@
 [mysqld]
 sql-mode=""
+innodb=OFF
+default_storage_engine=MyISAM
