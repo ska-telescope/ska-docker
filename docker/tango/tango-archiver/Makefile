@@ -1,13 +1,13 @@
 include ../../make/Makefile
 
 # name of the Docker volume used to cache eggs and wheels
-CACHE_VOLUME = mariadb_hdbpp-test-cache
+CACHE_VOLUME = tango-archiver-test-cache
 
 # optional docker run-time arguments
 DOCKER_RUN_ARGS =
 
 # defines the image to test
-IMAGE_TO_TEST = $(DOCKER_REGISTRY_HOST)/$(DOCKER_REGISTRY_USER)/mariadb_hdbpp:0.1.0
+IMAGE_TO_TEST = $(DOCKER_REGISTRY_HOST)/$(DOCKER_REGISTRY_USER)/tango-archiver:latest
 
 # docker-compose commmand for a composition of services for the tango database,
 # databaseds device, and tangotest devices
@@ -25,12 +25,19 @@ DOCKER_COMPOSE_COMMAND = PWD=$(CURDIR) \
 #   3. uses a transient volume as a working directory, in which untarred files
 #      and test output can be written in the container and subsequently copied
 #      to the host
+# make = tar -c test/ | \
+# 	   docker run -i --rm --network=$(notdir $(CURDIR))_default \
+# 	   -v $(CACHE_VOLUME):/home/tango/.cache \
+# 	   -v /build -w /build $(DOCKER_RUN_ARGS) $(IMAGE_TO_TEST) \
+# 	   bash -c "sudo chown tango /build /home/tango/.cache && \
+# 	   tar x --strip-components 1 --warning=all && \
+# 	   make TANGO_HOST=databaseds:10000 $1"
+
 make = tar -c test/ | \
 	   docker run -i --rm --network=$(notdir $(CURDIR))_default \
 	   -v $(CACHE_VOLUME):/home/tango/.cache \
 	   -v /build -w /build $(DOCKER_RUN_ARGS) $(IMAGE_TO_TEST) \
-	   bash -c "sudo chown tango /build /home/tango/.cache && \
-	   tar x --strip-components 1 --warning=all && \
+	   bash -c "tar x --strip-components 1 --warning=all && \
 	   make TANGO_HOST=databaseds:10000 $1"
 
 all: test
