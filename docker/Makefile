@@ -1,5 +1,6 @@
 DIRS = tango
 BUILDDIRS = $(DIRS:%=build-%)
+TESTDIRS = $(DIRS:%=test-%)
 PUSHDIRS = $(DIRS:%=push-%)
 
 .DEFAULT_GOAL := help
@@ -8,6 +9,10 @@ build: $(DIRS)  ## build all images
 $(DIRS): $(BUILDDIRS)
 $(BUILDDIRS):
 	$(MAKE) -C $(@:build-%=%) build
+
+test: $(TESTDIRS)
+$(TESTDIRS):
+	$(MAKE) -C $(@:test-%=%) test
 
 push: $(PUSHDIRS)  ## push images to Docker hub
 $(PUSHDIRS):
