@@ -1,4 +1,4 @@
-DIRS = tango-dependencies tango-db tango-cpp tango-java tango-starter tango-pogo tango-rest ska-python-buildenv ska-python-runtime tango-itango tango-vscode
+DIRS = tango-dependencies tango-db tango-cpp tango-java tango-starter tango-pogo tango-rest ska-python-buildenv ska-python-runtime tango-itango tango-vscode tango-community
 TEST = ska-python-buildenv tango-itango tango-rest tango-db tango-cpp
 BUILDDIRS = $(DIRS:%=build-%)
 TESTDIRS = $(TEST:%=test-%)
