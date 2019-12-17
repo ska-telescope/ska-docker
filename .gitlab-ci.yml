@@ -215,6 +215,19 @@ build_tango-starter:
     - docker/tango/tango-cpp/**/*
     - docker/tango/tango-starter/**/*
 
+build_tango-community:
+  retry: 2
+  stage: build_3
+  tags:
+  - shell
+  script:
+  - cd docker/tango/tango-community
+  - make DOCKER_BUILD_ARGS="--no-cache" DOCKER_REGISTRY_USER=$DOCKER_REGISTRY_FOLDER DOCKER_REGISTRY_HOST=$DOCKER_REGISTRY_HOST build
+  only:
+    changes:
+    - docker/tango/tango-community/**/*
+    - docker/tango/**/*
+
 test-framework-tango-itango:
   retry: 2
   stage: test
@@ -250,6 +263,20 @@ test-framework-ska-python-buildenv:
   script:
   - mkdir .public
   - make DOCKER_REGISTRY_USER=$DOCKER_REGISTRY_FOLDER DOCKER_REGISTRY_HOST=$DOCKER_REGISTRY_HOST -C docker/tango/ska-python-buildenv test | tee .public/result.txt
+  - mv .public public
+  artifacts:
+    paths:
+    - public
+
+test-all:
+  retry: 2
+  stage: test
+  tags:
+  - shell
+  script:
+  - cd docker
+  - mkdir .public
+  - make DOCKER_REGISTRY_USER=$DOCKER_REGISTRY_FOLDER DOCKER_REGISTRY_HOST=$DOCKER_REGISTRY_HOST test | tee .public/result.txt
   - mv .public public
   artifacts:
     paths:
