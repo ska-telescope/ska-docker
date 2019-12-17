@@ -1,0 +1,15 @@
+numpy==1.17.2
+pytango==9.3.1
+docutils
+MarkupSafe
+Pygments
+pylint
+pytest
+pytest-cov
+pytest-pylint
+pytest-json-report
+python-dotenv>=0.5.1
+Sphinx
+sphinx_rtd_theme
+sphinx-autobuild
+sphinxcontrib-websupport

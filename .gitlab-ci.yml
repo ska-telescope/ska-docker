@@ -130,7 +130,7 @@ build_ska-python-buildenv:
   retry: 2
   stage: build_3
   tags:
-    - shell
+  - shell
   script:
     - cd docker/tango/ska-python-buildenv
     - make DOCKER_BUILD_ARGS="--no-cache" DOCKER_REGISTRY_USER=$DOCKER_REGISTRY_FOLDER DOCKER_REGISTRY_HOST=$DOCKER_REGISTRY_HOST build
