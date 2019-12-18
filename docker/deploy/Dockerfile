@@ -10,6 +10,7 @@ RUN apt-get install -y docker-ce
 RUN export LC_ALL=C
 RUN pip install docker-compose
 RUN pip install pytest
+RUN pip install yamllint yamale
 
 ENV KUBE_LATEST_VERSION="v1.15.2"
 ENV HELM_VERSION="v2.14.3"
@@ -20,6 +21,12 @@ RUN wget -q https://storage.googleapis.com/kubernetes-release/release/${KUBE_LAT
     && chmod +x /usr/local/bin/kubectl \
     && wget -q https://storage.googleapis.com/kubernetes-helm/helm-${HELM_VERSION}-linux-amd64.tar.gz -O - | tar -xzO linux-amd64/helm > /usr/local/bin/helm \
     && chmod +x /usr/local/bin/helm
+RUN helm init --client-only
+
+RUN wget -q https://github.com/helm/chart-testing/releases/download/v2.4.0/chart-testing_2.4.0_linux_amd64.tar.gz -O /tmp/ct.tar.gz \
+    && cd /tmp \
+    && tar -xf ct.tar.gz \
+    && mv ct /usr/local/bin/ct
 
 RUN apt-get update
 RUN apt-get install -y python software-properties-common net-tools
