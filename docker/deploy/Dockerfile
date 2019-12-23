@@ -34,7 +34,7 @@ RUN wget -q https://github.com/helm/chart-testing/releases/download/v2.4.0/chart
     && mv ct /usr/local/bin/ct
 
 RUN apt-get install -yq python3 python3-pip
-RUN python3 -m pip install -r ${PYTEST_REQUIREMENTS}
+RUN pip3 install -r ${PYTEST_REQUIREMENTS}
 
 RUN apt-get update
 RUN apt-get install -y python software-properties-common net-tools
