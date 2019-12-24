@@ -18,6 +18,7 @@ ENV DEBIAN_FRONTEND="readline"
 ENV RUNLEVEL="1"
 ENV HELM_TILLER_PLUGIN="https://github.com/rimusz/helm-tiller"
 ENV HELM_UNITTEST_PLUGIN="https://github.com/lrills/helm-unittest"
+ENV PYTEST_REQUIREMENTS="https://gitlab.com/ska-telescope/skampi/raw/e7b2b0f1b9b0a7b9d81a8360035805caad62a902/test-requirements.txt"
 
 RUN wget -q https://storage.googleapis.com/kubernetes-release/release/${KUBE_LATEST_VERSION}/bin/linux/amd64/kubectl -O /usr/local/bin/kubectl \
     && chmod +x /usr/local/bin/kubectl \
@@ -31,6 +32,9 @@ RUN wget -q https://github.com/helm/chart-testing/releases/download/v2.4.0/chart
     && cd /tmp \
     && tar -xf ct.tar.gz \
     && mv ct /usr/local/bin/ct
+
+RUN apt-get install -yq python3 python3-pip
+RUN pip3 install -r ${PYTEST_REQUIREMENTS}
 
 RUN apt-get update
 RUN apt-get install -y python software-properties-common net-tools
