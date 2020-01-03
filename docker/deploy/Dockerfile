@@ -17,7 +17,7 @@ ENV DEBIAN_FRONTEND="readline"
 ENV RUNLEVEL="1"
 ENV HELM_TILLER_PLUGIN="https://github.com/rimusz/helm-tiller"
 ENV HELM_UNITTEST_PLUGIN="https://github.com/lrills/helm-unittest"
-ENV PYTEST_REQUIREMENTS="https://gitlab.com/ska-telescope/skampi/raw/e7b2b0f1b9b0a7b9d81a8360035805caad62a902/test-requirements.txt"
+ENV PYTEST_REQUIREMENTS="https://gitlab.com/ska-telescope/skampi/raw/60ad4e45f9e7e716d1abd23e520b63c3711dba99/test-requirements.txt"
 
 RUN wget -q https://storage.googleapis.com/kubernetes-release/release/${KUBE_LATEST_VERSION}/bin/linux/amd64/kubectl -O /usr/local/bin/kubectl \
     && chmod +x /usr/local/bin/kubectl \
