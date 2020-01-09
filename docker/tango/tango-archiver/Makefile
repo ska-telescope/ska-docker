@@ -9,11 +9,22 @@ DOCKER_RUN_ARGS =
 # defines the image to test
 IMAGE_TO_TEST = $(DOCKER_REGISTRY_HOST)/$(DOCKER_REGISTRY_USER)/tango-archiver:latest
 
+#
+# When running in network=host mode, point devices at a port on the host
+# machine rather than at the container.
+#
+TANGO_HOST := databaseds:10000
+MYSQL_HOST := tangodb:3306
+XAUTHORITY_MOUNT := /tmp/.X11-unix:/tmp/.X11-unix
+
 # docker-compose commmand for a composition of services for the tango database,
 # databaseds device, and tangotest devices
 DOCKER_COMPOSE_COMMAND = PWD=$(CURDIR) \
 						 DOCKER_REGISTRY_HOST=$(DOCKER_REGISTRY_HOST) \
 						 DOCKER_REGISTRY_USER=$(DOCKER_REGISTRY_USER) \
+						 TANGO_HOST=$(TANGO_HOST) \
+						 MYSQL_HOST=$(MYSQL_HOST) \
+						 XAUTHORITY_MOUNT=$(XAUTHORITY_MOUNT) \
 						 docker-compose \
 						 -f docker-compose.yml
 
@@ -38,7 +49,7 @@ make = tar -c test/ | \
 	   -v $(CACHE_VOLUME):/home/tango/.cache \
 	   -v /build -w /build $(DOCKER_RUN_ARGS) $(IMAGE_TO_TEST) \
 	   bash -c "tar x --strip-components 1 --warning=all && \
-	   make TANGO_HOST=databaseds:10000 $1"
+	   make TANGO_HOST=$(TANGO_HOST) $1"
 
 all: test
 

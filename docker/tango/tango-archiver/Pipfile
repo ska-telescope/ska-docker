@@ -6,6 +6,7 @@ name = "pypi"
 [packages]
 numpy = "==1.17.2"
 pytango = "==9.3.1"
+itango = "*"
 
 [dev-packages]
 docutils = "*"
@@ -17,10 +18,11 @@ pytest-cov = "*"
 pytest-pylint = "*"
 pytest-json-report = "*"
 python-dotenv = ">=0.5.1"
+ptvsd = "*"
 Sphinx = "*"
 sphinx_rtd_theme = "*"
 sphinx-autobuild = "*"
 sphinxcontrib-websupport = "*"
 
 [requires]
-python_version = "3.6"
+python_version = "3"

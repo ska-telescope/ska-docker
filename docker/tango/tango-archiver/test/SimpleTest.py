@@ -1,5 +1,12 @@
 import tango
+import time
 
-def test_test_device_is_running():
+def test_cm_device_is_ON():             #Test Case for config manager
+    tango_test = tango.DeviceProxy("archiving/hdbpp/confmanager01")
+    time.sleep(120)
+    assert tango_test.state() == tango.DevState.ON
+
+def test_es_device_is_ON():             #Test Case for Event subscriber
     tango_test = tango.DeviceProxy("archiving/hdbpp/eventsubscriber01")
-    assert tango_test.state() == tango.DevState.RUNNING
+    time.sleep(120)
+    assert tango_test.state() == tango.DevState.ON

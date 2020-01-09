@@ -123,9 +123,12 @@ FROM registry.gitlab.com/s2innovation/tangobox-docker/tangobox-base:latest
 
 RUN apt update \
  && apt install -y \
+    build-essential \
     libmariadbclient18 \
     mariadb-client \
     mariadb-server \
+    virtualenv \
+    python-pip\
  && apt clean
 
 COPY --from=build \
@@ -166,3 +169,5 @@ RUN mv /usr/local/bin/hdb++es-srv /usr/local/bin/hdbppes-srv
 RUN find / -iname libhdb++*.so*.*
 
 CMD /usr/bin/supervisord -c /etc/supervisord.conf
+
+RUN pip install pytest

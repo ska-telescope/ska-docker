@@ -5,7 +5,7 @@ test:
     # scratch, so pause until DB is created and the device we test against is
     # responsive. If the Tango DB volume already exists, there'll be no delay
     # at all and the test will run immediately.
-	retry -- tango_admin --check-device archiving/hdbpp/eventsubscriber01
+# 	retry -- tango_admin --check-device archiving/hdbpp/eventsubscriber01
 	pytest SimpleTest.py
 
 .PHONY: all test
