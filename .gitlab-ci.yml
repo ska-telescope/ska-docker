@@ -304,6 +304,19 @@ test-framework-ska-python-buildenv:
     paths:
     - public
 
+test-framework-tango-archiver:
+  retry: 2
+  stage: test
+  tags:
+  - shell
+  script:
+  - mkdir .public
+  - make DOCKER_REGISTRY_USER=$DOCKER_REGISTRY_FOLDER DOCKER_REGISTRY_HOST=$DOCKER_REGISTRY_HOST -C docker/tango/tango-archiver test | tee .public/result.txt
+  - mv .public public
+  artifacts:
+    paths:
+    - public
+
 push: 
   stage: push
   tags:
