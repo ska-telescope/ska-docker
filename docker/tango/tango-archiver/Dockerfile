@@ -131,8 +131,10 @@ RUN apt update \
  && apt clean
 
 # pip
+ENV PIP_VERSION=19.3.1
 RUN apt-get install -yq curl python3-distutils \
-    && curl https://bootstrap.pypa.io/get-pip.py -o get-pip.py && python3 get-pip.py pip==19.3.1
+    && curl https://bootstrap.pypa.io/get-pip.py -o get-pip.py \
+    && python3 get-pip.py --user pip==19.3.1
 # /pip
 
 COPY --from=build \
