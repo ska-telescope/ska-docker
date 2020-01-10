@@ -15,8 +15,8 @@ RUN apt-get install -yq python3-distutils \
     && python3 get-pip.py --user pip==${PIP_VERSION}
 # /pip
 
-RUN pip3 install docker-compose
-RUN pip3 install yamllint yamale
+RUN pip install docker-compose
+RUN pip install yamllint yamale
 
 ENV KUBE_LATEST_VERSION="v1.15.2"
 ENV HELM_VERSION="v2.14.3"
@@ -39,8 +39,8 @@ RUN wget -q https://github.com/helm/chart-testing/releases/download/v2.4.0/chart
     && tar -xf ct.tar.gz \
     && mv ct /usr/local/bin/ct
 
-RUN pip3 install -r ${PYTEST_REQUIREMENTS}
-RUN pip3 install pytest
+RUN pip install -r ${PYTEST_REQUIREMENTS}
+RUN pip install pytest
 
 RUN apt-get update
 RUN apt-get install -y python software-properties-common net-tools
