@@ -128,8 +128,12 @@ RUN apt update \
     mariadb-client \
     mariadb-server \
     virtualenv \
-    python-pip\
  && apt clean
+
+# pip
+RUN apt-get install -yq curl python3-distutils \
+    && curl https://bootstrap.pypa.io/get-pip.py -o get-pip.py && python3 get-pip.py pip==19.3.1
+# /pip
 
 COPY --from=build \
     /libhdbpp/build/libhdbpp_1.0.0-SNAPSHOT_amd64.deb \
