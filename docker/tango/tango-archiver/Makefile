@@ -60,6 +60,7 @@ test:
 	$(call make,test); \
 	  status=$$?; \
 	  docker rm -f -v $(BUILD); \
+	  docker-compose -f docker-compose.yml logs; \
 	  $(DOCKER_COMPOSE_COMMAND) down; \
 	  exit $$status
 
