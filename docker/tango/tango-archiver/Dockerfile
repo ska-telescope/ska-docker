@@ -171,5 +171,3 @@ RUN find / -iname libhdb++*.so*.*
 CMD /usr/bin/supervisord -c /etc/supervisord.conf
 
 RUN pip install pytest
-COPY wait-for-it.sh /wait-for-it.sh
-RUN chmod +x /wait-for-it.sh
