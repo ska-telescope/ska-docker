@@ -223,9 +223,7 @@ build_tango-archiver:
   script:
   - cd docker/tango/tango-archiver
   - make DOCKER_BUILD_ARGS="--no-cache" DOCKER_REGISTRY_USER=$DOCKER_REGISTRY_FOLDER DOCKER_REGISTRY_HOST=$DOCKER_REGISTRY_HOST build
-  only:
-    changes:
-    - docker/tango/tango-archiver/**/*
+
 build_mariadb_hdbpp:
   retry: 2
   stage: build_5
@@ -234,9 +232,6 @@ build_mariadb_hdbpp:
   script:
   - cd docker/tango/mariadb_hdbpp
   - make DOCKER_BUILD_ARGS="--no-cache" DOCKER_REGISTRY_USER=$DOCKER_REGISTRY_FOLDER DOCKER_REGISTRY_HOST=$DOCKER_REGISTRY_HOST build
-  only:
-    changes:
-    - docker/tango/mariadb_hdbpp/**/*
 
 build_hdbpp_viewer:
   retry: 2
@@ -246,9 +241,6 @@ build_hdbpp_viewer:
   script:
   - cd docker/tango/hdbpp_viewer
   - make DOCKER_BUILD_ARGS="--no-cache" DOCKER_REGISTRY_USER=$DOCKER_REGISTRY_FOLDER DOCKER_REGISTRY_HOST=$DOCKER_REGISTRY_HOST build
-  only:
-    changes:
-    - docker/tango/hdbpp_viewer/**/*
 
 #test-framework-tango-itango:
 #  retry: 2
