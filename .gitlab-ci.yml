@@ -289,6 +289,7 @@ test-framework-tango-archiver:
   - shell
   script:
   - mkdir .public
+  - make DOCKER_REGISTRY_USER=$DOCKER_REGISTRY_FOLDER DOCKER_REGISTRY_HOST=$DOCKER_REGISTRY_HOST -C docker/tango/tango-archiver build
   - make DOCKER_REGISTRY_USER=$DOCKER_REGISTRY_FOLDER DOCKER_REGISTRY_HOST=$DOCKER_REGISTRY_HOST -C docker/tango/tango-archiver test | tee .public/result.txt
   - mv .public public
   artifacts:
