@@ -18,7 +18,7 @@ RUN apt-get update && apt-get install -y \
 RUN mkdir /var/run/sshd
 RUN echo $ssh_cmd | chpasswd
 
-RUN apt-get install -y software-properties-common apt-transport-https wget gnupg libx11-xcb1 libasound2 x11-apps libice6 libsm6 libxaw7 libxft2 libxmu6 libxpm4 libxt6 x11-apps xbitmaps
+RUN apt-get update && apt-get install -y software-properties-common apt-transport-https wget gnupg libx11-xcb1 libasound2 x11-apps libice6 libsm6 libxaw7 libxft2 libxmu6 libxpm4 libxt6 x11-apps xbitmaps
 
 # Allows the SSH user to pass environment variables into their SSH session
 # For this stage of development this is useful as it allows the TANGO_HOST
