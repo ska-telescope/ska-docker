@@ -130,10 +130,7 @@ services:
       - MYSQL_PASSWORD=tango
       - TANGO_HOST=${TANGO_HOST}
       # TODO: FOR FUTURE REFERENCE
-      - MYSQL_ROOT_PASSWORD=secret
-    command: >
-      '/usr/bin/mysqladmin' -u root password 'tango'
-      '/usr/bin/mysqladmin' -u root -h  password 'tango'
+      #- MYSQL_ROOT_PASSWORD=secret
     volumes:
       - archiverdb:/var/lib/mysql
     restart: on-failure
