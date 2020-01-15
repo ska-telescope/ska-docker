@@ -145,6 +145,9 @@ services:
       - MYSQL_USER=tango
       - MYSQL_PASSWORD=tango
       - TANGO_HOST=${TANGO_HOST}
+    command: >
+      '/usr/bin/mysqladmin' -u root password 'tango'
+      '/usr/bin/mysqladmin' -u root -h  password 'tango'
     volumes:
       - archiverdb:/var/lib/mysql
     restart: on-failure
