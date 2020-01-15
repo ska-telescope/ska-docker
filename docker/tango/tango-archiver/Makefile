@@ -36,13 +36,6 @@ DOCKER_COMPOSE_COMMAND = PWD=$(CURDIR) \
 #   3. uses a transient volume as a working directory, in which untarred files
 #      and test output can be written in the container and subsequently copied
 #      to the host
-# make = tar -c test/ | \
-# 	   docker run -i --rm --network=$(notdir $(CURDIR))_default \
-# 	   -v $(CACHE_VOLUME):/home/tango/.cache \
-# 	   -v /build -w /build $(DOCKER_RUN_ARGS) $(IMAGE_TO_TEST) \
-# 	   bash -c "sudo chown tango /build /home/tango/.cache && \
-# 	   tar x --strip-components 1 --warning=all && \
-# 	   make TANGO_HOST=databaseds:10000 $1"
 
 make = tar -c test/ | \
 	   docker run -i --rm --network=$(notdir $(CURDIR))_default \
