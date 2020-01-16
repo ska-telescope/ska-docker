@@ -5,43 +5,6 @@ volumes:
   archiverdb: {}
 
 services:
-  tangodb:
-    image: nexus.engageska-portugal.pt/ska-docker/tango-db:latest
-    container_name: tangodb
-#    network_mode: ${NETWORK_MODE}
-    environment:
-      - MYSQL_ROOT_PASSWORD=secret
-      - MYSQL_DATABASE=tango
-      - MYSQL_USER=tango
-      - MYSQL_PASSWORD=tango
-    volumes:
-      - tangodb:/var/lib/mysql
-    restart: on-failure
-
-  databaseds:
-    image: nexus.engageska-portugal.pt/ska-docker/tango-cpp:latest
-    container_name: databaseds
-#    network_mode: ${NETWORK_MODE}
-    depends_on:
-      - tangodb
-    environment:
-      - MYSQL_HOST=${MYSQL_HOST}
-      - MYSQL_DATABASE=tango
-      - MYSQL_USER=tango
-      - MYSQL_PASSWORD=tango
-      - TANGO_HOST=${TANGO_HOST}
-    entrypoint:
-      - /usr/local/bin/wait-for-it.sh
-      - ${MYSQL_HOST}
-      - --timeout=60
-      - --strict
-      - --
-      - /usr/local/bin/DataBaseds
-      - "2"
-      - -ORBendPoint
-      - giop:tcp::10000
-    restart: on-failure
-
   hdbpp-es:
       image: nexus.engageska-portugal.pt/ska-docker/tango-archiver:latest
 #      network_mode: ${NETWORK_MODE}
@@ -105,18 +68,6 @@ services:
               --cm=tango://archiver-1234-databaseds:10000/archiving/hdbpp/confmanager01\
               --es=tango://archiver-1234-databaseds:10000/archiving/hdbpp/eventsubscriber01 \
               --attrfile=/attribute_fqdn.txt v4"
-
-  tangotest:
-    image: nexus.engageska-portugal.pt/tango-example/tango-example:latest
-    container_name: tangotest
-#    network_mode: ${NETWORK_MODE}
-    depends_on:
-      - dsconfig
-    environment:
-      - TANGO_HOST=${TANGO_HOST}
-    command: >
-      sh -c "wait-for-it.sh ${TANGO_HOST} --timeout=30 --strict --
-             /usr/local/bin/TangoTest test"
 
   dsconfig:
     image: nexus.engageska-portugal.pt/ska-docker/tango-dsconfig:latest
