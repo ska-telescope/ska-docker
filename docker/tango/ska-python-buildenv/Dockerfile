@@ -24,12 +24,14 @@ RUN DOCKERHOST=`awk '/^[a-z]+[0-9]+\t00000000/ { printf("%d.%d.%d.%d", "0x" subs
 # * libboost-python-dev is required to bind PyTango to the C++ Tango libs
 # * pkg-config is used to locate required libraries
 # * virtualenv is required to create a new Python virtualenv environment
+# * git is required for Python packages using katversion for release info
 #
 RUN buildDeps='build-essential \
                libboost-python-dev \
                pkg-config \
                virtualenv \
-               python3-distutils' \
+               python3-distutils \
+               git' \
     && DEBIAN_FRONTEND=noninteractive apt-get update \
     && apt-get -y install --no-install-recommends $buildDeps
 
