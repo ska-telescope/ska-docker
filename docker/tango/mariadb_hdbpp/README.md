@@ -13,12 +13,12 @@
 * tango-java ({DOCKER_REGISTRY_HOST}/${DOCKER_REGISTRY_USER}/tango-java:latest)
 * mariadb_hdbpp ({DOCKER_REGISTRY_HOST}/${DOCKER_REGISTRY_USER}/mariadb_hdbpp:latest)
 
-# 4: Creating Mariadb docker containers
+# 4: Creating mariadb docker containers
  Image '{DOCKER_REGISTRY_HOST}/${DOCKER_REGISTRY_USER}/mariadb_hdbpp' with tag:latest  is used to create Mariadb 
  container. MYSQL_DATABASE=hdbpp,  MYSQL_USER=tango,  MYSQL_PASSWORD=tango, TANGO_HOST=${TANGO_HOST} are the enviornments
  variables set at the time of mariadb container creation. archiverdb is the permenent volume required.
 
-# 5: Running mariadb inside Docker containers
+# 5: Running mariadb inside docker containers
 
 mariadb can run on dockers using following command inside the ./tango-archiver
 

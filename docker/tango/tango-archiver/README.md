@@ -1,4 +1,4 @@
-# Tango-archiver Docker Container
+# Tango-archiver Docker Containers
 
 [![Documentation Status](https://readthedocs.org/projects/ska-docker/badge/?version=latest)](https://developer.skatelescope.org/projects/ska-docker/en/latest/?badge=latest)
 
@@ -49,7 +49,7 @@ The data file, archiver-devices.json file runs in this container to configure al
 nexus.engageska-portugal.pt/ska-docker/tango-dsconfig:latest is used in this container.
 TANGO_HOST=${TANGO_HOST} is the eviornment variable set inside this container at the time of creation.
 
-# 5: Running tango-archiver inside Docker containers
+# 5: Running tango-archiver inside docker containers
 
  tango-archiver can run on dockers using following command inside the ./tango-archiver
 
