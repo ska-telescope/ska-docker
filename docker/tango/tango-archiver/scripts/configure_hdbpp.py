@@ -3,7 +3,6 @@
 import sys, getopt
 import json
 from tango import DeviceProxy, DevFailed
-from time import sleep
 
 def cm_configure_attributes():
     configure_success_count = 0
@@ -15,6 +14,8 @@ def cm_configure_attributes():
         attribute_list = json.load(attrib_list_file)
         for attribute in attribute_list:
             total_attrib_count += 1
+            print("Attribute to archive: ", attribute)
+
             ## Set appropriate CM attributes
             try:
                 # SetAttributeName
@@ -41,6 +42,7 @@ def cm_configure_attributes():
                 conf_manager_proxy.command_inout("AttributeAdd")
             except DevFailed as df:
                 str_df = str(df)
+                print("add attribute exception: ", str_df)
                 if "reason = Already archived" in str_df:
                     start_archiving(attribute)
                 else:
@@ -82,21 +84,15 @@ for opt, arg in opts:
     elif  opt in ("-a", "--attrfile"):
         attr_list_file = arg
 
-
-
-timeSleep = 30
-for x in range(10):
-    try:
-        print ("create device proxies")
-         # create device proxies
-        conf_manager_proxy = DeviceProxy(conf_manager_device_fqdn)
-        evt_subscriber_proxy = DeviceProxy(evt_subscriber_device_fqdn)
-        break
-    except:
-        print ("Could not connect to device proxies. Retry after " + str(timeSleep) + " seconds.")
-        sleep(timeSleep)
+print("conf_manager_device_fqdn: ", conf_manager_device_fqdn)
+print("evt_subscriber_device_fqdn: ", evt_subscriber_device_fqdn)
+print("attr_list_file: ", attr_list_file)
 
 try:
+    # create device proxies
+    conf_manager_proxy = DeviceProxy(conf_manager_device_fqdn)
+    evt_subscriber_proxy = DeviceProxy(evt_subscriber_device_fqdn)
+
     # configure attribute
     configure_success_count, configure_fail_count, already_configured_count, total_attrib_count = cm_configure_attributes()
     print("Configured successfully: ", configure_success_count, "Failed: ", configure_fail_count,
@@ -104,3 +100,4 @@ try:
           )
 except Exception as exception:
     print("Exception: ", exception)
+

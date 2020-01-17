@@ -215,6 +215,46 @@ build_tango-starter:
     - docker/tango/tango-cpp/**/*
     - docker/tango/tango-starter/**/*
 
+build_tango-archiver:
+  retry: 2
+  stage: build_5
+  tags:
+  - shell
+  script:
+  - cd docker/tango/tango-archiver
+  - make DOCKER_BUILD_ARGS="--no-cache" DOCKER_REGISTRY_USER=$DOCKER_REGISTRY_FOLDER DOCKER_REGISTRY_HOST=$DOCKER_REGISTRY_HOST build
+  only:
+    changes:
+    - docker/tango/tango-archiver/**/*
+
+build_mariadb_hdbpp:
+  retry: 2
+  stage: build_5
+  tags:
+  - shell
+  script:
+  - cd docker/tango/mariadb_hdbpp
+  - make DOCKER_BUILD_ARGS="--no-cache" DOCKER_REGISTRY_USER=$DOCKER_REGISTRY_FOLDER DOCKER_REGISTRY_HOST=$DOCKER_REGISTRY_HOST build
+  only:
+    changes:
+    - docker/tango/tango-archiver/**/*
+    - docker/tango/hdbpp_viewer/**/*
+    - docker/tango/mariadb_hdbpp/**/*
+
+build_hdbpp_viewer:
+  retry: 2
+  stage: build_5
+  tags:
+  - shell
+  script:
+  - cd docker/tango/hdbpp_viewer
+  - make DOCKER_BUILD_ARGS="--no-cache" DOCKER_REGISTRY_USER=$DOCKER_REGISTRY_FOLDER DOCKER_REGISTRY_HOST=$DOCKER_REGISTRY_HOST build
+  only:
+    changes:
+    - docker/tango/tango-archiver/**/*
+    - docker/tango/hdbpp_viewer/**/*
+    - docker/tango/mariadb_hdbpp/**/*
+
 test-framework-tango-itango:
   retry: 2
   stage: test
@@ -222,7 +262,7 @@ test-framework-tango-itango:
   - shell
   script:
   - mkdir .public
-  - make DOCKER_REGISTRY_USER=$DOCKER_REGISTRY_FOLDER DOCKER_REGISTRY_HOST=$DOCKER_REGISTRY_HOST -C docker/tango/tango-itango build 
+  - make DOCKER_REGISTRY_USER=$DOCKER_REGISTRY_FOLDER DOCKER_REGISTRY_HOST=$DOCKER_REGISTRY_HOST -C docker/tango/tango-itango build
   - make DOCKER_REGISTRY_USER=$DOCKER_REGISTRY_FOLDER DOCKER_REGISTRY_HOST=$DOCKER_REGISTRY_HOST -C docker/tango/tango-itango test | tee .public/result.txt
   - mv .public public
   artifacts:
@@ -250,6 +290,19 @@ test-framework-ska-python-buildenv:
   script:
   - mkdir .public
   - make DOCKER_REGISTRY_USER=$DOCKER_REGISTRY_FOLDER DOCKER_REGISTRY_HOST=$DOCKER_REGISTRY_HOST -C docker/tango/ska-python-buildenv test | tee .public/result.txt
+  - mv .public public
+  artifacts:
+    paths:
+    - public
+
+test-framework-tango-archiver:
+  retry: 2
+  stage: test
+  tags:
+  - shell
+  script:
+  - mkdir .public
+  - make DOCKER_REGISTRY_USER=$DOCKER_REGISTRY_FOLDER DOCKER_REGISTRY_HOST=$DOCKER_REGISTRY_HOST -C docker/tango/tango-archiver test | tee .public/result.txt
   - mv .public public
   artifacts:
     paths:
