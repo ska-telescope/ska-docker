@@ -1,4 +1,4 @@
-# Hdbpp_viewer Docker Container
+# HDB++ viewer Docker Container
 
 [![Documentation Status](https://readthedocs.org/projects/ska-docker/badge/?version=latest)](https://developer.skatelescope.org/projects/ska-docker/en/latest/?badge=latest)
 
@@ -41,7 +41,7 @@ Link to the documentation:
 # 4: Container creation for HDB++ archiver
 For HDB++ container, image {DOCKER_REGISTRY_HOST}/${DOCKER_REGISTRY_USER}/hdbpp-viewer with tag latest is used for creation. The containers such as databaseds, mariadb, hdbpp-es and hdbpp-cm should be up and running.
 XAUTHORITY=${XAUTHORITY}, DISPLAY=${DISPLAY}, TANGO_HOST=${TANGO_HOST}, HDB_TYPE=mysql, HDB_MYSQL_HOST=archiver-maria-db, HDB_MYSQL_PORT=3307, HDB_USER=tango, HDB_PASSWORD=tango, and HDB_NAME=hdbpp are the enviornment variables set at the time of creating this container.
-Volume for this container is {XAUTHORITY_MOUNT}.
+Volume for this container is {XAUTHORITY_MOUNT}. Refer the link for yaml file [docker-compose.yaml](https://gitlab.com/ska-telescope/ska-docker/blob/master/docker/tango/tango-archiver/docker-compose.yml)
 
 # 5: Running HDB++ viewer inside docker containers
 
