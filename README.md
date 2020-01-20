@@ -6,7 +6,7 @@ See the documentation in the 'docs' folder for build and usage
 instructions.
 
 
-## Complete Archiver Implementation
+## HDB++ Archiver Implementation
 
 [![Documentation Status](https://readthedocs.org/projects/ska-docker/badge/?version=latest)](https://developer.skatelescope.org/projects/ska-docker/en/latest/?badge=latest)
 
