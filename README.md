@@ -11,14 +11,22 @@ instructions.
 [![Documentation Status](https://readthedocs.org/projects/ska-docker/badge/?version=latest)](https://developer.skatelescope.org/projects/ska-docker/en/latest/?badge=latest)
 
 
-Docker images such as tango-archiver, mariadb and hdb++ viewer are used for archiving various attributes and states of 
-tango devices. Containers like mariadb, databaseds, hdbpp-es, hdbpp-cm should be up and running. HDB++ is a historical 
-database used to store the archived attributes values. Here maria database with default schema of hdp++ is used to store 
-the archived values.
-Hdbpp-es is event suscriber device is in charge of gathering the values from the Tango devices and storing them into the
-database (mariadb). Hdbpp-cm is a configuration manager server. It configures the attributes to be archived and defines
-which Event Subscriber is responsible for a set of Tango attributes to be archived.
-Hdbpp-viewer shows the picturial representation of archived attributes, which are stored in maria database.
+HDB++ is a archiver available in TANGO. It is configured to subscribe to TANGO attributes to be archived. MariaDB 
+provides the archival database. HDB++ default schema is used to store the archived data. It consists of the following 
+components:
+The Hdbpp-es is a event suscriber device which subscribes to the Tango attributes. Multiple instances of the event 
+subscriber are deployed to support large number of attributes. These attributes could belong to multiple TANGO Devices.
+The Hdbpp-cm provides the configuration manager. It allows to configure the attributes to be archived and defines which
+Event Subscriber is responsible for a set of Tango attributes to be archived. 
+Hdbpp-viewer shows the graphical representation of the archived data, which is stored in the data archive. 
+
+The archiever solution comprises of the following Docker images:
+
+Tango-archiver(hdbpp-es and hdbpp-cm), Mariadb and Hdb++ viewer 
+
+Containers like mariadb, databaseds, hdbpp-es and hdbpp-cm should be up and running in order to work HDB++ archiver solution. 
+
+
 
 # Important links
  * [Link for Mariadb container](https://gitlab.com/ska-telescope/ska-docker/tree/story_AT1-422/docker/tango/mariadb_hdbpp)
