@@ -5,54 +5,44 @@
 
 # 1: Introduction
 The EventSubscriber TANGO device server, or Archiver, is the archiving system engine. It contains mainly two components 
-EventSuscriber and Configuration manager. It will subscribe to archive  events on request by the ConfigurationManager 
-device. The EventSubscriber is designed to start archiving all the already configured Attributes, even if the 
-ConfigurationManager is not running. Moreover, being a TANGO device, the EventSubscriber configuration can be managed 
-with Jive.
+Event Subscriber and Configuration Manager. It subscribes to archive events on request by the Configuration Manager 
+device and stores the configuration into the TANGO database. The EventSubscriber is designed to start archiving all 
+the already configured attributes, even if the Configuration Manager is not running. Moreover, being a TANGO device, the
+EventSubscriber configuration can be managed with Jive.
 
 # 2: Prerequisites - Installation
-* Linux/Ubuntu (18.04 LTS)
-* Python 3.6
-* [python3-pip](https://packages.ubuntu.com/xenial/python3-pip)
-* [Tango (9.2.5a)](https://docs.google.com/document/d/1TMp5n380YMvaeqeKZvRHHXa7yVxT8oBn5xsEymyNFC4/edit?usp=sharing)
-* [PyTango (9.2.4)](https://docs.google.com/document/d/1DtuIs1PeYGHlDXx8RyOzZyRQ-_Eiup-ncqeDDCtcNxk/edit?usp=sharing)
-* [Docker](https://docs.docker.com/install/linux/docker-ce/ubuntu/) (for running the prototype in a containerised environment)
-* HDB++ library libhdbpp.
-* For complete installation, refer the link: [Link to HDB++ github repository](https://github.com/tango-controls-hdbpp)
+* HDB++ library: libhdbpp
+* HDB++ mysql library: libhdbpp-mysql
+* HDB++ configuration manager: hdbpp-cm
+* HDB++ event subscriber: hdbpp-es
+* HDB++ viewer: hdbpp-viewer
+* [HDB++ Installation Manual](https://docs.google.com/document/d/1QP3pU62j1v7RWvHeX72JG3s8FqgsCg-bD74xDLP2bSY/edit#heading=h.pqr2e1svlqll) 
+* [Link to HDB++ github repository](https://github.com/tango-controls-hdbpp)
 
-# 3: Images required for container creation
-* tango-db ({DOCKER_REGISTRY_HOST}/${DOCKER_REGISTRY_USER}/tango-db:latest)
-* tango-cpp (DOCKER_REGISTRY_HOST}/${DOCKER_REGISTRY_USER}/tango-cpp:latest)
-* tango-java ({DOCKER_REGISTRY_HOST}/${DOCKER_REGISTRY_USER}/tango-java:latest)
-* tango-archiver ({DOCKER_REGISTRY_HOST}/${DOCKER_REGISTRY_USER}/archiver:latest)
-* tango-dsconfig (nexus.engageska-portugal.pt/ska-docker/tango-dsconfig:latest)
-
-# 4: Creating docker containers for archiver
-## 4.1: hdbpp-es 
+# 3: Creating docker containers for archiver
+## 3.1: hdbpp-es 
 hdbpp-es is a Event Suscriber device server container.
 [Link to hdbpp-es github repository](https://github.com/tango-controls-hdbpp/hdbpp-es)
-{DOCKER_REGISTRY_HOST}/${DOCKER_REGISTRY_USER}/archiver image  with tag latest is used for creating hdbpp-es container.
-TANGO_HOST=${TANGO_HOST}, HdbManager=archiving/hdbpp/confmanager01  are the enviornments variables set at the time of 
-creating this container. The containers such as databaseds, archiver-dsconfig and maria-db should be up and running , 
-so that hdbpp-es container will start.
+nexus.engageska-portugal.pt/ska-docker/tango-archiver image with tag 'latest' is used for creating hdbpp-es container.
+TANGO_HOST=${TANGO_HOST}, HdbManager=archiving/hdbpp/confmanager01 are the environment variables set at the time of 
+creating this container. The containers such as databaseds, archiver-dsconfig and maria-db should be up and running, 
+for the hdbpp-es container to start.
  
-## 4.2: hdbpp-cm
+## 3.2: hdbpp-cm
 hdbpp-cm is a Configuration manager device server container.
 [Link to hdbpp-cm github repository](https://github.com/tango-controls-hdbpp/hdbpp-cm)
-{DOCKER_REGISTRY_HOST}/${DOCKER_REGISTRY_USER}/archiver image with tag latest is used for creating hdbpp-cm container. 
-TANGO_HOST=${TANGO_HOST}, HdbManager=archiving/hdbpp/confmanager01 are the enviornments variables set at the time of 
-creating this container. The containers such as databaseds, archiver-dsconfig and maria-db should be up and running ,
-so that hdbpp-cm container will start.
+nexus.engageska-portugal.pt/ska-docker/tango-archiver image with tag 'latest' is used to create hdbpp-cm container. 
+TANGO_HOST=${TANGO_HOST}, HdbManager=archiving/hdbpp/confmanager01 are the environment variables set at the time of 
+creating this container. The containers such as databaseds, archiver-dsconfig and maria-db should be up and running,
+for the hdbpp-cm container to start.
 
-## 4.3: archiver-dsconfig
-The data file, archiver-devices.json file runs in this container to configure all the TMC devices properties. Image 
-nexus.engageska-portugal.pt/ska-docker/tango-dsconfig:latest is used in this container.
-TANGO_HOST=${TANGO_HOST} is the eviornment variable set inside this container at the time of creation.
+## 3.3: dsconfig
+The data file, 'archiver-devices.json' runs in this container to configure all the TMC devices properties. 
+nexus.engageska-portugal.pt/ska-docker/tango-dsconfig image with tag 'latest' is used in this container.
+TANGO_HOST=${TANGO_HOST} is the environment variable set inside this container at the time of creation.
 
-# 5: Running tango-archiver inside docker containers
+# 4: Running tango-archiver inside docker containers
 
- tango-archiver can run on dockers using following command inside the ./tango-archiver
-
-In order to test , execute:
+The tango-archiver is brought up and running on dockers using the following command inside the ./tango-archiver
 
 `make test`
