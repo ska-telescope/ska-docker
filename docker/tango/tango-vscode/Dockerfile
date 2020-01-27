@@ -22,17 +22,9 @@ RUN apt-get update && apt-get install -y curl net-tools git software-properties-
     apt-transport-https wget gnupg libx11-xcb1 libasound2 x11-apps libice6 libsm6 \
     libxaw7 libxft2 libxmu6 libxpm4 libxt6 x11-apps xbitmaps
 
-# pip
-ENV PIP_VERSION=19.3.1
-RUN apt-get install -yq python3-distutils \
-    && curl https://bootstrap.pypa.io/get-pip.py -o get-pip.py \
-    && python3 get-pip.py pip==${PIP_VERSION}
-# /pip
+RUN pipenv run pip install docker-compose yamllint yamale
 
-RUN pip install docker-compose
-RUN pip install yamllint yamale
-
-ENV KUBE_LATEST_VERSION="v1.15.2"
+ENV KUBE_LATEST_VERSION="v1.16.2"
 ENV HELM_VERSION="v2.14.3"
 ENV DEBIAN_FRONTEND="readline"
 ENV RUNLEVEL="1"
@@ -53,11 +45,10 @@ RUN wget -q https://github.com/helm/chart-testing/releases/download/v2.4.0/chart
     && tar -xf ct.tar.gz \
     && mv ct /usr/local/bin/ct
 
-RUN pip install -r ${PYTEST_REQUIREMENTS}
-RUN pip install pytest
+RUN pipenv run pip install -r ${PYTEST_REQUIREMENTS}
+RUN pipenv run pip install pytest pytest-cov pytest-json-report pycodestyle pytest-bdd elasticsearch \ 
+    kubernetes pytest-runner sphinx recommonmark
 
-RUN apt-get update
-RUN apt-get install -y 
 RUN printf "#!/bin/sh\nexit 0" > /usr/sbin/policy-rc.d 
 
 # Allows the SSH user to pass environment variables into their SSH session
@@ -66,6 +57,12 @@ RUN printf "#!/bin/sh\nexit 0" > /usr/sbin/policy-rc.d
 RUN echo "PermitUserEnvironment yes" >> /etc/ssh/sshd_config
 
 RUN echo "X11UseLocalhost no" >> /etc/ssh/sshd_config
+
+RUN echo "if [[ ! -d ~/skampi ]] " >> /home/tango/.bashrc
+RUN echo "then" >> /home/tango/.bashrc
+RUN echo "  git clone https://gitlab.com/ska-telescope/skampi.git" >> /home/tango/.bashrc
+RUN echo "fi" >> /home/tango/.bashrc
+RUN echo "source /venv/bin/activate" >> /home/tango/.bashrc
 
 # SSH login fix. Otherwise user is kicked off after login
 RUN sed 's@session\s*required\s*pam_loginuid.so@session optional pam_loginuid.so@g' -i /etc/pam.d/sshd
