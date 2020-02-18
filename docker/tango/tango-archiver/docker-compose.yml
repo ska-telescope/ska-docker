@@ -57,7 +57,7 @@ services:
         #- HDB_NAME=hdb
       command: >
         /bin/bash -c "
-          echo HELLO!!!;
+          wait-for-it.sh archiver-maria-db:3306 --timeout=30 --strict --
           wait-for-it.sh ${TANGO_HOST} --timeout=30 --strict --
                hdbppes-srv 01"
 
@@ -76,7 +76,7 @@ services:
         #- HDB_NAME=hdb
       command: >
         /bin/bash -c "
-          echo HELLO!!!;
+          wait-for-it.sh archiver-maria-db:3306 --timeout=30 --strict --
           wait-for-it.sh ${TANGO_HOST} --timeout=30 --strict --
                hdbppcm-srv 01"
 
@@ -97,8 +97,7 @@ services:
         - ./data/attribute_fqdn.txt:/attribute_fqdn.txt
       command: >
         /bin/bash -c "
-           echo HELLO!!!;
-           sleep 25;
+           wait-for-it.sh archiver-maria-db:3306 --timeout=30 --strict --
            wait-for-it.sh ${TANGO_HOST} --timeout=30 --strict --
              sudo chmod 777 /configure_hdbpp.py;
              /venv/bin/python /configure_hdbpp.py \
@@ -140,43 +139,12 @@ services:
     depends_on:
       - databaseds
     environment:
-      #- MYSQL_ROOT_PASSWORD=secret
+      - MYSQL_ROOT_PASSWORD=secret
       - MYSQL_DATABASE=hdbpp
       - MYSQL_HOST=archiver-maria-db:3306
       - MYSQL_USER=tango
       - MYSQL_PASSWORD=tango
       - TANGO_HOST=${TANGO_HOST}
-    volumes:
-      - archiverdb:/var/lib/mysql
     restart: on-failure
 
-  hdbpp-viewer:
-    #    image: hdbpp-viewer:latest
-    image: nexus.engageska-portugal.pt/ska-docker/hdbpp_viewer:latest
-    container_name: hdbpp-viewer
-#    network_mode: ${NETWORK_MODE}
-    depends_on:
-      - databaseds
-      - dsconfig
-      - maria-db
-      - hdbpp-es
-      - hdbpp-cm
-    volumes:
-      - ${XAUTHORITY_MOUNT}
-    environment:
-      - XAUTHORITY=${XAUTHORITY}
-      - DISPLAY=${DISPLAY}
-      - TANGO_HOST=${TANGO_HOST}
-      - HDB_TYPE=mysql
-      - HDB_MYSQL_HOST=archiver-maria-db
-      - HDB_MYSQL_PORT=3306
-      - HDB_USER=tango
-      - HDB_PASSWORD=tango
-      - HDB_NAME=hdbpp
-    entrypoint:
-      - wait-for-it.sh
-      - ${TANGO_HOST}
-      - --strict
-      - --
-      - ./hdbpp_viewer/hdbpp_viewer_script
 

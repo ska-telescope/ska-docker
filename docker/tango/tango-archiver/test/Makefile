@@ -1,11 +1,10 @@
+SHELL = /bin/bash
+.SHELLFLAGS = -o pipefail -c
+
 all: test
 
 test:
-    # It takes several seconds for the Tango database to be populated from
-    # scratch, so pause until DB is created and the device we test against is
-    # responsive. If the Tango DB volume already exists, there'll be no delay
-    # at all and the test will run immediately.
-# 	retry -- tango_admin --check-device archiving/hdbpp/eventsubscriber01
+	retry --max=10 -- tango_admin --ping-device archiving/hdbpp/eventsubscriber01 && \
 	pytest SimpleTest.py
 
 .PHONY: all test

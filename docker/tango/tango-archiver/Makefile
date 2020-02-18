@@ -7,7 +7,7 @@ CACHE_VOLUME = tango-archiver-test-cache
 DOCKER_RUN_ARGS =
 
 # defines the image to test
-IMAGE_TO_TEST = $(DOCKER_REGISTRY_HOST)/$(DOCKER_REGISTRY_USER)/tango-archiver:latest
+IMAGE_TO_TEST = $(DOCKER_REGISTRY_HOST)/$(DOCKER_REGISTRY_USER)/tango-itango:latest
 
 #
 # When running in network=host mode, point devices at a port on the host
@@ -39,8 +39,7 @@ DOCKER_COMPOSE_COMMAND = PWD=$(CURDIR) \
 
 make = tar -c test/ | \
 	   docker run -i --rm --network=$(notdir $(CURDIR))_default \
-	   -v $(CACHE_VOLUME):/home/tango/.cache \
-	   -v /build -w /build $(DOCKER_RUN_ARGS) $(IMAGE_TO_TEST) \
+	   $(DOCKER_RUN_ARGS) $(IMAGE_TO_TEST) \
 	   bash -c "tar x --strip-components 1 --warning=all && \
 	   make TANGO_HOST=$(TANGO_HOST) $1"
 

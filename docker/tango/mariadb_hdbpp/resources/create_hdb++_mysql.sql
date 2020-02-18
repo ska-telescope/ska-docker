@@ -4,7 +4,7 @@ USE hdbpp;
 ----------------------------------------------------------------
 ------------------ create_hdb++_mysql.sql ----------------------
 ----------------------------------------------------------------
-GRANT ALL PRIVILEGES  ON hdbpp.* TO 'root'@'localhost' IDENTIFIED BY '' WITH GRANT OPTION;
+GRANT ALL PRIVILEGES  ON hdbpp.* TO 'root'@'localhost' identified by 'secret' WITH GRANT OPTION;
 
 GRANT ALL ON hdbpp.* TO 'hdbpprw'@'%' IDENTIFIED BY "hdbpprw";
 

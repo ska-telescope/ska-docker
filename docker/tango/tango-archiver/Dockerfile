@@ -1,16 +1,27 @@
-FROM registry.gitlab.com/s2innovation/tangobox-docker/tangobox-base:latest AS build
+ARG DOCKER_REGISTRY_USER
+ARG DOCKER_REGISTRY_HOST
+FROM ${DOCKER_REGISTRY_HOST}/${DOCKER_REGISTRY_USER}/tango-cpp:latest
 
-RUN apt update \
- && apt install -y \
-    checkinstall \
-    git \
-    cmake \
-    make \
-    g++ \
-    libomniorb4-dev \
-    libzmq3-dev \
-    libcos4-dev \
-    libmariadbclient-dev
+USER root
+
+RUN apt-get update && \
+    apt-get install -y ca-certificates
+
+RUN echo "deb http://deb.debian.org/debian buster-backports main contrib non-free" >> /etc/apt/sources.list && \
+    more /etc/apt/sources.list && \
+    apt-get update && \
+    apt-get install -y \
+        checkinstall \
+        git \
+        cmake \
+        make \
+        g++ \
+        libomniorb4-dev \
+        libzmq3-dev \
+        libcos4-dev \
+        mariadb-server \
+        libmariadb-dev-compat libmariadb-dev \
+        libmariadbclient-dev 
 
 RUN git clone -b v1.0.0 --depth 1 https://github.com/tango-controls-hdbpp/libhdbpp.git
 
@@ -64,7 +75,7 @@ RUN cd libhdbpp-mysql \
     --pkgversion="1.1.0" \
     --pkgrelease="SNAPSHOT" \
     --pkgname="libhdbpp-mysql" \
-    --requires="libmariadbclient18" \
+    --requires="libmariadbclient-dev" \
     make install
 
 RUN git clone -b v1.0.1 --depth 1 https://github.com/tango-controls-hdbpp/hdbpp-es.git
@@ -119,55 +130,24 @@ RUN cd hdbpp-cm \
     --requires="libzmq5,libomniorb4-2,libcos4-2,libomnithread4" \
     make install
 
-FROM registry.gitlab.com/s2innovation/tangobox-docker/tangobox-base:latest
 
-RUN apt update \
- && apt install -y \
-    build-essential \
-    libmariadbclient18 \
-    mariadb-client \
-    mariadb-server \
-    virtualenv \
-    python-pip\
- && apt clean
+RUN apt-get update && \
+    apt-get install -y \
+    build-essential && \
+    apt-get clean
 
-COPY --from=build \
-    /libhdbpp/build/libhdbpp_1.0.0-SNAPSHOT_amd64.deb \
-    /libhdbpp-mysql/libhdbpp-mysql_1.1.0-SNAPSHOT_amd64.deb \
-    /hdbpp-es/hdbpp-es_1.0.1-SNAPSHOT_amd64.deb \
-    /hdbpp-cm/hdbpp-cm_1.0.0-SNAPSHOT_amd64.deb \
-    /
-
-RUN dpkg -i libhdbpp_*.deb
-RUN dpkg -i libhdbpp-mysql_*.deb
-RUN dpkg -i hdbpp-es_*.deb
-RUN dpkg -i hdbpp-cm_*.deb
+RUN dpkg -i /libhdbpp/build/libhdbpp_1.0.0-SNAPSHOT_amd64.deb
+RUN dpkg -i /libhdbpp-mysql/libhdbpp-mysql_1.1.0-SNAPSHOT_amd64.deb
+RUN dpkg -i /hdbpp-es/hdbpp-es_1.0.1-SNAPSHOT_amd64.deb
+RUN dpkg -i /hdbpp-cm/hdbpp-cm_1.0.0-SNAPSHOT_amd64.deb
 
 RUN ldconfig
 
-COPY resources/create_hdb++.sql /
-COPY resources/my.cnf /etc/mysql/
 COPY resources/supervisord.conf /etc/supervisord.conf
 
-RUN bash -c "mysqld_safe --defaults-file=/etc/mysql/my.cnf &" \
- && sleep 5 \
- && mysql -u root < /create_hdb++.sql \
- && sleep 10 \
- && mysql -u root -D hdbpp < /usr/local/share/libhdb++mysql/create_hdb++_mysql.sql \
- && sleep 60 \
- && mysql -u root -D hdbpp -e "CREATE USER 'tango'@'%' identified by 'tango';"\
- && sleep 10 \
- && mysql -u root -D hdbpp -e  "GRANT ALL PRIVILEGES ON hdbpp.* To 'tango'@'%' IDENTIFIED BY 'tango' WITH GRANT OPTION;" \
- && sleep 5 \
- && mysql -u root -D hdbpp -e  "FLUSH PRIVILEGES;" \
- && sleep 5
-
-#RUN find / -iname hdb++*
 RUN mv /usr/local/bin/hdb++cm-srv /usr/local/bin/hdbppcm-srv
 RUN mv /usr/local/bin/hdb++es-srv /usr/local/bin/hdbppes-srv
 
 RUN find / -iname libhdb++*.so*.*
 
 CMD /usr/bin/supervisord -c /etc/supervisord.conf
-
-RUN pip install pytest
