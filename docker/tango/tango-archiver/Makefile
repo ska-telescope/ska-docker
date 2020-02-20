@@ -3,73 +3,83 @@ include ../../make/Makefile
 # name of the Docker volume used to cache eggs and wheels
 CACHE_VOLUME = tango-archiver-test-cache
 
-# optional docker run-time arguments
-DOCKER_RUN_ARGS =
-
 # defines the image to test
 IMAGE_TO_TEST = $(DOCKER_REGISTRY_HOST)/$(DOCKER_REGISTRY_USER)/tango-itango:latest
+
+THIS_HOST := $(shell ifconfig | sed -En 's/127.0.0.1//;s/.*inet (addr:)?(([0-9]*\.){3}[0-9]*).*/\2/p' | head -n1)
+
+ifneq ($(CI_JOB_ID),)
+NETWORK_MODE := tangonet-$(CI_JOB_ID)
+CONTAINER_NAME_PREFIX := $(CI_JOB_ID)-
+else
+# ********
+# Patch Matteo 20/02/2020 network mode cannot be host in this case. 
+# For enabling the host network, it is necessary to template the archiver-devices.json configuration file.
+NETWORK_MODE := tangonet-local
+CONTAINER_NAME_PREFIX := local-
+# ********
+endif
 
 #
 # When running in network=host mode, point devices at a port on the host
 # machine rather than at the container.
 #
-TANGO_HOST := databaseds:10000
-MYSQL_HOST := tangodb:3306
-XAUTHORITY_MOUNT := /tmp/.X11-unix:/tmp/.X11-unix
+ifeq ($(OS),Windows_NT)
+    $(error Sorry, Windows is not supported yet)
+else
+	UNAME_S := $(shell uname -s)
+	ifeq ($(UNAME_S),Linux)
+		DISPLAY ?= :0.0
+		NETWORK_MODE ?= host
+		XAUTHORITY_MOUNT := /tmp/.X11-unix:/tmp/.X11-unix
+		XAUTHORITY ?= /hosthome/.Xauthority
+		# /bin/sh (=dash) does not evaluate 'docker network' conditionals correctly
+		SHELL := /bin/bash
+	endif
+	ifeq ($(UNAME_S),Darwin)
+		IF_INTERFACE := $(shell netstat -nr | awk '{ if ($$1 ~/default/) { print $$6} }')
+		DISPLAY := $(shell ifconfig $(IF_INTERFACE) | awk '{ if ($$1 ~/inet$$/) { print $$2} }'):0
+		# network_mode = host doesn't work on MacOS, so fix to the internal network
+		NETWORK_MODE ?= tangonet
+		XAUTHORITY_MOUNT := $(HOME)/.Xauthority:/hosthome/.Xauthority:ro
+		XAUTHORITY := /hosthome/.Xauthority
+	endif
+endif
 
-# docker-compose commmand for a composition of services for the tango database,
-# databaseds device, and tangotest devices
-DOCKER_COMPOSE_COMMAND = PWD=$(CURDIR) \
-						 DOCKER_REGISTRY_HOST=$(DOCKER_REGISTRY_HOST) \
-						 DOCKER_REGISTRY_USER=$(DOCKER_REGISTRY_USER) \
-						 TANGO_HOST=$(TANGO_HOST) \
-						 MYSQL_HOST=$(MYSQL_HOST) \
-						 XAUTHORITY_MOUNT=$(XAUTHORITY_MOUNT) \
-						 docker-compose \
-						 -f docker-compose.yml
+#
+# When running in network=host mode, point devices at a port on the host
+# machine rather than at the container.
+#
+ifeq ($(NETWORK_MODE),host)
+	TANGO_HOST := $(shell hostname):10000
+	MYSQL_HOST := $(shell hostname):3306
+else
+	TANGO_HOST := $(CONTAINER_NAME_PREFIX)databaseds:10000
+	MYSQL_HOST := $(CONTAINER_NAME_PREFIX)tangodb:3306
+endif
 
-# defines a function to copy the ./test directory into the container and
-# then runs the requested make target in the container. The container is:
-#   1. attached to the network of the docker-compose test system
-#   2. uses a persistent volume to cache Python eggs and wheels so that fewer
-#      downloads are required
-#   3. uses a transient volume as a working directory, in which untarred files
-#      and test output can be written in the container and subsequently copied
-#      to the host
+DOCKER_COMPOSE_ARGS := PWD=$(CURDIR) DOCKER_REGISTRY_HOST=$(DOCKER_REGISTRY_HOST) \
+		DOCKER_REGISTRY_USER=$(DOCKER_REGISTRY_USER) DISPLAY=$(DISPLAY) XAUTHORITY=$(XAUTHORITY) TANGO_HOST=$(TANGO_HOST) \
+		NETWORK_MODE=$(NETWORK_MODE) XAUTHORITY_MOUNT=$(XAUTHORITY_MOUNT) MYSQL_HOST=$(MYSQL_HOST) \
+		CONTAINER_NAME_PREFIX=$(CONTAINER_NAME_PREFIX) COMPOSE_IGNORE_ORPHANS=true
 
 make = tar -c test/ | \
-	   docker run -i --rm --network=$(notdir $(CURDIR))_default \
+	   docker run -i --rm --network=$(NETWORK_MODE) \
 	   $(DOCKER_RUN_ARGS) $(IMAGE_TO_TEST) \
 	   bash -c "tar x --strip-components 1 --warning=all && \
 	   make TANGO_HOST=$(TANGO_HOST) $1"
 
 all: test
 
-test: DOCKER_RUN_ARGS = --volumes-from=$(BUILD)
 test:
-	$(INIT_CACHE)
-	$(DOCKER_COMPOSE_COMMAND) up -d
+ifneq ($(NETWORK_MODE),host)
+	docker network inspect $(NETWORK_MODE) &> /dev/null || ([ $$? -ne 0 ] && docker network create $(NETWORK_MODE))
+endif
+	$(DOCKER_COMPOSE_ARGS) docker-compose up -d
 	$(call make,test); \
 	  status=$$?; \
-	  docker rm -f -v $(BUILD); \
-	  docker-compose -f docker-compose.yml logs; \
-	  $(DOCKER_COMPOSE_COMMAND) down; \
+	  docker-compose logs; \
+	  $(DOCKER_COMPOSE_ARGS) docker-compose down; \
 	  exit $$status
 
-piplock: ## overwrite Pipfile.lock with the image version
-	docker run $(IMAGE_TO_TEST) cat /app/Pipfile.lock > $(CURDIR)/Pipfile.lock
-
-# insert the line below after 'status=$$?;' to copy output from the test run
-# inside the container into ./build on the host.
-#	  docker cp $(BUILD):/build .; \
-
 .PHONY: all test
-
-# Creates Docker volume for use as a cache, if it doesn't exist already
-INIT_CACHE = \
-	docker volume ls | grep $(CACHE_VOLUME) || \
-	docker create --name $(CACHE_VOLUME) -v $(CACHE_VOLUME):/cache $(IMAGE_TO_TEST)
-
-# http://cakoose.com/wiki/gnu_make_thunks
-BUILD_GEN = $(shell docker create -v /build $(IMAGE_TO_TEST))
-BUILD = $(eval BUILD := $(BUILD_GEN))$(BUILD)

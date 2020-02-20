@@ -143,11 +143,5 @@ RUN dpkg -i /hdbpp-cm/hdbpp-cm_1.0.0-SNAPSHOT_amd64.deb
 
 RUN ldconfig
 
-COPY resources/supervisord.conf /etc/supervisord.conf
-
 RUN mv /usr/local/bin/hdb++cm-srv /usr/local/bin/hdbppcm-srv
 RUN mv /usr/local/bin/hdb++es-srv /usr/local/bin/hdbppes-srv
-
-RUN find / -iname libhdb++*.so*.*
-
-CMD /usr/bin/supervisord -c /etc/supervisord.conf

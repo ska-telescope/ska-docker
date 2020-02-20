@@ -39,6 +39,7 @@ NETWORK_MODE := tangonet-$(CI_JOB_ID)
 CONTAINER_NAME_PREFIX := $(CI_JOB_ID)-
 else
 CONTAINER_NAME_PREFIX :=
+$(info Network mode cannot be host for the archiver! It won't work unless you set the env var CI_JOB_ID=local)
 endif
 
 ifeq ($(OS),Windows_NT)

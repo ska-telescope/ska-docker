@@ -1,13 +1,24 @@
 version: '2'
 
-volumes:
-  tangodb: {}
-  archiverdb: {}
-
 services:
+  maria-db:
+    image: ${DOCKER_REGISTRY_HOST}/${DOCKER_REGISTRY_USER}/mariadb_hdbpp:latest
+    container_name: archiver-maria-db
+    network_mode: ${NETWORK_MODE}
+    depends_on:
+      - databaseds
+    environment:
+      - MYSQL_ROOT_PASSWORD=secret
+      - MYSQL_DATABASE=hdbpp
+      - MYSQL_HOST=archiver-maria-db:3306
+      - MYSQL_USER=tango
+      - MYSQL_PASSWORD=tango
+      - TANGO_HOST=${TANGO_HOST}
+    restart: on-failure
+
   hdbpp-es:
-      image: nexus.engageska-portugal.pt/ska-docker/tango-archiver:latest
-#      network_mode: ${NETWORK_MODE}
+      image: ${DOCKER_REGISTRY_HOST}/${DOCKER_REGISTRY_USER}/tango-archiver:latest
+      network_mode: ${NETWORK_MODE}
       container_name: hdbpp-es
       depends_on:
         - databaseds
@@ -16,17 +27,15 @@ services:
       environment:
         - TANGO_HOST=${TANGO_HOST}
         - HdbManager=archiving/hdbpp/confmanager01
-        #- HDB_TYPE=timescaledb
-        #- HDB_NAME=hdb
       command: >
         /bin/bash -c "
-          echo HELLO!!!;
+          wait-for-it.sh archiver-maria-db:3306 --timeout=30 --strict --
           wait-for-it.sh ${TANGO_HOST} --timeout=30 --strict --
                hdbppes-srv 01"
 
   hdbpp-cm:
-      image: nexus.engageska-portugal.pt/ska-docker/tango-archiver:latest
- #     network_mode: ${NETWORK_MODE}
+      image: ${DOCKER_REGISTRY_HOST}/${DOCKER_REGISTRY_USER}/tango-archiver:latest
+      network_mode: ${NETWORK_MODE}
       container_name: hdbpp-cm
       depends_on:
         - databaseds
@@ -35,44 +44,16 @@ services:
       environment:
         - TANGO_HOST=${TANGO_HOST}
         - HdbManager=archiving/hdbpp/confmanager01
-        #- HDB_TYPE=timescaledb
-        #- HDB_NAME=hdb
       command: >
         /bin/bash -c "
-          echo HELLO!!!;
+          wait-for-it.sh archiver-maria-db:3306 --timeout=30 --strict --
           wait-for-it.sh ${TANGO_HOST} --timeout=30 --strict --
                hdbppcm-srv 01"
 
-  configurehdbpp:
-      image: nexus.engageska-portugal.pt/ska-docker/ska-python-buildenv:0.1.0
-#      network_mode: ${NETWORK_MODE}
-      container_name: configurehdbpp
-      depends_on:
-        - databaseds
-        - dsconfig
-        - maria-db
-        - hdbpp-es
-        - hdbpp-cm
-      environment:
-        - TANGO_HOST=${TANGO_HOST}
-      volumes:
-        - ./scripts/configure_hdbpp.py:/configure_hdbpp.py
-        - ./data/attribute_fqdn.txt:/attribute_fqdn.txt
-      command: >
-        /bin/bash -c "
-           echo HELLO!!!;
-           sleep 25;
-           wait-for-it.sh ${TANGO_HOST} --timeout=30 --strict --
-             sudo chmod 777 /configure_hdbpp.py;
-             /venv/bin/python /configure_hdbpp.py \
-              --cm=tango://archiver-1234-databaseds:10000/archiving/hdbpp/confmanager01\
-              --es=tango://archiver-1234-databaseds:10000/archiving/hdbpp/eventsubscriber01 \
-              --attrfile=/attribute_fqdn.txt v4"
-
   dsconfig:
-    image: nexus.engageska-portugal.pt/ska-docker/tango-dsconfig:latest
+    image: ${DOCKER_REGISTRY_HOST}/${DOCKER_REGISTRY_USER}/tango-dsconfig:latest
     container_name: dsconfig
-#    network_mode: ${NETWORK_MODE}
+    network_mode: ${NETWORK_MODE}
     depends_on:
       - databaseds
     environment:
@@ -82,52 +63,5 @@ services:
              json2tango -w -a -u /tango-archiver/data/archiver-devices.json &&
              sleep infinity"
     volumes:
-      - .:/tango-archiver
-
-  maria-db:
-    image: nexus.engageska-portugal.pt/ska-docker/mariadb_hdbpp:latest
-    container_name: archiver-maria-db
-#    network_mode: ${NETWORK_MODE}
-    depends_on:
-      - databaseds
-    environment:
-      #- MYSQL_ROOT_PASSWORD=secret
-      - MYSQL_DATABASE=hdbpp
-      - MYSQL_HOST=archiver-maria-db:3306
-      - MYSQL_USER=tango
-      - MYSQL_PASSWORD=tango
-      - TANGO_HOST=${TANGO_HOST}
-    volumes:
-      - archiverdb:/var/lib/mysql
-    restart: on-failure
-
-  hdbpp-viewer:
-    #    image: hdbpp-viewer:latest
-    image: nexus.engageska-portugal.pt/ska-docker/hdbpp_viewer:latest
-    container_name: hdbpp-viewer
-#    network_mode: ${NETWORK_MODE}
-    depends_on:
-      - databaseds
-      - dsconfig
-      - maria-db
-      - hdbpp-es
-      - hdbpp-cm
-    volumes:
-      - ${XAUTHORITY_MOUNT}
-    environment:
-      - XAUTHORITY=${XAUTHORITY}
-      - DISPLAY=${DISPLAY}
-      - TANGO_HOST=${TANGO_HOST}
-      - HDB_TYPE=mysql
-      - HDB_MYSQL_HOST=archiver-maria-db
-      - HDB_MYSQL_PORT=3306
-      - HDB_USER=tango
-      - HDB_PASSWORD=tango
-      - HDB_NAME=hdbpp
-    entrypoint:
-      - wait-for-it.sh
-      - ${TANGO_HOST}
-      - --strict
-      - --
-      - ./hdbpp_viewer/hdbpp_viewer_script
+      - ../docker/tango/tango-archiver:/tango-archiver
 

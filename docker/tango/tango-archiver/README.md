@@ -43,6 +43,6 @@ TANGO_HOST=${TANGO_HOST} is the environment variable set inside this container a
 
 # 4: Running tango-archiver inside docker containers
 
-The tango-archiver is brought up and running on dockers using the following command inside the ./tango-archiver
+The tango-archiver is tested on dockers using the following command inside the ./tango-archiver
 
 `make test`
