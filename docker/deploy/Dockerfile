@@ -19,20 +19,16 @@ RUN pip install docker-compose
 RUN pip install yamllint yamale
 
 ENV KUBE_LATEST_VERSION="v1.16.2"
-ENV HELM_VERSION="v2.16.1"
+ENV HELM_VERSION="v3.1.1"
 ENV DEBIAN_FRONTEND="readline"
 ENV RUNLEVEL="1"
-ENV HELM_TILLER_PLUGIN="https://github.com/rimusz/helm-tiller"
 ENV HELM_UNITTEST_PLUGIN="https://github.com/lrills/helm-unittest"
 ENV PYTEST_REQUIREMENTS="https://gitlab.com/ska-telescope/skampi/raw/8204ac53ef67941bf22e9f259be1910b2a9636a5/test-requirements.txt"
 
 RUN wget -q https://storage.googleapis.com/kubernetes-release/release/${KUBE_LATEST_VERSION}/bin/linux/amd64/kubectl -O /usr/local/bin/kubectl \
     && chmod +x /usr/local/bin/kubectl \
-    && wget -q https://storage.googleapis.com/kubernetes-helm/helm-${HELM_VERSION}-linux-amd64.tar.gz -O - | tar -xzO linux-amd64/helm > /usr/local/bin/helm \
+    && wget -q https://get.helm.sh/helm-${HELM_VERSION}-linux-amd64.tar.gz -O - | tar -xzO linux-amd64/helm > /usr/local/bin/helm \
     && chmod +x /usr/local/bin/helm
-RUN helm init --client-only
-RUN helm plugin install ${HELM_TILLER_PLUGIN}
-RUN helm plugin install ${HELM_UNITTEST_PLUGIN}
 
 RUN wget -q https://github.com/helm/chart-testing/releases/download/v2.4.0/chart-testing_2.4.0_linux_amd64.tar.gz -O /tmp/ct.tar.gz \
     && cd /tmp \
