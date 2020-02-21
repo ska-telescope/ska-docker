@@ -158,17 +158,10 @@ mkcerts:  ## Make dummy certificates for $(INGRESS_HOST) and Ingress
 helm_dependencies:
 	@which helm ; rc=$$?; \
 	if [[ $$rc != 0 ]]; then \
-	curl "https://kubernetes-helm.storage.googleapis.com/helm-$(HELM_VERSION)-linux-amd64.tar.gz" | tar zx; \
+	curl "https://get.helm.sh/helm-$(HELM_VERSION)-linux-amd64.tar.gz" | tar zx; \
 	mv linux-amd64/helm /usr/bin/; \
-	helm init --client-only; \
 	fi
-	@helm init --client-only
-	@if [ ! -d $$HOME/.helm/plugins/helm-tiller ]; then \
-	echo "installing tiller plugin..."; \
-	helm plugin install https://github.com/rimusz/helm-tiller; \
-	fi
-	helm version --client
-	@helm tiller stop 2>/dev/null || true
+	helm version
 
 # Utility target to install K8s dependencies
 kubectl_dependencies:
