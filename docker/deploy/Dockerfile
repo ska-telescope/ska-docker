@@ -29,7 +29,7 @@ RUN wget -q https://storage.googleapis.com/kubernetes-release/release/${KUBE_LAT
     && wget -q https://get.helm.sh/helm-${HELM_VERSION}-linux-amd64.tar.gz -O - | tar -xzO linux-amd64/helm > /usr/local/bin/helm \
     && chmod +x /usr/local/bin/helm
 
-RUN wget -q https://github.com/helm/chart-testing/releases/download/v2.4.0/chart-testing_2.4.0_linux_amd64.tar.gz -O /tmp/ct.tar.gz \
+RUN wget -q https://github.com/helm/chart-testing/releases/download/v3.0.0-beta.1/chart-testing_3.0.0-beta.1_linux_amd64.tar.gz -O /tmp/ct.tar.gz \
     && cd /tmp \
     && tar -xf ct.tar.gz \
     && mv ct /usr/local/bin/ct
