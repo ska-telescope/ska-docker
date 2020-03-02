@@ -41,23 +41,21 @@ k8s: ## Which kubernetes are we connected to
 	@kubectl version
 	@echo ""
 	@echo "Helm version:"
-	@helm version --tiller-namespace $(KUBE_NAMESPACE) --client
+	@helm version
 
 namespace: ## create the kubernetes namespace
 	kubectl describe namespace $(KUBE_NAMESPACE) || kubectl create namespace $(KUBE_NAMESPACE)
 
 deploy: namespace  ## deploy the helm chart
-	@helm template $(HELM_CHART)/ --name $(HELM_RELEASE) \
+	@helm template $(HELM_RELEASE) $(HELM_CHART)/ \
 				 --namespace $(KUBE_NAMESPACE) \
-	             --tiller-namespace $(KUBE_NAMESPACE) \
 	             --set display="$(DISPLAY)" \
 	             --set xauthority="$(XAUTHORITY)" \
 	             --set tangoexample.debug="$(REMOTE_DEBUG)" | kubectl -n $(KUBE_NAMESPACE) apply -f -
 
 show: ## show the helm chart
-	@helm template $(HELM_CHART)/ --name $(HELM_RELEASE) \
+	@helm template $(HELM_RELEASE) $(HELM_CHART)/ \
 				 --namespace $(KUBE_NAMESPACE) \
-	             --tiller-namespace $(KUBE_NAMESPACE) \
 	             --set display="$(DISPLAY)" \
 	             --set xauthority="$(XAUTHORITY)" \
 	             --set tangoexample.debug="$(REMOTE_DEBUG)"
@@ -65,32 +63,29 @@ show: ## show the helm chart
 lint: ## lint check the helm chart
 	@helm lint $(HELM_CHART)/ \
 		--namespace $(KUBE_NAMESPACE) \
-    --tiller-namespace $(KUBE_NAMESPACE) \
 		--set ingress.hostname=$(INGRESS_HOST)
 
-install: namespace mkcerts  ## install the helm chart (with Tiller)
-	@helm tiller run $(KUBE_NAMESPACE) -- helm install $(HELM_CHART)/ --name $(HELM_RELEASE) \
+install: namespace mkcerts  ## install the helm chart
+	@helm install $(HELM_RELEASE) $(HELM_CHART)/
 		--wait \
 		--namespace $(KUBE_NAMESPACE) \
-    --tiller-namespace $(KUBE_NAMESPACE) \
 		--set ingress.hostname=$(INGRESS_HOST) \
 		--set display="$(DISPLAY)" \
 		--set xauthority="$(XAUTHORITY)"
 
-delete: ## delete the helm chart release (with Tiller)
-	@helm tiller run $(KUBE_NAMESPACE) -- helm delete $(HELM_RELEASE) --purge \
-    --tiller-namespace $(KUBE_NAMESPACE)
+delete: ## delete the helm chart release
+	@helm delete $(HELM_RELEASE) \
+		--namespace $(KUBE_NAMESPACE)
 
 delete_template: ## delete the helm chart release
-	@helm template ska-docker/ --name $(HELM_RELEASE) \
+	@helm template $(HELM_RELEASE) ska-docker/ \
 				 --namespace $(KUBE_NAMESPACE) \
-	             --tiller-namespace $(KUBE_NAMESPACE) \
 	             --set display="$(DISPLAY)" \
 	             --set xauthority="$(XAUTHORITYx)" \
 	             --set tangoexample.debug="$(REMOTE_DEBUG)" | kubectl -n $(KUBE_NAMESPACE) delete -f -
 
 tests:  ## run Helm chart tests
-	@helm tiller run $(KUBE_NAMESPACE) -- helm test $(HELM_RELEASE) --cleanup
+	@helm test $(HELM_RELEASE) --namespace $(KUBE_NAMESPACE)
 
 delete_namespace: ## delete the kubernetes namespace
 	@if [ "default" == "$(KUBE_NAMESPACE)" ] || [ "kube-system" == "$(KUBE_NAMESPACE)" ]; then \
@@ -158,17 +153,10 @@ mkcerts:  ## Make dummy certificates for $(INGRESS_HOST) and Ingress
 helm_dependencies:
 	@which helm ; rc=$$?; \
 	if [[ $$rc != 0 ]]; then \
-	curl "https://kubernetes-helm.storage.googleapis.com/helm-$(HELM_VERSION)-linux-amd64.tar.gz" | tar zx; \
+	curl "https://get.helm.sh/helm-$(HELM_VERSION)-linux-amd64.tar.gz" | tar zx; \
 	mv linux-amd64/helm /usr/bin/; \
-	helm init --client-only; \
 	fi
-	@helm init --client-only
-	@if [ ! -d $$HOME/.helm/plugins/helm-tiller ]; then \
-	echo "installing tiller plugin..."; \
-	helm plugin install https://github.com/rimusz/helm-tiller; \
-	fi
-	helm version --client
-	@helm tiller stop 2>/dev/null || true
+	helm version
 
 # Utility target to install K8s dependencies
 kubectl_dependencies:
