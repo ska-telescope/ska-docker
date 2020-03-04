@@ -39,6 +39,14 @@ RUN TANGO_DOWNLOAD_URL=https://nexus.engageska-portugal.pt/repository/raw/tango-
     && apt-get purge -y --auto-remove $buildDeps \
     && rm -r /usr/src/tango
 
+# Pogo is included in tango source distribution, but replace with a newer version
+# Official source:  https://bintray.com/tango-controls/maven/Pogo/_latestVersion
+RUN POGO_DOWNLOAD_URL=https://nexus.engageska-portugal.pt/repository/raw/tango-cs/pogo/Pogo-9.6.28.jar \
+    && cd /usr/local/share/java \
+    && rm -f Pogo-*.jar \
+    && wget --no-check-certificate "$POGO_DOWNLOAD_URL" -O Pogo-9.6.28.jar \
+    && ln -sf Pogo-9.6.28.jar Pogo.jar
+
 RUN LOG4J=https://nexus.engageska-portugal.pt/repository/raw/java/log4j-1.2.17.tar.gz \
     && cd /usr/java \
     && wget --no-check-certificate "$LOG4J" -O log4j.tar.gz \
