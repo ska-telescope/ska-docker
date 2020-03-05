@@ -27,4 +27,4 @@ echo "************"
 echo $HDBVIEWER
 echo "************"
 
-java -Djava.util.logging.config.file=log.properties -DTANGO_HOST=$TANGO_HOST HDBViewer.MainPanel $@
+java -Djava.util.logging.config.file=log.properties -DTANGO_HOST=$TANGO_HOST -DHDB_TYPE=$HDB_TYPE -DHDB_MYSQL_HOST=$HDB_MYSQL_HOST -DHDB_MYSQL_PORT=$HDB_MYSQL_PORT -DHDB_USER=$HDB_USER -DHDB_PASSWORD=$HDB_PASSWORD -DHDB_NAME=$HDB_NAME HDBViewer.MainPanel $@
