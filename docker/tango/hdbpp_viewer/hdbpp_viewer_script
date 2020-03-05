@@ -7,11 +7,9 @@ fi
 #
 # Define the CLASSPATH
 #
+LOGBACK=${TANGO_LOGBACK:-/usr/local/share/tango/logback.xml}
 
-BASEDIR=$(dirname "$0")
-echo "$BASEDIR"
-echo "************"
-
+BASEDIR=/hdbpp_viewer
 TANGO=$BASEDIR/JTango.jar
 TANGOATK=$BASEDIR/ATKCore.jar:$BASEDIR/ATKWidget.jar
 HDBVIEWER=$BASEDIR/jhdbviewer.jar
@@ -19,12 +17,11 @@ HDBPP=$BASEDIR/HDBPP.jar
 JYTHON=$BASEDIR/jython.jar
 JCALENDAR=$BASEDIR/jcalendar.jar
 CLASSPATH=$TANGO:$TANGOATK:$HDBVIEWER:$HDBPP:$JYTHON:$JCALENDAR
-export CLASSPATH
 
-echo "************"
-echo $CLASSPATH
-echo "************"
-echo $HDBVIEWER
-echo "************"
+echo "************************************************"
+env
+echo "************************************************"
 
-java -Djava.util.logging.config.file=log.properties -DTANGO_HOST=$TANGO_HOST -DHDB_TYPE=$HDB_TYPE -DHDB_MYSQL_HOST=$HDB_MYSQL_HOST -DHDB_MYSQL_PORT=$HDB_MYSQL_PORT -DHDB_USER=$HDB_USER -DHDB_PASSWORD=$HDB_PASSWORD -DHDB_NAME=$HDB_NAME HDBViewer.MainPanel $@
+echo "/usr/bin/java -Dlogback.configurationFile="$LOGBACK" -DTANGO_HOST=$TANGO_HOST HDBViewer.MainPanel $@"
+
+/usr/bin/java -Dlogback.configurationFile="$LOGBACK" -DTANGO_HOST=$TANGO_HOST HDBViewer.MainPanel $@

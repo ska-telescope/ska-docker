@@ -31,6 +31,7 @@ services:
       - HDB_USER=tango
       - HDB_PASSWORD=tango
       - HDB_NAME=hdbpp
+      - CLASSPATH=JTango.jar:ATKCore.jar:ATKWidget.jar:jhdbviewer.jar:HDBPP.jar:jython.jar:jcalendar.jar
     entrypoint:
       - wait-for-it.sh
       - ${TANGO_HOST}
