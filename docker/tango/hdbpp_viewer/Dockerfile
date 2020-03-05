@@ -1,4 +1,6 @@
-FROM nexus.engageska-portugal.pt/ska-docker/tango-java:latest
+ARG DOCKER_REGISTRY_USER
+ARG DOCKER_REGISTRY_HOST
+FROM ${DOCKER_REGISTRY_HOST}/${DOCKER_REGISTRY_USER}/tango-java:latest
 USER root
 RUN apt-get update
 RUN apt-get install -y --force-yes wget

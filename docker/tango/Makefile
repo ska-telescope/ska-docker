@@ -1,5 +1,7 @@
-DIRS = tango-dependencies tango-db tango-cpp tango-java tango-starter tango-pogo tango-rest ska-python-buildenv ska-python-runtime tango-itango mariadb_hdbpp tango-archiver tango-vscode tango-vnc hdbpp_viewer
+DIRS = tango-builder tango-dependencies tango-db tango-cpp tango-java tango-rest tango-dsconfig ska-python-buildenv tango-pogo tango-starter tango-libtango tango-jive ska-python-runtime tango-admin tango-databaseds tango-test tango-itango tango-vscode tango-vnc tango-pytango mariadb_hdbpp tango-archiver hdbpp_viewer
+TEST = ska-python-buildenv tango-itango tango-rest tango-db tango-cpp tango-archiver
 BUILDDIRS = $(DIRS:%=build-%)
+TESTDIRS = $(TEST:%=test-%)
 CHECKSTATUSDIRS = $(DIRS:%=checkstatus-%)
 SHOWVERDIRS = $(DIRS:%=showver-%)
 PUSHDIRS = $(DIRS:%=push-%)
@@ -10,6 +12,10 @@ build: $(DIRS)  ## build all images
 $(DIRS): $(BUILDDIRS)
 $(BUILDDIRS):
 	$(MAKE) -C $(@:build-%=%) build
+
+test: $(TESTDIRS)
+$(TESTDIRS):
+	$(MAKE) -C $(@:test-%=%) test
 
 check-status: $(CHECKSTATUSDIRS) ## check whether subdirectories have uncommitted changes
 $(CHECKSTATUSDIRS):

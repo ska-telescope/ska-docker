@@ -23,61 +23,27 @@ RUN DOCKERHOST=`awk '/^[a-z]+[0-9]+\t00000000/ { printf("%d.%d.%d.%d", "0x" subs
 # * build-essential installs C/C++ compilers and build tools
 # * libboost-python-dev is required to bind PyTango to the C++ Tango libs
 # * pkg-config is used to locate required libraries
-# * virtualenv is required to create a new Python virtualenv environment
 # * git is required for Python packages using katversion for release info
 #
 RUN buildDeps='build-essential \
                libboost-python-dev \
                pkg-config \
-               virtualenv \
                python3-distutils \
+               python3-pip \
+               zlib1g-dev \
                git' \
     && DEBIAN_FRONTEND=noninteractive apt-get update \
     && apt-get -y install --no-install-recommends $buildDeps
 
-# Set environment variables for pipenv execution:
-#
-# * LC_ALL and LANG: Pipenv (specifically, its Click dependency) exits with an
-#   error unless the language encoding is set.
-# * PIPENV_TIMEOUT: increased Pipenv timeout as locking dependencies takes
-#   *forever* inside a Docker container.
-# * PATH: puts virtualenv python/pip/pipenv first on path
-# * VIRTUAL_ENV: for completeness. This environment variable would have been
-#   set by 'source /venv/bin/activate'
-# * PIPENV_VERBOSITY: hides warning about pipenv running inside a virtualenv.
-# * PIPENV_NOSPIN: disables animated spinner for cleaner CI logs
-#
-ENV LC_ALL=C.UTF-8 \
-    LANG=C.UTF-8 \
-    PIPENV_TIMEOUT=900 \
-    PATH=/venv/bin:$PATH \
-    VIRTUAL_ENV=/venv \
-    PIPENV_VERBOSITY=-1 \
-    PIPENV_NOSPIN=1
-
-# Create the virtual environment into which we'll install PyTango
-RUN virtualenv -p /usr/bin/python3 /venv
-WORKDIR /app
-
-# Install pipenv into the new virtual environment
-RUN pip install pipenv
-
-# Copy the Pipfile and frozen hashes (Pipfile.lock) across to the image so
-# that pipenv knows what to install
-COPY --chown=tango:tango Pipfile Pipfile
-COPY --chown=tango:tango Pipfile.lock Pipfile.lock
+RUN python3 -m pip install setuptools \
+    wheel
 
 # Install PyTango et al. into the virtual environment.
 # for Debian buster - make sure the correct libboost_python named lib is present
 RUN if [ -f "/usr/lib/x86_64-linux-gnu/libboost_python3-py37.so" ] && [ ! -f "/usr/lib/x86_64-linux-gnu/libboost_python-py37.so" ]; then \
     ln -s /usr/lib/x86_64-linux-gnu/libboost_python3-py37.so /usr/lib/x86_64-linux-gnu/libboost_python-py37.so; \
     fi; \
-    pipenv run pip install numpy==1.17.2; \
-    pipenv install --dev
+    python3 -m pip install numpy==1.17.2;
 
-# The following commands are executed when extending this image.
-# Copy the Pipfile across to the image so that pipenv knows which dependencies
-# to install.
-ONBUILD COPY --chown=tango:tango Pipfile Pipfile
-ONBUILD COPY --chown=tango:tango Pipfile.lock Pipfile.lock
-ONBUILD RUN pipenv install --dev
+COPY requirements.txt /requirements.txt
+RUN python3 -m pip install -r /requirements.txt

@@ -22,7 +22,7 @@ RUN apt-get update && apt-get install -y curl net-tools git software-properties-
     apt-transport-https wget gnupg libx11-xcb1 libasound2 x11-apps libice6 libsm6 \
     libxaw7 libxft2 libxmu6 libxpm4 libxt6 x11-apps xbitmaps
 
-RUN pipenv run pip install docker-compose yamllint yamale
+RUN python3 -m pip install docker-compose yamllint yamale
 
 ENV KUBE_LATEST_VERSION="v1.16.2"
 ENV HELM_VERSION="v3.1.1"
@@ -40,8 +40,8 @@ RUN wget -q https://github.com/helm/chart-testing/releases/download/v3.0.0-beta.
     && tar -xf ct.tar.gz \
     && mv ct /usr/local/bin/ct
 
-RUN pipenv run pip install -r ${PYTEST_REQUIREMENTS}
-RUN pipenv run pip install pytest pytest-cov pytest-json-report pycodestyle pytest-bdd elasticsearch \ 
+RUN python3 -m pip install -r ${PYTEST_REQUIREMENTS}
+RUN python3 -m pip install pytest pytest-cov pytest-json-report pycodestyle pytest-bdd elasticsearch \ 
     kubernetes pytest-runner sphinx recommonmark
 
 RUN printf "#!/bin/sh\nexit 0" > /usr/sbin/policy-rc.d 

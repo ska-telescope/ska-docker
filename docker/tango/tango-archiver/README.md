@@ -10,6 +10,8 @@ device and stores the configuration into the TANGO database. The EventSubscriber
 the already configured attributes, even if the Configuration Manager is not running. Moreover, being a TANGO device, the
 EventSubscriber configuration can be managed with Jive.
 
+Note: the version of the present docker image comes from the libhdbpp installed (1.0.0)
+
 # 2: Prerequisites - Installation
 * HDB++ library: libhdbpp
 * HDB++ mysql library: libhdbpp-mysql
@@ -20,7 +22,7 @@ EventSubscriber configuration can be managed with Jive.
 * [Link to HDB++ github repository](https://github.com/tango-controls-hdbpp)
 
 # 3: Creating docker containers for archiver
-## 3.1: hdbpp-es 
+## 3.1: hdbpp-es (v1.0.1)
 hdbpp-es is a Event Suscriber device server container.
 [Link to hdbpp-es github repository](https://github.com/tango-controls-hdbpp/hdbpp-es)
 nexus.engageska-portugal.pt/ska-docker/tango-archiver image with tag 'latest' is used for creating hdbpp-es container.
@@ -28,7 +30,7 @@ TANGO_HOST=${TANGO_HOST}, HdbManager=archiving/hdbpp/confmanager01 are the envir
 creating this container. The containers such as databaseds, archiver-dsconfig and maria-db should be up and running, 
 for the hdbpp-es container to start.
  
-## 3.2: hdbpp-cm
+## 3.2: hdbpp-cm (v1.0.0)
 hdbpp-cm is a Configuration manager device server container.
 [Link to hdbpp-cm github repository](https://github.com/tango-controls-hdbpp/hdbpp-cm)
 nexus.engageska-portugal.pt/ska-docker/tango-archiver image with tag 'latest' is used to create hdbpp-cm container. 
