@@ -1,6 +1,6 @@
-ARG DOCKER_REGISTRY_HOST
 ARG DOCKER_REGISTRY_USER
-FROM debian:buster-slim as buildenv
+ARG DOCKER_REGISTRY_HOST
+FROM ${DOCKER_REGISTRY_HOST}/${DOCKER_REGISTRY_USER}/tango-dependencies:latest as buildenv
 
 RUN MTANGOREST_DOWNLOAD_URL=https://github.com/tango-controls/rest-server/releases/download/rest-server-1.14/rest-server-1.14.jar \
     && DOCKERHOST=`awk '/^[a-z]+[0-9]+\t00000000/ { printf("%d.%d.%d.%d", "0x" substr($3, 7, 2), "0x" substr($3, 5, 2), "0x" substr($3, 3, 2), "0x" substr($3, 1, 2)) }' < /proc/net/route` \
