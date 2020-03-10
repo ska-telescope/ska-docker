@@ -1,5 +1,9 @@
-FROM nexus.engageska-portugal.pt/ska-docker/tango-java:latest
+ARG DOCKER_REGISTRY_USER
+ARG DOCKER_REGISTRY_HOST
+FROM ${DOCKER_REGISTRY_HOST}/${DOCKER_REGISTRY_USER}/tango-java:latest
+
 USER root
+
 RUN apt-get update
 RUN apt-get install -y --force-yes wget
 
@@ -12,14 +16,11 @@ RUN mkdir hdbpp_viewer \
  && wget -O ATKWidget.jar ftp://ftp.esrf.eu/pub/cs/tango/Atk/ATKWidget.jar \
  && wget -O jcalendar.jar ftp://ftp.esrf.eu/pub/cs/tango/hdbviewer/jcalendar.jar \
  && wget -O jhdbviewer.jar ftp://ftp.esrf.eu/pub/cs/tango/hdbviewer/jhdbviewer.jar \
- && wget -O JTango.jar https://sourceforge.net/projects/tango-cs/files/JTango/JTango-9.0.3/JTango-9.0.3.jar/download \
- && ls
-RUN ls
+ && wget -O JTango.jar https://sourceforge.net/projects/tango-cs/files/JTango/JTango-9.0.3/JTango-9.0.3.jar/download 
+
 ADD hdbpp_viewer_script hdbpp_viewer
-RUN cd hdbpp_viewer \
- && ls
+
 RUN find . -iname HDBPP.jar
 RUN find . -iname ATKCore.jar
 
-
-
+USER tango
