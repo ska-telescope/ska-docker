@@ -28,7 +28,6 @@ ENV KUBE_LATEST_VERSION="v1.16.2"
 ENV HELM_VERSION="v3.1.1"
 ENV DEBIAN_FRONTEND="readline"
 ENV RUNLEVEL="1"
-ENV PYTEST_REQUIREMENTS="https://gitlab.com/ska-telescope/skampi/raw/60ad4e45f9e7e716d1abd23e520b63c3711dba99/test-requirements.txt"
 
 RUN wget -q https://storage.googleapis.com/kubernetes-release/release/${KUBE_LATEST_VERSION}/bin/linux/amd64/kubectl -O /usr/local/bin/kubectl \
     && chmod +x /usr/local/bin/kubectl \
@@ -40,9 +39,14 @@ RUN wget -q https://github.com/helm/chart-testing/releases/download/v3.0.0-beta.
     && tar -xf ct.tar.gz \
     && mv ct /usr/local/bin/ct
 
-RUN python3 -m pip install -r ${PYTEST_REQUIREMENTS}
 RUN python3 -m pip install pytest pytest-cov pytest-json-report pycodestyle pytest-bdd elasticsearch \ 
-    kubernetes pytest-runner sphinx recommonmark
+    kubernetes pytest-runner sphinx recommonmark assertpy astropy marshmallow
+RUN python3 -m pip install -r "https://gitlab.com/ska-telescope/skampi/-/raw/master/test-harness/test_requirements.txt"
+RUN python3 -m pip install --extra-index-url https://nexus.engageska-portugal.pt/repository/pypi/simple cdm-shared-library
+
+RUN git clone https://gitlab.com/ska-telescope/observation-execution-tool.git && \
+    cd observation-execution-tool/ && \
+    python3 -m pip install .
 
 RUN printf "#!/bin/sh\nexit 0" > /usr/sbin/policy-rc.d 
 
@@ -53,11 +57,9 @@ RUN echo "PermitUserEnvironment yes" >> /etc/ssh/sshd_config
 
 RUN echo "X11UseLocalhost no" >> /etc/ssh/sshd_config
 
-RUN echo "if [[ ! -d ~/skampi ]] " >> /home/tango/.bashrc
-RUN echo "then" >> /home/tango/.bashrc
+RUN echo "if [[ ! -d ~/skampi ]]; then " >> /home/tango/.bashrc
 RUN echo "  git clone https://gitlab.com/ska-telescope/skampi.git" >> /home/tango/.bashrc
 RUN echo "fi" >> /home/tango/.bashrc
-RUN echo "source /venv/bin/activate" >> /home/tango/.bashrc
 
 # SSH login fix. Otherwise user is kicked off after login
 RUN sed 's@session\s*required\s*pam_loginuid.so@session optional pam_loginuid.so@g' -i /etc/pam.d/sshd
