@@ -38,6 +38,8 @@ RUN buildDeps='build-essential \
 RUN python3 -m pip install setuptools \
     wheel
 
+WORKDIR /app
+
 # Install PyTango et al. into the virtual environment.
 # for Debian buster - make sure the correct libboost_python named lib is present
 RUN if [ -f "/usr/lib/x86_64-linux-gnu/libboost_python3-py37.so" ] && [ ! -f "/usr/lib/x86_64-linux-gnu/libboost_python-py37.so" ]; then \

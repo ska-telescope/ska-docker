@@ -36,6 +36,9 @@ COPY --from=buildenv /usr/local/lib/python3.7 /usr/local/lib/python3.7
 RUN curl https://bootstrap.pypa.io/get-pip.py -o get-pip.py && python3 get-pip.py
 RUN mkdir venv && ln -s /usr/* /venv/ && ln -s /usr/bin/python3 /venv/bin/python && ln -s /usr/local/bin/itango3 /venv/bin/itango3
 
+USER tango
+
 ONBUILD COPY --chown=tango:tango . /app
 ONBUILD COPY --from=buildenv /usr/local/bin/ /usr/local/bin/
+ONBUILD WORKDIR /app
 
