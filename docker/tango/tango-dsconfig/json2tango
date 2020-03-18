@@ -1,6 +1,6 @@
 #!/bin/bash
 
-json2tango "$@"
+/usr/local/bin/json2tango "$@"
 RESULT="$?"
 
 # check the result of json2tango to see if it is 2(CONFIG LOADED) and return successfully
