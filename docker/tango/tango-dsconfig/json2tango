@@ -1,0 +1,13 @@
+#!/bin/bash
+
+/usr/local/bin/json2tango "$@"
+RESULT="$?"
+
+# check the result of json2tango to see if it is 2(CONFIG LOADED) and return successfully
+if [ "$RESULT" == "2" ]; then
+	echo "/usr/local/bin/json2tango returned exit code 2(CONFIG LOADED), returning 0"
+	exit 0
+else
+	# return the result of json2tango script
+	exit $RESULT
+fi
