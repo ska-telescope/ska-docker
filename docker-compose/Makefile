@@ -55,8 +55,8 @@ else
 		SHELL := /bin/bash
 	endif
 	ifeq ($(UNAME_S),Darwin)
-		IF_INTERFACE := $(shell netstat -nr | awk '{ if ($$1 ~/default/) { print $$6} }')
-		DISPLAY := $(shell ifconfig $(IF_INTERFACE) | awk '{ if ($$1 ~/inet$$/) { print $$2} }'):0
+		IF_INTERFACE := $(shell scutil --nwi | grep 'Network interfaces:' | cut -d' ' -f3)
+		DISPLAY := $(shell scutil --nwi | grep 'address' | cut -d':' -f2 | tr -d ' ' | head -n1):0
 		# network_mode = host doesn't work on MacOS, so fix to the internal network
 		NETWORK_MODE ?= tangonet
 		XAUTHORITY_MOUNT := $(HOME)/.Xauthority:/hosthome/.Xauthority:ro
