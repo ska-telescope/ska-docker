@@ -31,9 +31,12 @@ RUN buildDeps='build-essential \
                python3-distutils \
                python3-pip \
                zlib1g-dev \
+               curl \
                git' \
     && DEBIAN_FRONTEND=noninteractive apt-get update \
     && apt-get -y install --no-install-recommends $buildDeps
+
+RUN curl https://bootstrap.pypa.io/get-pip.py -o get-pip.py && python3 get-pip.py
 
 RUN python3 -m pip install setuptools \
     wheel
@@ -49,3 +52,5 @@ RUN if [ -f "/usr/lib/x86_64-linux-gnu/libboost_python3-py37.so" ] && [ ! -f "/u
 
 COPY requirements.txt /requirements.txt
 RUN python3 -m pip install -r /requirements.txt
+
+RUN rm /usr/bin/python && mkdir /venv && ln -s /usr/* /venv/ && ln -s /usr/bin/python3 /venv/bin/python && ln -s /usr/local/bin/itango3 /venv/bin/itango3
