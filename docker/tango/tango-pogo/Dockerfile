@@ -15,7 +15,10 @@ RUN runtimeDeps='firefox-esr' \
 
 # Pogo is included in tango source distribution, but replace with a newer version
 # Official source:  https://bintray.com/tango-controls/maven/Pogo/_latestVersion
-RUN POGO_DOWNLOAD_URL=https://nexus.engageska-portugal.pt/repository/raw/tango-cs/pogo/Pogo-9.6.28.jar \
+RUN buildDeps='wget' \
+    && DEBIAN_FRONTEND=noninteractive apt-get update \
+    && DEBIAN_FRONTEND=noninteractive apt-get -y install --no-install-recommends $buildDeps \
+    && POGO_DOWNLOAD_URL=https://nexus.engageska-portugal.pt/repository/raw/tango-cs/pogo/Pogo-9.6.28.jar \
     && cd /usr/local/share/java \
     && rm -f Pogo-*.jar \
     && wget --no-check-certificate "$POGO_DOWNLOAD_URL" -O Pogo-9.6.28.jar \
