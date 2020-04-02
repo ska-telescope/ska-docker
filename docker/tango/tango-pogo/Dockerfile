@@ -18,11 +18,11 @@ RUN runtimeDeps='firefox-esr' \
 RUN buildDeps='wget' \
     && DEBIAN_FRONTEND=noninteractive apt-get update \
     && DEBIAN_FRONTEND=noninteractive apt-get -y install --no-install-recommends $buildDeps \
-    && POGO_DOWNLOAD_URL=https://nexus.engageska-portugal.pt/repository/raw/tango-cs/pogo/Pogo-9.6.28.jar \
+    && POGO_DOWNLOAD_URL=https://nexus.engageska-portugal.pt/repository/raw/tango-cs/pogo/Pogo-9.6.31.jar \
     && cd /usr/local/share/java \
     && rm -f Pogo-*.jar \
-    && wget --no-check-certificate "$POGO_DOWNLOAD_URL" -O Pogo-9.6.28.jar \
-    && ln -sf Pogo-9.6.28.jar Pogo.jar
+    && wget --no-check-certificate "$POGO_DOWNLOAD_URL" -O Pogo-9.6.31.jar \
+    && ln -sf Pogo-9.6.31.jar Pogo.jar
 
 USER tango
 
