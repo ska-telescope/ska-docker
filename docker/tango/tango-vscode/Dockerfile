@@ -41,7 +41,7 @@ RUN wget -q https://github.com/helm/chart-testing/releases/download/v3.0.0-beta.
 
 RUN python3 -m pip install pytest pytest-cov pytest-json-report pycodestyle pytest-bdd elasticsearch \ 
     kubernetes pytest-runner sphinx recommonmark assertpy astropy marshmallow
-RUN python3 -m pip install -r "https://gitlab.com/ska-telescope/skampi/-/raw/master/test-harness/test_requirements.txt"
+RUN python3 -m pip install pytest pytest-cov pytest-json-report pycodestyle pytest-bdd elasticsearch kubernetes assertpy mock importlib 
 RUN python3 -m pip install --extra-index-url https://nexus.engageska-portugal.pt/repository/pypi/simple cdm-shared-library
 
 RUN git clone https://gitlab.com/ska-telescope/observation-execution-tool.git && \
