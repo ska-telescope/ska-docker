@@ -43,6 +43,8 @@ RUN python3 -m pip install pytest pytest-cov pytest-json-report pycodestyle pyte
     kubernetes pytest-runner sphinx recommonmark assertpy astropy marshmallow
 RUN python3 -m pip install pytest pytest-cov pytest-json-report pycodestyle pytest-bdd elasticsearch kubernetes assertpy mock importlib 
 
+RUN apt-get install bash-completion
+
 RUN printf "#!/bin/sh\nexit 0" > /usr/sbin/policy-rc.d 
 
 # Allows the SSH user to pass environment variables into their SSH session
