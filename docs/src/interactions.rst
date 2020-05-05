@@ -31,13 +31,20 @@ GUI interactions
 
 Graphical applications such as Jive and Pogo can be run in a container,
 sending their output to an X11 server running on the host machine.
+Note that for Linux, you'll probably need to turn off X server security.
 
 ::
+
+   # if on Linux, you need to turn off some security
+   xhost +
 
    # run Jive, using the default IP address determined by the Makefile
    make start jive
    # run Pogo
    make start pogo
+
+   # it's prudent to turn security back on
+   xhost -
 
 GUI applications send X11 traffic to an IP address determined by the
 makefile. This IP address can be overridden by passing a ``DISPLAY``
