@@ -59,13 +59,24 @@ server), execute:
    make up
 
 Optional applications and device servers can be launched by calling the
-*start* make target followed by the name of the service. For example:
+*start* make target followed by the name of the service. Note that for
+Linux, you'll probably need to turn off X server security.
+
+For example:
 
 .. code-block:: console
 
    # still in the docker-compose directory..
+   
+   # if on Linux, you need to turn off some security
+   xhost +   
+
    # run Jive
    make start jive
+
+   # it's prudent to turn security back on
+   xhost -
+
    # run tangotest
    make start tangotest
 
