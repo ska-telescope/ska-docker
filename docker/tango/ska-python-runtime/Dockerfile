@@ -12,7 +12,7 @@ USER root
 
 # Permanently install Python and PyTango runtime dependencies:
 #
-# * libboost-python1.62.0 is required by PyTango;
+# * libboost-python is required by PyTango;
 # * make is required to manage execution of the tests inside the container
 # * python3 is required as this image is intended for running Python Tango
 #   devices.
@@ -43,4 +43,3 @@ ENV PATH="/home/tango/.local/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/b
 ONBUILD COPY --chown=tango:tango . /app
 ONBUILD COPY --from=buildenv /usr/local/bin/ /usr/local/bin/
 ONBUILD WORKDIR /app
-
