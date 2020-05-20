@@ -305,11 +305,8 @@ build_tango-vnc:
   only:
     changes:
     - docker/tango/tango-dependencies/**/*
-    - docker/tango/tango-cpp/**/*
-    - docker/tango/ska-python-buildenv/**/*
-    - docker/tango/ska-python-runtime/**/*
+    - docker/tango/tango-java/**/*
     - docker/tango/tango-vnc/**/*
-    - docker/deploy/pip.conf
 
 build_tango-pytango:
   retry: 2
