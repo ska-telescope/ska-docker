@@ -44,12 +44,9 @@ RUN python3 -m pip install setuptools \
 
 WORKDIR /app
 
-# Install PyTango et al. into the virtual environment.
-# for Debian buster - make sure the correct libboost_python named lib is present
-RUN if [ -f "/usr/lib/x86_64-linux-gnu/libboost_python3-py37.so" ] && [ ! -f "/usr/lib/x86_64-linux-gnu/libboost_python-py37.so" ]; then \
-    ln -s /usr/lib/x86_64-linux-gnu/libboost_python3-py37.so /usr/lib/x86_64-linux-gnu/libboost_python-py37.so; \
-    fi; \
-    python3 -m pip install numpy==1.17.2;
+# Install numpy manually before PyTango and other requirements to ensure we
+# build PyTango with numpy support.
+RUN python3 -m pip install numpy==1.17.2
 
 COPY requirements.txt /requirements.txt
 RUN python3 -m pip install -r /requirements.txt
