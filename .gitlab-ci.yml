@@ -34,6 +34,7 @@ build_tango-builder:
   only:
     changes:
     - docker/tango/tango-builder/**/*
+    - docker/deploy/pip.conf
 
 build_deploy_image:
   retry: 2
@@ -125,6 +126,7 @@ build_tango-dsconfig:
     - docker/tango/tango-dependencies/**/*
     - docker/tango/tango-cpp/**/*
     - docker/tango/tango-dsconfig/**/*
+    - docker/deploy/pip.conf
 
 build_ska-python-buildenv:
   retry: 2
@@ -139,6 +141,7 @@ build_ska-python-buildenv:
       - docker/tango/tango-dependencies/**/*
       - docker/tango/tango-cpp/**/*
       - docker/tango/ska-python-buildenv/**/*
+      - docker/deploy/pip.conf
 
 build_tango-pogo:
   retry: 2
@@ -210,6 +213,7 @@ build_ska-python-runtime:
     - docker/tango/tango-cpp/**/*
     - docker/tango/ska-python-buildenv/**/*
     - docker/tango/ska-python-runtime/**/*
+    - docker/deploy/pip.conf
 
 build_tango-admin:
   retry: 2
@@ -271,6 +275,7 @@ build_tango-itango:
     - docker/tango/ska-python-buildenv/**/*
     - docker/tango/ska-python-runtime/**/*
     - docker/tango/tango-itango/**/*
+    - docker/deploy/pip.conf
 
 build_tango-vscode:
   retry: 2
@@ -287,6 +292,7 @@ build_tango-vscode:
     - docker/tango/ska-python-buildenv/**/*
     - docker/tango/ska-python-runtime/**/*
     - docker/tango/tango-vscode/**/*
+    - docker/deploy/pip.conf
 
 build_tango-vnc:
   retry: 2
@@ -303,6 +309,7 @@ build_tango-vnc:
     - docker/tango/ska-python-buildenv/**/*
     - docker/tango/ska-python-runtime/**/*
     - docker/tango/tango-vnc/**/*
+    - docker/deploy/pip.conf
 
 build_tango-pytango:
   retry: 2
@@ -319,6 +326,7 @@ build_tango-pytango:
     - docker/tango/ska-python-buildenv/**/*
     - docker/tango/ska-python-runtime/**/*
     - docker/tango/tango-pytango/**/*
+    - docker/deploy/pip.conf
 
 build_tango-archiver:
   retry: 2
@@ -459,11 +467,11 @@ test-all:
     paths:
     - public
 
-push: 
+push:
   stage: push
   tags:
   - shell
-  script: 
+  script:
   - cd docker
   - make DOCKER_REGISTRY_USER=$DOCKER_REGISTRY_FOLDER DOCKER_REGISTRY_HOST=$DOCKER_REGISTRY_HOST push
   when: manual
