@@ -12,5 +12,5 @@ RUN apt-get update && apt-get install -yq python3-distutils \
     && curl https://bootstrap.pypa.io/get-pip.py -o get-pip.py \
     && python3 get-pip.py
 # /pip
-RUN pip install docker-compose
-RUN pip install pytest
+RUN python3 -m pip install docker-compose
+RUN python3 -m pip install pytest

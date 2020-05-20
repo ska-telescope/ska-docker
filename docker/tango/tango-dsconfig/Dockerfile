@@ -28,9 +28,9 @@ RUN ln -s /usr/lib/x86_64-linux-gnu/libboost_python27.so /usr/lib/x86_64-linux-g
     && DEBIAN_FRONTEND=noninteractive apt-get update \
     && apt-get -y install --no-install-recommends $buildDeps
 
-RUN pip install -U pip \
-    && pip install wheel
-RUN pip install --no-cache-dir --extra-index-url=https://pypi.org/simple -i https://nexus.engageska-portugal.pt/repository/pypi/simple python-dsconfig==1.2.5
+RUN python2 -m pip install -U pip \
+    && python2 -m pip install wheel
+RUN python2 -m pip install --no-cache-dir --extra-index-url=https://pypi.org/simple -i https://nexus.engageska-portugal.pt/repository/pypi/simple python-dsconfig==1.2.5
 COPY json2tango .
 ENV PATH $PATH:/json2tango
 # RUN chmod +x ./json2tango.sh if needed 
