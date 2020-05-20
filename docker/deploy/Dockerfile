@@ -1,4 +1,4 @@
-FROM ubuntu:latest
+FROM ubuntu:18.04
 
 RUN apt-get update
 RUN apt-get install -y make bash git curl apt-transport-https ca-certificates wget software-properties-common 
