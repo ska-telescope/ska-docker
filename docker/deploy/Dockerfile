@@ -1,5 +1,11 @@
 FROM ubuntu:18.04
 
+ENV KUBE_LATEST_VERSION="v1.16.2"
+ENV HELM_VERSION="v3.1.1"
+ENV DEBIAN_FRONTEND="noninteractive"
+ENV RUNLEVEL="1"
+ENV PYTEST_REQUIREMENTS="https://gitlab.com/ska-telescope/skampi/raw/8204ac53ef67941bf22e9f259be1910b2a9636a5/test-requirements.txt"
+
 RUN apt-get update
 RUN apt-get install -y make bash git curl apt-transport-https ca-certificates wget software-properties-common 
 RUN curl -fsSL https://download.docker.com/linux/ubuntu/gpg | apt-key add -
@@ -17,12 +23,6 @@ RUN apt-get install -yq python3-distutils \
 
 RUN pip install docker-compose
 RUN pip install yamllint yamale
-
-ENV KUBE_LATEST_VERSION="v1.16.2"
-ENV HELM_VERSION="v3.1.1"
-ENV DEBIAN_FRONTEND="readline"
-ENV RUNLEVEL="1"
-ENV PYTEST_REQUIREMENTS="https://gitlab.com/ska-telescope/skampi/raw/8204ac53ef67941bf22e9f259be1910b2a9636a5/test-requirements.txt"
 
 RUN wget -q https://storage.googleapis.com/kubernetes-release/release/${KUBE_LATEST_VERSION}/bin/linux/amd64/kubectl -O /usr/local/bin/kubectl \
     && chmod +x /usr/local/bin/kubectl \

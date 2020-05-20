@@ -8,6 +8,10 @@ USER root
 ARG SSH_PASSWORD=vscodessh
 
 ENV ssh_cmd tango:$SSH_PASSWORD
+ENV KUBE_LATEST_VERSION="v1.16.2"
+ENV HELM_VERSION="v3.1.1"
+ENV DEBIAN_FRONTEND="noninteractive"
+ENV RUNLEVEL="1"
 
 RUN echo $ssh_cmd
 
@@ -24,11 +28,6 @@ RUN apt-get update && apt-get install -y curl net-tools git software-properties-
 
 RUN python3 -m pip install docker-compose yamllint yamale
 
-ENV KUBE_LATEST_VERSION="v1.16.2"
-ENV HELM_VERSION="v3.1.1"
-ENV DEBIAN_FRONTEND="readline"
-ENV RUNLEVEL="1"
-
 RUN wget -q https://storage.googleapis.com/kubernetes-release/release/${KUBE_LATEST_VERSION}/bin/linux/amd64/kubectl -O /usr/local/bin/kubectl \
     && chmod +x /usr/local/bin/kubectl \
     && wget -q https://get.helm.sh/helm-${HELM_VERSION}-linux-amd64.tar.gz -O - | tar -xzO linux-amd64/helm > /usr/local/bin/helm \
@@ -39,13 +38,13 @@ RUN wget -q https://github.com/helm/chart-testing/releases/download/v3.0.0-beta.
     && tar -xf ct.tar.gz \
     && mv ct /usr/local/bin/ct
 
-RUN python3 -m pip install pytest pytest-cov pytest-json-report pycodestyle pytest-bdd elasticsearch \ 
+RUN python3 -m pip install pytest pytest-cov pytest-json-report pycodestyle pytest-bdd elasticsearch \
     kubernetes pytest-runner sphinx recommonmark assertpy astropy marshmallow
-RUN python3 -m pip install pytest pytest-cov pytest-json-report pycodestyle pytest-bdd elasticsearch kubernetes assertpy mock importlib 
+RUN python3 -m pip install pytest pytest-cov pytest-json-report pycodestyle pytest-bdd elasticsearch kubernetes assertpy mock importlib
 
 RUN apt-get install bash-completion
 
-RUN printf "#!/bin/sh\nexit 0" > /usr/sbin/policy-rc.d 
+RUN printf "#!/bin/sh\nexit 0" > /usr/sbin/policy-rc.d
 
 # Allows the SSH user to pass environment variables into their SSH session
 # For this stage of development this is useful as it allows the TANGO_HOST
