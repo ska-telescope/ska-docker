@@ -1,5 +1,5 @@
 numpy==1.17.2
-pytango==9.3.1
+pytango==9.3.2
 itango
 docutils
 MarkupSafe

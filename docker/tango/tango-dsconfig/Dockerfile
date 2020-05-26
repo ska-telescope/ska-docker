@@ -17,8 +17,7 @@ RUN DOCKERHOST=`awk '/^[a-z]+[0-9]+\t00000000/ { printf("%d.%d.%d.%d", "0x" subs
 # * virtualenv is required to create a new Python virtualenv environment
 #
 
-RUN ln -s /usr/lib/x86_64-linux-gnu/libboost_python27.so /usr/lib/x86_64-linux-gnu/libboost_python-py27.so; \
-    buildDeps='build-essential \
+RUN buildDeps='build-essential \
                libboost-python-dev \
                pkg-config \
                git \
@@ -28,8 +27,14 @@ RUN ln -s /usr/lib/x86_64-linux-gnu/libboost_python27.so /usr/lib/x86_64-linux-g
     && DEBIAN_FRONTEND=noninteractive apt-get update \
     && apt-get -y install --no-install-recommends $buildDeps
 
-RUN pip install wheel
-RUN pip install --no-cache-dir --extra-index-url=https://pypi.org/simple -i https://nexus.engageska-portugal.pt/repository/pypi/simple python-dsconfig==1.2.5
+RUN python2 -m pip install -U pip
+COPY pip.conf /etc/pip.conf
+
+# install numpy before pytango, since pytango compilation
+# checks for presence of numpy
+RUN python2 -m pip install wheel numpy==1.16.6
+RUN python2 -m pip install pytango==9.3.2
+RUN python2 -m pip install --no-cache-dir python-dsconfig==1.2.5
 COPY json2tango .
 ENV PATH $PATH:/json2tango
-# RUN chmod +x ./json2tango.sh if needed 
+# RUN chmod +x ./json2tango.sh if needed
