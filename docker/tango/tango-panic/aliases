@@ -1,0 +1,14 @@
+# /etc/aliases
+# this is the default aliases config file from exim4, edit it as required
+mailer-daemon: postmaster
+postmaster: root
+nobody: root
+hostmaster: root
+usenet: root
+news: root
+webmaster: root
+www: root
+ftp: root
+abuse: root
+noc: root
+security: root
