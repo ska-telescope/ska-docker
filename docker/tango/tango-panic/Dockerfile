@@ -27,3 +27,5 @@ RUN [ ! -z "$http_proxy" ] && \
 
 COPY aliases /etc/
 COPY update-exim4.conf.conf /etc/exim4/
+COPY entrypoint.sh /app/
+ENTRYPOINT ["/app/entrypoint.sh"]
